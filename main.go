@@ -15,7 +15,7 @@ var basepath = "/v1/months"
 
 func setupRoutes(router *mux.Router) {
 	// POST
-	// router.HandleFunc(path, routes.CreateBalances).Methods(http.MethodPost)
+	router.HandleFunc(basepath, routes.CreateMonth).Methods(http.MethodPost)
 
 	// // GET
 	// router.HandleFunc(path, routes.GetBalances).Methods(http.MethodGet)
