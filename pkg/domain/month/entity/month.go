@@ -68,32 +68,32 @@ func (month Month) GetUpdatedAt() time.Time {
 	return month.updatedAt
 }
 
-func (month *Month) SetCode(code string) {
+func (month Month) SetCode(code string) {
 	month.code = code
 	validate(month)
 }
 
-func (month *Month) SetName(name string) {
+func (month Month) SetName(name string) {
 	month.name = name
 	validate(month)
 }
 
-func (month *Month) SetYear(year int) {
+func (month Month) SetYear(year int) {
 	month.year = year
 	validate(month)
 }
 
-func (month *Month) SetStartDate(startDate time.Time) {
+func (month Month) SetStartDate(startDate time.Time) {
 	month.startDate = startDate
 	validate(month)
 }
 
-func (month *Month) SetEndDate(endDate time.Time) {
+func (month Month) SetEndDate(endDate time.Time) {
 	month.endDate = endDate
 	validate(month)
 }
 
-func (month *Month) SetUpdatedAt(updatedAt time.Time) {
+func (month Month) SetUpdatedAt(updatedAt time.Time) {
 	month.updatedAt = updatedAt
 	validate(month)
 }
@@ -108,13 +108,13 @@ func NewMonth(code string, name string, year int, startDate time.Time, endDate t
 		endDate:   endDate,
 		createdAt: time.Now(),
 	}
-	if err := validate(&month); err != nil {
+	if err := validate(month); err != nil {
 		return nil, err
 	}
-	return &month, nil
+	return month, nil
 }
 
-func validate(month *Month) error {
+func validate(month Month) error {
 	if month.id == "" {
 		return errors.New("id is required")
 	}
@@ -138,5 +138,10 @@ func validate(month *Month) error {
 	if month.endDate.IsZero() {
 		return errors.New("end date is required")
 	}
+
+	if month.startDate.Equal(month.endDate) || month.startDate.After(month.endDate) {
+		return errors.New("start date must be greater than the end date")
+	}
+
 	return nil
 }

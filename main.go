@@ -23,9 +23,17 @@ func setupRoutes(router *mux.Router) {
 	router.HandleFunc(basepath+"/health", routes.Health).Methods(http.MethodGet)
 }
 
+func responseFormatMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Add("Content-Type", "application/json")
+		next.ServeHTTP(w, r)
+	})
+}
+
 func main() {
 
 	router := mux.NewRouter()
+	router.Use(responseFormatMiddleware)
 
 	setupRoutes(router)
 

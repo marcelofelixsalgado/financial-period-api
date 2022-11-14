@@ -47,6 +47,9 @@ func TestNewMonthSuccess(t *testing.T) {
 		if testCase.endDate != received.GetEndDate() {
 			t.Errorf("EndDate expected: %v - received: %v", testCase.endDate, received.GetEndDate())
 		}
+		if received.GetCreatedAt().IsZero() {
+			t.Errorf("CreatedAt must not be zero")
+		}
 	}
 }
 
@@ -117,6 +120,38 @@ func TestNewMonthInvalidEndDate(t *testing.T) {
 		year:      2022,
 		startDate: time.Now(),
 		expected:  "end date is required",
+	}
+	_, err := entity.NewMonth(testCase.code, testCase.name, testCase.year, testCase.startDate, testCase.endDate)
+	if err.Error() != testCase.expected {
+		t.Errorf("Error expected: %s - Error received: %s", testCase.expected, err)
+	}
+}
+
+func TestNewMonthEqualDates(t *testing.T) {
+	sameDate := time.Now()
+	testCase := testCase{
+		code:      "11",
+		name:      "November",
+		year:      2022,
+		startDate: sameDate,
+		endDate:   sameDate,
+		expected:  "start date must be greater than the end date",
+	}
+	_, err := entity.NewMonth(testCase.code, testCase.name, testCase.year, testCase.startDate, testCase.endDate)
+	if err.Error() != testCase.expected {
+		t.Errorf("Error expected: %s - Error received: %s", testCase.expected, err)
+	}
+}
+
+func TestNewMonthInvalidDates(t *testing.T) {
+	sameDate := time.Now()
+	testCase := testCase{
+		code:      "11",
+		name:      "November",
+		year:      2022,
+		startDate: sameDate.Add(24 * time.Hour),
+		endDate:   sameDate,
+		expected:  "start date must be greater than the end date",
 	}
 	_, err := entity.NewMonth(testCase.code, testCase.name, testCase.year, testCase.startDate, testCase.endDate)
 	if err.Error() != testCase.expected {
