@@ -7,7 +7,7 @@ import (
 )
 
 type message struct {
-	Status string `json: "status"`
+	Status string `json:"status"`
 }
 
 func Health(w http.ResponseWriter, r *http.Request) {
@@ -20,8 +20,6 @@ func Health(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	w.Header().Set("Content-Type", "application/json")
 
 	w.Write([]byte(messageJSON))
 }

@@ -2,11 +2,12 @@ package create
 
 import (
 	"marcelofelixsalgado/financial-month-api/pkg/domain/month/entity"
-	"marcelofelixsalgado/financial-month-api/pkg/infrastructure/month/repository/mysql"
+	"marcelofelixsalgado/financial-month-api/pkg/infrastructure/repository"
+
 	"time"
 )
 
-func Execute(input InputCreateMonthDto, repository mysql.IRepository) (OutputCreateMonthDto, error) {
+func Execute(input InputCreateMonthDto, repository repository.IRepository) (OutputCreateMonthDto, error) {
 
 	var outputCreateMonthDto OutputCreateMonthDto
 

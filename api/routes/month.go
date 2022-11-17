@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"log"
-	"marcelofelixsalgado/financial-month-api/pkg/infrastructure/month/repository/mysql"
+	"marcelofelixsalgado/financial-month-api/pkg/infrastructure/repository"
 	"marcelofelixsalgado/financial-month-api/pkg/usecase/month/create"
 	"net/http"
 )
@@ -25,7 +25,7 @@ func CreateMonth(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	repository := mysql.NewRepository()
+	repository := repository.NewRepository()
 
 	output, err := create.Execute(input, repository)
 	if err != nil {
