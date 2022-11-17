@@ -186,3 +186,71 @@ func TestGetMessagesMultipleErrorCodes(t *testing.T) {
 		t.Errorf("Expected message: [%s]  is not equal Returned Message: [%s]", expectedMessage, actualMessage)
 	}
 }
+
+func TestGetMessagesWithExclusiveTrue(t *testing.T) {
+
+	expectedMessage := []messages.ResponseBodyMessage{
+		{
+			ErrorCode: "UNSUPPORTED_MEDIA_TYPE",
+			Message:   "The server does not support the request body media type",
+			Details: []messages.ResponseBodyMessageDetail{
+				{
+					Issue:       "MISSING_CONTENT_TYPE",
+					Description: "A required Content Type header is missing",
+					Location:    "header",
+					Field:       "Content-Type",
+				},
+			},
+		},
+	}
+
+	messages.ResetMessageList()
+	messages.AddMessageByIssue(messages.DecimalsNotSupported, messages.Body, "field1", "value1")
+	messages.AddMessageByIssue(messages.MissingContentType, messages.Header, "Content-Type", "")
+
+	actualMessage := messages.GetMessages()
+
+	if !reflect.DeepEqual(actualMessage, expectedMessage) {
+		t.Errorf("Expected message: [%s]  is not equal Returned Message: [%s]", expectedMessage, actualMessage)
+	}
+}
+
+func TestGetMessagesReplacementSuccess(t *testing.T) {
+
+	expectedMessage := []messages.ResponseBodyMessage{
+		{
+			ErrorCode: "UNPROCESSABLE_ENTITY",
+			Message:   "The request is semantically incorrect or fails business validation",
+			Details: []messages.ResponseBodyMessageDetail{
+				{
+					Issue:       "CONDITIONAL_FIELD_NOT_ALLOWED",
+					Description: "field1 is not allowed when field field2 is set to value2",
+					Location:    "body",
+					Field:       "field1",
+					Value:       "value1",
+				},
+			},
+		},
+	}
+
+	messages.ResetMessageList()
+	messages.AddMessageByIssue(messages.ConditionalFieldNotAllowed, messages.Body, "field1", "value1", "field1", "field2", "value2")
+
+	actualMessage := messages.GetMessages()
+
+	if !reflect.DeepEqual(actualMessage, expectedMessage) {
+		t.Errorf("Expected message: [%s]  is not equal Returned Message: [%s]", expectedMessage, actualMessage)
+	}
+}
+
+func TestGetMessagesReplacementFail(t *testing.T) {
+
+	expectedError := fmt.Errorf("wrong number of argumentos passed. expected: [3] - received: [1]")
+
+	messages.ResetMessageList()
+	err := messages.AddMessageByIssue(messages.ConditionalFieldNotAllowed, messages.Body, "field1", "value1", "field2")
+
+	if fmt.Sprint(err) != fmt.Sprint(expectedError) {
+		t.Errorf("The error [%s] is different from what it was expetected [%s]", err, expectedError)
+	}
+}

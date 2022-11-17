@@ -4,6 +4,27 @@ import "errors"
 
 type ErrorCode string
 
+type Catalog struct {
+	List []ReferenceMessage
+}
+
+type ReferenceMessage struct {
+	errorCode ErrorCode
+	message   string
+	exclusive bool // Controls if make sense for a message to be showed along with others. Sometimes it doesn't make sense - eg. HTTP 400 with HTTP 500
+	priority  int  // Controls when a message has priority over another, in the case of exclusive
+	details   []ReferenceMessageDetail
+}
+
+type ReferenceMessageDetail struct {
+	issue            Issue
+	description      string
+	description_args int // Number of argument on description
+	locationRequired bool
+	fieldRequired    bool
+	valueRequired    bool
+}
+
 const (
 	InvalidRequestSyntax ErrorCode = "INVALID_REQUEST_SYNTAX" // HTTP 400 - Request is not well-formed, syntactically incorrect, or violates schema
 	UnprocessableEntity  ErrorCode = "UNPROCESSABLE_ENTITY"   // HTTP 422 - The request is semantically incorrect or fails business validation
@@ -63,33 +84,18 @@ const (
 	InvalidContentType             Issue = "INVALID_CONTENT_TYPE"
 )
 
-type Catalog struct {
-	List []ReferenceMessage
-}
-
-type ReferenceMessage struct {
-	errorCode ErrorCode
-	message   string
-	details   []ReferenceMessageDetail
-}
-
-type ReferenceMessageDetail struct {
-	issue            Issue
-	description      string
-	locationRequired bool
-	fieldRequired    bool
-	valueRequired    bool
-}
-
 var catalog = Catalog{
 	List: []ReferenceMessage{
 		{
 			errorCode: InvalidRequestSyntax,
 			message:   "Request is not well-formed, syntactically incorrect, or violates schema",
+			exclusive: false,
+			priority:  2,
 			details: []ReferenceMessageDetail{
 				{
 					issue:            DecimalsNotSupported,
 					description:      "Field value does not support decimals",
+					description_args: 0,
 					locationRequired: true,
 					fieldRequired:    true,
 					valueRequired:    true,
@@ -97,6 +103,7 @@ var catalog = Catalog{
 				{
 					issue:            InvalidBooleanValue,
 					description:      "Field value is invalid. Expected values: true or false",
+					description_args: 0,
 					locationRequired: true,
 					fieldRequired:    true,
 					valueRequired:    true,
@@ -104,6 +111,7 @@ var catalog = Catalog{
 				{
 					issue:            InvalidParameter,
 					description:      "Request is not well-formed, syntactically incorrect, or violates schema",
+					description_args: 0,
 					locationRequired: true,
 					fieldRequired:    true,
 					valueRequired:    false,
@@ -111,6 +119,7 @@ var catalog = Catalog{
 				{
 					issue:            InvalidStringValue,
 					description:      "Field value is invalid. It should be of type string",
+					description_args: 0,
 					locationRequired: true,
 					fieldRequired:    true,
 					valueRequired:    true,
@@ -118,6 +127,7 @@ var catalog = Catalog{
 				{
 					issue:            MalformedRequest,
 					description:      "The request payload is not well formed",
+					description_args: 0,
 					locationRequired: true,
 					fieldRequired:    false,
 					valueRequired:    false,
@@ -125,6 +135,7 @@ var catalog = Catalog{
 				{
 					issue:            MissingRequiredField,
 					description:      "A required field is missing",
+					description_args: 0,
 					locationRequired: true,
 					fieldRequired:    true,
 					valueRequired:    false,
@@ -134,10 +145,13 @@ var catalog = Catalog{
 		{
 			errorCode: UnprocessableEntity,
 			message:   "The request is semantically incorrect or fails business validation",
+			exclusive: false,
+			priority:  1,
 			details: []ReferenceMessageDetail{
 				{
 					issue:            CannotBeNegative,
 					description:      "Must be greater than or equal to zero",
+					description_args: 0,
 					locationRequired: true,
 					fieldRequired:    true,
 					valueRequired:    true,
@@ -145,13 +159,15 @@ var catalog = Catalog{
 				{
 					issue:            CannotBeZeroOrNegative,
 					description:      "Must be greater than zero",
+					description_args: 0,
 					locationRequired: true,
 					fieldRequired:    true,
 					valueRequired:    true,
 				},
 				{
 					issue:            ConditionalFieldNotAllowed,
-					description:      "{field1} is not allowed when field {field2} is set to {value2}",
+					description:      "%s is not allowed when field %s is set to %s",
+					description_args: 3,
 					locationRequired: true,
 					fieldRequired:    true,
 					valueRequired:    true,
@@ -159,6 +175,7 @@ var catalog = Catalog{
 				{
 					issue:            ConditionalInvalidValue,
 					description:      "{field1} cannot be set to {value1}, if {field2} is set to {value2}",
+					description_args: 3,
 					locationRequired: true,
 					fieldRequired:    true,
 					valueRequired:    true,
@@ -166,6 +183,7 @@ var catalog = Catalog{
 				{
 					issue:            ConditionalMissingField,
 					description:      "{field1} is required if {field2} is set to {value2}",
+					description_args: 3,
 					locationRequired: true,
 					fieldRequired:    true,
 					valueRequired:    false,
@@ -173,6 +191,7 @@ var catalog = Catalog{
 				{
 					issue:            ConditionalValueTooHigh,
 					description:      "{field1} cannot be set to {value1}; it cannot be higher than {field2} ({value2})",
+					description_args: 4,
 					locationRequired: true,
 					fieldRequired:    true,
 					valueRequired:    true,
@@ -180,6 +199,7 @@ var catalog = Catalog{
 				{
 					issue:            ConditionalValueTooLow,
 					description:      "{field1} cannot be set to {value1}; it cannot be lower than {field2} ({value2})",
+					description_args: 4,
 					locationRequired: true,
 					fieldRequired:    true,
 					valueRequired:    true,
@@ -187,6 +207,7 @@ var catalog = Catalog{
 				{
 					issue:            FieldValueTooHigh,
 					description:      "Field value cannot be higher than {max}",
+					description_args: 1,
 					locationRequired: true,
 					fieldRequired:    true,
 					valueRequired:    true,
@@ -194,6 +215,7 @@ var catalog = Catalog{
 				{
 					issue:            FieldValueTooLow,
 					description:      "Field value cannot be lower than {min}",
+					description_args: 1,
 					locationRequired: true,
 					fieldRequired:    true,
 					valueRequired:    true,
@@ -201,6 +223,7 @@ var catalog = Catalog{
 				{
 					issue:            InvalidArrayMaxItems,
 					description:      "The number of array items cannot be higher than {max}",
+					description_args: 1,
 					locationRequired: true,
 					fieldRequired:    true,
 					valueRequired:    true,
@@ -208,6 +231,7 @@ var catalog = Catalog{
 				{
 					issue:            InvalidArrayMinItems,
 					description:      "The number of array items cannot be lower than {min}",
+					description_args: 1,
 					locationRequired: true,
 					fieldRequired:    true,
 					valueRequired:    true,
@@ -215,6 +239,7 @@ var catalog = Catalog{
 				{
 					issue:            InvalidDateValue,
 					description:      "Field value is invalid. Expected format: YYYY-MM-DD",
+					description_args: 0,
 					locationRequired: true,
 					fieldRequired:    true,
 					valueRequired:    true,
@@ -222,6 +247,7 @@ var catalog = Catalog{
 				{
 					issue:            InvalidDateTimeValue,
 					description:      "Field value is invalid. Expected format: YYYY-MM-DDThh:mm:ssZ",
+					description_args: 0,
 					locationRequired: true,
 					fieldRequired:    true,
 					valueRequired:    true,
@@ -229,6 +255,7 @@ var catalog = Catalog{
 				{
 					issue:            InvalidDecimalValue,
 					description:      "Field value is invalid. It should have a value with maximum [N] digits and [N] fractions",
+					description_args: 2,
 					locationRequired: true,
 					fieldRequired:    true,
 					valueRequired:    true,
@@ -236,6 +263,7 @@ var catalog = Catalog{
 				{
 					issue:            InvalidIntegerValue,
 					description:      "Field value should have a value with maximum {N} digits",
+					description_args: 1,
 					locationRequired: true,
 					fieldRequired:    true,
 					valueRequired:    true,
@@ -243,6 +271,7 @@ var catalog = Catalog{
 				{
 					issue:            InvalidParameterFormat,
 					description:      "Field value does not conform to the expected format: {format}",
+					description_args: 1,
 					locationRequired: true,
 					fieldRequired:    true,
 					valueRequired:    true,
@@ -250,6 +279,7 @@ var catalog = Catalog{
 				{
 					issue:            InvalidParameterValue,
 					description:      "Field value is invalid",
+					description_args: 0,
 					locationRequired: true,
 					fieldRequired:    true,
 					valueRequired:    true,
@@ -257,6 +287,7 @@ var catalog = Catalog{
 				{
 					issue:            InvalidParameterValueBlank,
 					description:      "Field value cannot be blank",
+					description_args: 0,
 					locationRequired: true,
 					fieldRequired:    true,
 					valueRequired:    false,
@@ -264,6 +295,7 @@ var catalog = Catalog{
 				{
 					issue:            InvalidStringLength,
 					description:      "Field length should be {N} characters",
+					description_args: 1,
 					locationRequired: true,
 					fieldRequired:    true,
 					valueRequired:    true,
@@ -271,6 +303,7 @@ var catalog = Catalog{
 				{
 					issue:            InvalidStringMaxLength,
 					description:      "Field value exceeded the maximum allowed number of {N} characters",
+					description_args: 1,
 					locationRequired: true,
 					fieldRequired:    true,
 					valueRequired:    true,
@@ -278,6 +311,7 @@ var catalog = Catalog{
 				{
 					issue:            InvalidStringMinLength,
 					description:      "Field value should be at least {N} characters",
+					description_args: 1,
 					locationRequired: true,
 					fieldRequired:    true,
 					valueRequired:    true,
@@ -285,6 +319,7 @@ var catalog = Catalog{
 				{
 					issue:            InvalidURLValue,
 					description:      "Field value is invalid. It should be in the format of a valid URL",
+					description_args: 0,
 					locationRequired: true,
 					fieldRequired:    true,
 					valueRequired:    true,
@@ -292,6 +327,7 @@ var catalog = Catalog{
 				{
 					issue:            InvalidUUIDValue,
 					description:      "Invalid UUID string format",
+					description_args: 0,
 					locationRequired: true,
 					fieldRequired:    true,
 					valueRequired:    true,
@@ -301,10 +337,13 @@ var catalog = Catalog{
 		{
 			errorCode: InvalidClient,
 			message:   "Client authentication failed",
+			exclusive: true,
+			priority:  8,
 			details: []ReferenceMessageDetail{
 				{
 					issue:            AuthenticationFailure,
 					description:      "Authentication failed due to missing authorization header, or invalid authentication credentials",
+					description_args: 0,
 					locationRequired: true,
 					fieldRequired:    true,
 					valueRequired:    true,
@@ -314,10 +353,13 @@ var catalog = Catalog{
 		{
 			errorCode: NotAuthorized,
 			message:   "Authorization failed due to insufficient permissions",
+			exclusive: true,
+			priority:  7,
 			details: []ReferenceMessageDetail{
 				{
 					issue:            PermissionDenied,
 					description:      "You do not have permission to access or perform operations on this resource",
+					description_args: 0,
 					locationRequired: false,
 					fieldRequired:    false,
 					valueRequired:    false,
@@ -325,6 +367,7 @@ var catalog = Catalog{
 				{
 					issue:            RequiredScopeMissing,
 					description:      "Access token does not have required scope",
+					description_args: 0,
 					locationRequired: false,
 					fieldRequired:    false,
 					valueRequired:    false,
@@ -334,10 +377,13 @@ var catalog = Catalog{
 		{
 			errorCode: ResourceNotFound,
 			message:   "The specified resource does not found",
+			exclusive: true,
+			priority:  5,
 			details: []ReferenceMessageDetail{
 				{
 					issue:            InvalidResourceId,
 					description:      "Specified resource ID does not exist",
+					description_args: 0,
 					locationRequired: true,
 					fieldRequired:    true,
 					valueRequired:    true,
@@ -345,6 +391,7 @@ var catalog = Catalog{
 				{
 					issue:            InvalidURI,
 					description:      "The URI requested is invalid",
+					description_args: 0,
 					locationRequired: false,
 					fieldRequired:    false,
 					valueRequired:    false,
@@ -352,6 +399,7 @@ var catalog = Catalog{
 				{
 					issue:            NoRecordsFound,
 					description:      "Records not found. Please check the input parameters and try again",
+					description_args: 0,
 					locationRequired: true,
 					fieldRequired:    true,
 					valueRequired:    true,
@@ -361,10 +409,13 @@ var catalog = Catalog{
 		{
 			errorCode: MethodNotAllowed,
 			message:   "Invalid path and HTTP method combination",
+			exclusive: true,
+			priority:  6,
 			details: []ReferenceMessageDetail{
 				{
 					issue:            MethodNotSupported,
 					description:      "The server does not implement the requested path and HTTP method",
+					description_args: 0,
 					locationRequired: false,
 					fieldRequired:    false,
 					valueRequired:    false,
@@ -374,10 +425,13 @@ var catalog = Catalog{
 		{
 			errorCode: Conflict,
 			message:   "The request could not be completed due to a conflict with the current state of the target resource",
+			exclusive: true,
+			priority:  3,
 			details: []ReferenceMessageDetail{
 				{
 					issue:            EntityWithSameKeyAlreadyExists,
 					description:      "An entity with the same already exists",
+					description_args: 0,
 					locationRequired: true,
 					fieldRequired:    true,
 					valueRequired:    true,
@@ -387,10 +441,13 @@ var catalog = Catalog{
 		{
 			errorCode: UnsupportedMediaType,
 			message:   "The server does not support the request body media type",
+			exclusive: true,
+			priority:  4,
 			details: []ReferenceMessageDetail{
 				{
 					issue:            MissingContentType,
 					description:      "A required Content Type header is missing",
+					description_args: 0,
 					locationRequired: true,
 					fieldRequired:    true,
 					valueRequired:    false,
@@ -398,6 +455,7 @@ var catalog = Catalog{
 				{
 					issue:            InvalidContentType,
 					description:      "The specified Content Type header is invalid",
+					description_args: 0,
 					locationRequired: true,
 					fieldRequired:    true,
 					valueRequired:    false,
@@ -407,18 +465,26 @@ var catalog = Catalog{
 		{
 			errorCode: InternalServerError,
 			message:   "A system or application error occurred",
+			exclusive: true,
+			priority:  12,
 		},
 		{
 			errorCode: BadGateway,
 			message:   "The server returned an invalid response",
+			exclusive: true,
+			priority:  11,
 		},
 		{
 			errorCode: ServiceUnavailable,
 			message:   "The server cannot handle the request for a service due to temporary maintenance",
+			exclusive: true,
+			priority:  10,
 		},
 		{
 			errorCode: GatewayTimeout,
 			message:   "The server did not send the response in the expected time",
+			exclusive: true,
+			priority:  9,
 		},
 	},
 }
