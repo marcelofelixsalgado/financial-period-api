@@ -14,13 +14,23 @@ func CreateMonth(w http.ResponseWriter, r *http.Request) {
 	requestBody, err := io.ReadAll(r.Body)
 	if err != nil {
 		log.Printf("Error reading request body: %s", err)
-		w.WriteHeader(http.StatusBadRequest)
+		message := responses.NewResponseMessage()
+		message.AddMessageByIssue(responses.MalformedRequest, "body", "", "")
+		jsonMessage, err := message.GetJsonMessage()
+		if err != nil {
+			message = responses.NewResponseMessage()
+			message.AddMessageByErrorCode(responses.InternalServerError)
+			jsonMessage, _ = message.GetJsonMessage()
+		}
+		w.WriteHeader(message.GetMessage().HttpStatusCode)
+		w.Write(jsonMessage)
 		return
 	}
 
 	var input create.InputCreateMonthDto
 
 	if erro := json.Unmarshal([]byte(requestBody), &input); erro != nil {
+		log.Printf("Error converting input data: %s", err)
 		message := responses.NewResponseMessage()
 		message.AddMessageByIssue(responses.MalformedRequest, "body", "", "")
 		jsonMessage, err := message.GetJsonMessage()
@@ -42,6 +52,7 @@ func CreateMonth(w http.ResponseWriter, r *http.Request) {
 		message := responses.NewResponseMessage()
 		message.AddMessageByErrorCode(responses.InternalServerError)
 		jsonMessage, _ := message.GetJsonMessage()
+		w.WriteHeader(message.GetMessage().HttpStatusCode)
 		w.Write(jsonMessage)
 		return
 	}
@@ -52,6 +63,7 @@ func CreateMonth(w http.ResponseWriter, r *http.Request) {
 		message := responses.NewResponseMessage()
 		message.AddMessageByErrorCode(responses.InternalServerError)
 		jsonMessage, _ := message.GetJsonMessage()
+		w.WriteHeader(message.GetMessage().HttpStatusCode)
 		w.Write(jsonMessage)
 		return
 	}

@@ -17,13 +17,13 @@ type ResponseMessage struct {
 	HttpStatusCode int                     `json:"-"`
 	ErrorCode      string                  `json:"error_code"`
 	Message        string                  `json:"message"`
-	Details        []ResponseMessageDetail `json:"details"`
+	Details        []ResponseMessageDetail `json:"details,omitempty"`
 }
 
 type ResponseMessageDetail struct {
 	Issue       string   `json:"issue"`
 	Description string   `json:"description"`
-	Location    Location `json:"location"`
+	Location    Location `json:"location,omitempty"`
 	Field       string   `json:"field,omitempty"`
 	Value       string   `json:"value,omitempty"`
 }
