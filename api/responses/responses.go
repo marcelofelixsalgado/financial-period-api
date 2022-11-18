@@ -1,6 +1,7 @@
 package responses
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 )
@@ -38,6 +39,15 @@ func (responseMessage *ResponseMessage) GetMessage() ResponseMessage {
 		Message:        responseMessage.Message,
 		Details:        responseMessage.Details,
 	}
+}
+
+func (responseMessage *ResponseMessage) GetJsonMessage() ([]byte, error) {
+	message := responseMessage.GetMessage()
+	messageJSON, err := json.Marshal(message)
+	if err != nil {
+		return nil, fmt.Errorf("error converting struct to response body: %s", err)
+	}
+	return messageJSON, nil
 }
 
 func (responseMessage *ResponseMessage) AddMessageByErrorCode(errorCode ErrorCode) error {

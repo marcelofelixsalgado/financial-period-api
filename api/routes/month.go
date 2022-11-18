@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"log"
+	"marcelofelixsalgado/financial-month-api/api/responses"
 	"marcelofelixsalgado/financial-month-api/pkg/infrastructure/repository"
 	"marcelofelixsalgado/financial-month-api/pkg/usecase/month/create"
 	"net/http"
@@ -20,18 +21,17 @@ func CreateMonth(w http.ResponseWriter, r *http.Request) {
 	var input create.InputCreateMonthDto
 
 	if erro := json.Unmarshal([]byte(requestBody), &input); erro != nil {
-		// w.WriteHeader(http.StatusBadRequest)
-		// if err := messages.AddMessageByIssue(messages.MalformedRequest, "body", "", ""); err != nil {
-		// 	messages.AddMessageByErrorCode(messages.InternalServerError)
-		// 	w.WriteHeader(http.StatusInternalServerError)
-		// }
-		// outputJSON, err := json.Marshal(messages.GetMessages())
-		// if err != nil {
-		// 	messages.AddMessageByErrorCode(messages.InternalServerError)
-		// 	w.WriteHeader(http.StatusInternalServerError)
-		// }
-		// w.Write(outputJSON)
-		// return
+		message := responses.NewResponseMessage()
+		message.AddMessageByIssue(responses.MalformedRequest, "body", "", "")
+		jsonMessage, err := message.GetJsonMessage()
+		if err != nil {
+			message = responses.NewResponseMessage()
+			message.AddMessageByErrorCode(responses.InternalServerError)
+			jsonMessage, _ = message.GetJsonMessage()
+		}
+		w.WriteHeader(message.GetMessage().HttpStatusCode)
+		w.Write(jsonMessage)
+		return
 	}
 
 	repository := repository.NewRepository()
@@ -39,14 +39,20 @@ func CreateMonth(w http.ResponseWriter, r *http.Request) {
 	output, err := create.Execute(input, repository)
 	if err != nil {
 		log.Printf("Error creating the entity: %s", err)
-		w.WriteHeader(http.StatusInternalServerError)
+		message := responses.NewResponseMessage()
+		message.AddMessageByErrorCode(responses.InternalServerError)
+		jsonMessage, _ := message.GetJsonMessage()
+		w.Write(jsonMessage)
 		return
 	}
 
 	outputJSON, err := json.Marshal(output)
 	if err != nil {
 		log.Printf("Error converting struct to response body: %s", err)
-		w.WriteHeader(http.StatusInternalServerError)
+		message := responses.NewResponseMessage()
+		message.AddMessageByErrorCode(responses.InternalServerError)
+		jsonMessage, _ := message.GetJsonMessage()
+		w.Write(jsonMessage)
 		return
 	}
 
