@@ -2,7 +2,7 @@ package routes
 
 import (
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"log"
 	"marcelofelixsalgado/financial-month-api/api/responses"
 	"marcelofelixsalgado/financial-month-api/pkg/infrastructure/repository"
@@ -11,7 +11,7 @@ import (
 )
 
 func CreateMonth(w http.ResponseWriter, r *http.Request) {
-	requestBody, err := ioutil.ReadAll(r.Body)
+	requestBody, err := io.ReadAll(r.Body)
 	if err != nil {
 		log.Printf("Error reading request body: %s", err)
 		w.WriteHeader(http.StatusBadRequest)
