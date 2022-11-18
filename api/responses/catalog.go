@@ -1,22 +1,21 @@
-package messages
+package responses
 
 import "errors"
 
 type ErrorCode string
 
 type Catalog struct {
-	List []ReferenceMessage
+	List []ReferenceResponse
 }
 
-type ReferenceMessage struct {
-	errorCode ErrorCode
-	message   string
-	exclusive bool // Controls if make sense for a message to be showed along with others. Sometimes it doesn't make sense - eg. HTTP 400 with HTTP 500
-	priority  int  // Controls when a message has priority over another, in the case of exclusive
-	details   []ReferenceMessageDetail
+type ReferenceResponse struct {
+	errorCode      ErrorCode
+	message        string
+	httpStatusCode int
+	details        []ReferenceResponseDetail
 }
 
-type ReferenceMessageDetail struct {
+type ReferenceResponseDetail struct {
 	issue            Issue
 	description      string
 	description_args int // Number of argument on description
@@ -84,14 +83,21 @@ const (
 	InvalidContentType             Issue = "INVALID_CONTENT_TYPE"
 )
 
+type Location string
+
+const (
+	Body           Location = "body"
+	Header         Location = "header"
+	QueryParameter Location = "query_parameter"
+)
+
 var catalog = Catalog{
-	List: []ReferenceMessage{
+	List: []ReferenceResponse{
 		{
-			errorCode: InvalidRequestSyntax,
-			message:   "Request is not well-formed, syntactically incorrect, or violates schema",
-			exclusive: false,
-			priority:  2,
-			details: []ReferenceMessageDetail{
+			errorCode:      InvalidRequestSyntax,
+			message:        "Request is not well-formed, syntactically incorrect, or violates schema",
+			httpStatusCode: 400,
+			details: []ReferenceResponseDetail{
 				{
 					issue:            DecimalsNotSupported,
 					description:      "Field value does not support decimals",
@@ -143,11 +149,10 @@ var catalog = Catalog{
 			},
 		},
 		{
-			errorCode: UnprocessableEntity,
-			message:   "The request is semantically incorrect or fails business validation",
-			exclusive: false,
-			priority:  1,
-			details: []ReferenceMessageDetail{
+			errorCode:      UnprocessableEntity,
+			message:        "The request is semantically incorrect or fails business validation",
+			httpStatusCode: 422,
+			details: []ReferenceResponseDetail{
 				{
 					issue:            CannotBeNegative,
 					description:      "Must be greater than or equal to zero",
@@ -335,11 +340,10 @@ var catalog = Catalog{
 			},
 		},
 		{
-			errorCode: InvalidClient,
-			message:   "Client authentication failed",
-			exclusive: true,
-			priority:  8,
-			details: []ReferenceMessageDetail{
+			errorCode:      InvalidClient,
+			message:        "Client authentication failed",
+			httpStatusCode: 401,
+			details: []ReferenceResponseDetail{
 				{
 					issue:            AuthenticationFailure,
 					description:      "Authentication failed due to missing authorization header, or invalid authentication credentials",
@@ -351,11 +355,10 @@ var catalog = Catalog{
 			},
 		},
 		{
-			errorCode: NotAuthorized,
-			message:   "Authorization failed due to insufficient permissions",
-			exclusive: true,
-			priority:  7,
-			details: []ReferenceMessageDetail{
+			errorCode:      NotAuthorized,
+			message:        "Authorization failed due to insufficient permissions",
+			httpStatusCode: 403,
+			details: []ReferenceResponseDetail{
 				{
 					issue:            PermissionDenied,
 					description:      "You do not have permission to access or perform operations on this resource",
@@ -375,11 +378,10 @@ var catalog = Catalog{
 			},
 		},
 		{
-			errorCode: ResourceNotFound,
-			message:   "The specified resource does not found",
-			exclusive: true,
-			priority:  5,
-			details: []ReferenceMessageDetail{
+			errorCode:      ResourceNotFound,
+			message:        "The specified resource does not found",
+			httpStatusCode: 404,
+			details: []ReferenceResponseDetail{
 				{
 					issue:            InvalidResourceId,
 					description:      "Specified resource ID does not exist",
@@ -407,11 +409,10 @@ var catalog = Catalog{
 			},
 		},
 		{
-			errorCode: MethodNotAllowed,
-			message:   "Invalid path and HTTP method combination",
-			exclusive: true,
-			priority:  6,
-			details: []ReferenceMessageDetail{
+			errorCode:      MethodNotAllowed,
+			message:        "Invalid path and HTTP method combination",
+			httpStatusCode: 405,
+			details: []ReferenceResponseDetail{
 				{
 					issue:            MethodNotSupported,
 					description:      "The server does not implement the requested path and HTTP method",
@@ -423,11 +424,10 @@ var catalog = Catalog{
 			},
 		},
 		{
-			errorCode: Conflict,
-			message:   "The request could not be completed due to a conflict with the current state of the target resource",
-			exclusive: true,
-			priority:  3,
-			details: []ReferenceMessageDetail{
+			errorCode:      Conflict,
+			message:        "The request could not be completed due to a conflict with the current state of the target resource",
+			httpStatusCode: 409,
+			details: []ReferenceResponseDetail{
 				{
 					issue:            EntityWithSameKeyAlreadyExists,
 					description:      "An entity with the same already exists",
@@ -439,11 +439,10 @@ var catalog = Catalog{
 			},
 		},
 		{
-			errorCode: UnsupportedMediaType,
-			message:   "The server does not support the request body media type",
-			exclusive: true,
-			priority:  4,
-			details: []ReferenceMessageDetail{
+			errorCode:      UnsupportedMediaType,
+			message:        "The server does not support the request body media type",
+			httpStatusCode: 415,
+			details: []ReferenceResponseDetail{
 				{
 					issue:            MissingContentType,
 					description:      "A required Content Type header is missing",
@@ -463,42 +462,38 @@ var catalog = Catalog{
 			},
 		},
 		{
-			errorCode: InternalServerError,
-			message:   "A system or application error occurred",
-			exclusive: true,
-			priority:  12,
+			errorCode:      InternalServerError,
+			message:        "A system or application error occurred",
+			httpStatusCode: 500,
 		},
 		{
-			errorCode: BadGateway,
-			message:   "The server returned an invalid response",
-			exclusive: true,
-			priority:  11,
+			errorCode:      BadGateway,
+			message:        "The server returned an invalid response",
+			httpStatusCode: 502,
 		},
 		{
-			errorCode: ServiceUnavailable,
-			message:   "The server cannot handle the request for a service due to temporary maintenance",
-			exclusive: true,
-			priority:  10,
+			errorCode:      ServiceUnavailable,
+			message:        "The server cannot handle the request for a service due to temporary maintenance",
+			httpStatusCode: 503,
 		},
 		{
-			errorCode: GatewayTimeout,
-			message:   "The server did not send the response in the expected time",
-			exclusive: true,
-			priority:  9,
+			errorCode:      GatewayTimeout,
+			message:        "The server did not send the response in the expected time",
+			httpStatusCode: 504,
 		},
 	},
 }
 
-func findByErrorCode(errorCode ErrorCode) (ReferenceMessage, error) {
+func findByErrorCode(errorCode ErrorCode) (ReferenceResponse, error) {
 	for _, value := range catalog.List {
 		if value.errorCode == errorCode {
 			return value, nil
 		}
 	}
-	return ReferenceMessage{}, errors.New("error code not found: " + string(errorCode))
+	return ReferenceResponse{}, errors.New("error code not found: " + string(errorCode))
 }
 
-func findByIssue(issue Issue) (ReferenceMessage, ReferenceMessageDetail, error) {
+func findByIssue(issue Issue) (ReferenceResponse, ReferenceResponseDetail, error) {
 	for _, message := range catalog.List {
 		for _, detail := range message.details {
 			if detail.issue == issue {
@@ -506,5 +501,5 @@ func findByIssue(issue Issue) (ReferenceMessage, ReferenceMessageDetail, error) 
 			}
 		}
 	}
-	return ReferenceMessage{}, ReferenceMessageDetail{}, errors.New("issue not found" + string(issue))
+	return ReferenceResponse{}, ReferenceResponseDetail{}, errors.New("issue not found" + string(issue))
 }

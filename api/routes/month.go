@@ -20,9 +20,18 @@ func CreateMonth(w http.ResponseWriter, r *http.Request) {
 	var input create.InputCreateMonthDto
 
 	if erro := json.Unmarshal([]byte(requestBody), &input); erro != nil {
-		log.Printf("Error converting request body to struct: %s", err)
-		w.WriteHeader(http.StatusBadRequest)
-		return
+		// w.WriteHeader(http.StatusBadRequest)
+		// if err := messages.AddMessageByIssue(messages.MalformedRequest, "body", "", ""); err != nil {
+		// 	messages.AddMessageByErrorCode(messages.InternalServerError)
+		// 	w.WriteHeader(http.StatusInternalServerError)
+		// }
+		// outputJSON, err := json.Marshal(messages.GetMessages())
+		// if err != nil {
+		// 	messages.AddMessageByErrorCode(messages.InternalServerError)
+		// 	w.WriteHeader(http.StatusInternalServerError)
+		// }
+		// w.Write(outputJSON)
+		// return
 	}
 
 	repository := repository.NewRepository()
