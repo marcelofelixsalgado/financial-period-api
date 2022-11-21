@@ -22,7 +22,7 @@ func Execute(input InputCreatePeriodDto, repository repository.IRepository) (Out
 	}
 
 	// Creates an entity
-	entity, err := entity.NewPeriod(input.Code, input.Name, input.Year, startDate, endDate)
+	entity, err := entity.Create(input.Code, input.Name, input.Year, startDate, endDate)
 	if err != nil {
 		return outputCreatePeriodDto, err
 	}

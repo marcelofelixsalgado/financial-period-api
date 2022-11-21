@@ -54,16 +54,93 @@ func (model PeriodModel) Create(entity entity.IPeriod) error {
 	return nil
 }
 
-func (model PeriodModel) Update() error {
-	return nil
-}
+// func (model PeriodModel) Update(id string) error {
+// 	model = PeriodModel{
+// 		id:        entity.GetId(),
+// 		code:      entity.GetCode(),
+// 		name:      entity.GetName(),
+// 		year:      entity.GetYear(),
+// 		startDate: entity.GetStartDate(),
+// 		endDate:   entity.GetEndDate(),
+// 		createdAt: entity.GetCreatedAt(),
+// 	}
 
-func (model PeriodModel) Find(id string) (entity.Period, error) {
-	return entity.Period{}, nil
-}
+// 	db, err := connect()
+// 	if err != nil {
+// 		return err
+// 	}
+// 	defer db.Close()
 
-func (model PeriodModel) FindAll() ([]entity.Period, error) {
-	return nil, nil
+// 	statement, err := db.Prepare("insert into periods (id, code, name, year, start_date, end_date, created_at) values (?, ?, ?, ?, ?, ?, ?)")
+// 	if err != nil {
+// 		return err
+// 	}
+// 	defer statement.Close()
+
+// 	_, err = statement.Exec(model.id, model.code, model.name, model.year, model.startDate, model.endDate, model.createdAt)
+// 	if err != nil {
+// 		return err
+// 	}
+
+// 	return nil
+// }
+
+// func (model PeriodModel) Find(id string) (entity.IPeriod, error) {
+// 	model = PeriodModel{
+// 		id: entity.GetId(),
+// 	}
+
+// 	db, err := connect()
+// 	if err != nil {
+// 		return entity.Period{}, err
+// 	}
+// 	defer db.Close()
+
+// 	statement, err := db.Prepare("select id, code, name, year, start_date, end_date, created_at, updated_at from periods where id = ?")
+// 	if err != nil {
+// 		return entity.Period{}, err
+// 	}
+// 	defer statement.Close()
+
+// 	result, err = statement.Exec(id)
+// 	if err != nil {
+// 		return entity.Period{}, err
+// 	}
+
+// 	return entity.Period{}, nil
+// }
+
+func (model PeriodModel) FindAll() ([]entity.IPeriod, error) {
+
+	db, err := connect()
+	if err != nil {
+		return []entity.IPeriod{}, err
+	}
+	defer db.Close()
+
+	rows, err := db.Query("select id, code, name, year, start_date, end_date, created_at, updated_at from periods")
+	if err != nil {
+		return []entity.IPeriod{}, err
+	}
+	defer rows.Close()
+
+	periods := []entity.IPeriod{}
+	for rows.Next() {
+		var periodModel PeriodModel
+
+		if err := rows.Scan(&periodModel.id, &periodModel.code, &periodModel.name, &periodModel.year, &periodModel.startDate, &periodModel.endDate); err != nil {
+			return []entity.IPeriod{}, err
+		}
+
+		period, err := entity.NewPeriod(periodModel.id, periodModel.code, periodModel.name, periodModel.year, periodModel.startDate, periodModel.endDate)
+		if err != nil {
+			return []entity.IPeriod{}, err
+		}
+
+		periods = append(periods, period)
+	}
+
+	return periods, nil
 }
 
 func (model PeriodModel) Delete(id string) error {

@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"container/list"
 	"encoding/json"
 	"io"
 	"log"
@@ -70,4 +71,42 @@ func CreatePeriod(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusCreated)
 	w.Write(outputJSON)
+}
+
+func FindPeriod(w http.ResponseWriter, r *http.Request) {
+}
+
+func ListPeriods(w http.ResponseWriter, r *http.Request) {
+	repository := repository.NewRepository()
+
+	output, err := list.Execute(input, repository)
+	if err != nil {
+		log.Printf("Error creating the entity: %s", err)
+		message := responses.NewResponseMessage()
+		message.AddMessageByErrorCode(responses.InternalServerError)
+		jsonMessage, _ := message.GetJsonMessage()
+		w.WriteHeader(message.GetMessage().HttpStatusCode)
+		w.Write(jsonMessage)
+		return
+	}
+
+	outputJSON, err := json.Marshal(output)
+	if err != nil {
+		log.Printf("Error converting struct to response body: %s", err)
+		message := responses.NewResponseMessage()
+		message.AddMessageByErrorCode(responses.InternalServerError)
+		jsonMessage, _ := message.GetJsonMessage()
+		w.WriteHeader(message.GetMessage().HttpStatusCode)
+		w.Write(jsonMessage)
+		return
+	}
+
+	w.WriteHeader(http.StatusCreated)
+	w.Write(outputJSON)
+}
+
+func UpdatePeriod(w http.ResponseWriter, r *http.Request) {
+}
+
+func DeletePeriod(w http.ResponseWriter, r *http.Request) {
 }

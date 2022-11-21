@@ -7,10 +7,10 @@ import (
 
 type IRepository interface {
 	Create(entity.IPeriod) error
-	Update() error
-	Find(id string) (entity.Period, error)
-	FindAll() ([]entity.Period, error)
-	Delete(id string) error
+	// Update(id string) error
+	// Find(id string) (entity.IPeriod, error)
+	FindAll() ([]entity.IPeriod, error)
+	// Delete(id string) error
 }
 
 type PeriodModel struct {

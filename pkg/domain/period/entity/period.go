@@ -3,8 +3,6 @@ package entity
 import (
 	"errors"
 	"time"
-
-	"github.com/google/uuid"
 )
 
 type IPeriod interface {
@@ -98,9 +96,9 @@ func (period Period) SetUpdatedAt(updatedAt time.Time) {
 	validate(period)
 }
 
-func NewPeriod(code string, name string, year int, startDate time.Time, endDate time.Time) (IPeriod, error) {
+func NewPeriod(id string, code string, name string, year int, startDate time.Time, endDate time.Time) (IPeriod, error) {
 	period := Period{
-		id:        uuid.NewString(),
+		id:        id,
 		code:      code,
 		name:      name,
 		year:      year,
