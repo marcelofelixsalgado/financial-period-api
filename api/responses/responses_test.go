@@ -63,9 +63,7 @@ func TestAddMessageSuccess(t *testing.T) {
 	}
 
 	for index, testCase := range testCases {
-		// err := messages.AddMessageByIssue(testCase.issueParameter, testCase.locationParameter, testCase.fieldParameter, testCase.valueParameter)
-		responseMessage := responses.NewResponseMessage()
-		err := responseMessage.AddMessageByIssue(testCase.issueParameter, testCase.locationParameter, testCase.fieldParameter, testCase.valueParameter)
+		err := responses.NewResponseMessage().AddMessageByIssue(testCase.issueParameter, testCase.locationParameter, testCase.fieldParameter, testCase.valueParameter)
 		if err == nil {
 			err = errors.New("")
 		}
@@ -94,8 +92,6 @@ func TestGetMessages(t *testing.T) {
 
 	actualMessage := responses.NewResponseMessage()
 	actualMessage.AddMessageByIssue(responses.DecimalsNotSupported, responses.Body, "field3", "value3")
-
-	fmt.Println(actualMessage.GetMessage())
 
 	if !reflect.DeepEqual(actualMessage.GetMessage(), expectedMessage) {
 		t.Errorf("Expected message: [%+v]  is not equal Returned Message: [%+v]", expectedMessage, actualMessage)
