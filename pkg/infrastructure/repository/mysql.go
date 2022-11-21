@@ -118,7 +118,7 @@ func (model PeriodModel) FindAll() ([]entity.IPeriod, error) {
 	}
 	defer db.Close()
 
-	rows, err := db.Query("select id, code, name, year, start_date, end_date, created_at, updated_at from periods")
+	rows, err := db.Query("select id, code, name, year, start_date, end_date from periods")
 	if err != nil {
 		return []entity.IPeriod{}, err
 	}

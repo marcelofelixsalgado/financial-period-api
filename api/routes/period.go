@@ -1,13 +1,13 @@
 package routes
 
 import (
-	"container/list"
 	"encoding/json"
 	"io"
 	"log"
 	"marcelofelixsalgado/financial-period-api/api/responses"
 	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/period/create"
+	"marcelofelixsalgado/financial-period-api/pkg/usecase/period/list"
 	"net/http"
 )
 
@@ -77,11 +77,13 @@ func FindPeriod(w http.ResponseWriter, r *http.Request) {
 }
 
 func ListPeriods(w http.ResponseWriter, r *http.Request) {
+	var input list.InputListPeriodDto
+
 	repository := repository.NewRepository()
 
 	output, err := list.Execute(input, repository)
 	if err != nil {
-		log.Printf("Error creating the entity: %s", err)
+		log.Printf("Error listing the entity: %s", err)
 		message := responses.NewResponseMessage()
 		message.AddMessageByErrorCode(responses.InternalServerError)
 		jsonMessage, _ := message.GetJsonMessage()
@@ -90,7 +92,7 @@ func ListPeriods(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	outputJSON, err := json.Marshal(output)
+	outputJSON, err := json.Marshal(output.Periods)
 	if err != nil {
 		log.Printf("Error converting struct to response body: %s", err)
 		message := responses.NewResponseMessage()
@@ -101,7 +103,7 @@ func ListPeriods(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusCreated)
+	w.WriteHeader(http.StatusOK)
 	w.Write(outputJSON)
 }
 

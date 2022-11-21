@@ -17,9 +17,10 @@ func setupRoutes(router *mux.Router) {
 	// POST
 	router.HandleFunc(basepath, routes.CreatePeriod).Methods(http.MethodPost)
 
-	// // GET
-	// router.HandleFunc(path, routes.GetBalances).Methods(http.MethodGet)
+	// GET
+	router.HandleFunc(basepath, routes.ListPeriods).Methods(http.MethodGet)
 
+	// HEALTH
 	router.HandleFunc(basepath+"/health", routes.Health).Methods(http.MethodGet)
 }
 
