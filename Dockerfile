@@ -12,8 +12,8 @@ COPY *.go ./
 COPY pkg/ ./pkg/
 COPY api/ ./api/
 
-RUN go build -o /financial-month-api
+RUN go build -o /financial-period-api
 
 EXPOSE 8081
 
-CMD [ "/financial-month-api" ]
+CMD [ "/financial-period-api" ]

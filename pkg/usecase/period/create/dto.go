@@ -2,7 +2,7 @@ package create
 
 import "time"
 
-type InputCreateMonthDto struct {
+type InputCreatePeriodDto struct {
 	Code      string `json:"code"`
 	Name      string `json:"name"`
 	Year      int    `json:"year"`
@@ -10,7 +10,7 @@ type InputCreateMonthDto struct {
 	EndDate   string `json:"end_date"`
 }
 
-type OutputCreateMonthDto struct {
+type OutputCreatePeriodDto struct {
 	Id        string    `json:"id"`
 	Code      string    `json:"code"`
 	Name      string    `json:"name"`

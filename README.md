@@ -1,2 +1,2 @@
-# financial-month-api
-API that records monthly groupings of financial information
+# financial-period-api
+API that records time groupings of financial information

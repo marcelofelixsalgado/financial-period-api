@@ -1,7 +1,7 @@
 package entity_test
 
 import (
-	"marcelofelixsalgado/financial-month-api/pkg/domain/month/entity"
+	"marcelofelixsalgado/financial-period-api/pkg/domain/period/entity"
 	"testing"
 	"time"
 )
@@ -15,7 +15,7 @@ type testCase struct {
 	expected  string
 }
 
-func TestNewMonthSuccess(t *testing.T) {
+func TestNewPeriodSuccess(t *testing.T) {
 
 	testCases := []testCase{
 		{
@@ -28,7 +28,7 @@ func TestNewMonthSuccess(t *testing.T) {
 	}
 
 	for _, testCase := range testCases {
-		received, err := entity.NewMonth(testCase.code, testCase.name, testCase.year, testCase.startDate, testCase.endDate)
+		received, err := entity.NewPeriod(testCase.code, testCase.name, testCase.year, testCase.startDate, testCase.endDate)
 		if err != nil {
 			t.Errorf("Should not return an error: %s", err)
 		}
@@ -53,7 +53,7 @@ func TestNewMonthSuccess(t *testing.T) {
 	}
 }
 
-func TestNewMonthInvalidCode(t *testing.T) {
+func TestNewPeriodInvalidCode(t *testing.T) {
 	testCase := testCase{
 		code:      "",
 		name:      "November",
@@ -62,13 +62,13 @@ func TestNewMonthInvalidCode(t *testing.T) {
 		endDate:   time.Now(),
 		expected:  "code is required",
 	}
-	_, err := entity.NewMonth(testCase.code, testCase.name, testCase.year, testCase.startDate, testCase.endDate)
+	_, err := entity.NewPeriod(testCase.code, testCase.name, testCase.year, testCase.startDate, testCase.endDate)
 	if err.Error() != testCase.expected {
 		t.Errorf("Error expected: %s - Error received: %s", testCase.expected, err)
 	}
 }
 
-func TestNewMonthInvalidName(t *testing.T) {
+func TestNewPeriodInvalidName(t *testing.T) {
 	testCase := testCase{
 		code:      "11",
 		name:      "",
@@ -77,14 +77,14 @@ func TestNewMonthInvalidName(t *testing.T) {
 		endDate:   time.Now(),
 		expected:  "name is required",
 	}
-	_, err := entity.NewMonth(testCase.code, testCase.name, testCase.year, testCase.startDate, testCase.endDate)
+	_, err := entity.NewPeriod(testCase.code, testCase.name, testCase.year, testCase.startDate, testCase.endDate)
 
 	if err.Error() != testCase.expected {
 		t.Errorf("Error expected: %s - Error received: %s", testCase.expected, err)
 	}
 }
 
-func TestNewMonthInvalidYear(t *testing.T) {
+func TestNewPeriodInvalidYear(t *testing.T) {
 	testCase := testCase{
 		code:      "11",
 		name:      "Novembro",
@@ -93,13 +93,13 @@ func TestNewMonthInvalidYear(t *testing.T) {
 		endDate:   time.Now(),
 		expected:  "year is required",
 	}
-	_, err := entity.NewMonth(testCase.code, testCase.name, testCase.year, testCase.startDate, testCase.endDate)
+	_, err := entity.NewPeriod(testCase.code, testCase.name, testCase.year, testCase.startDate, testCase.endDate)
 	if err.Error() != testCase.expected {
 		t.Errorf("Error expected: %s - Error received: %s", testCase.expected, err)
 	}
 }
 
-func TestNewMonthInvalidStartDate(t *testing.T) {
+func TestNewPeriodInvalidStartDate(t *testing.T) {
 	testCase := testCase{
 		code:     "11",
 		name:     "November",
@@ -107,13 +107,13 @@ func TestNewMonthInvalidStartDate(t *testing.T) {
 		endDate:  time.Now(),
 		expected: "start date is required",
 	}
-	_, err := entity.NewMonth(testCase.code, testCase.name, testCase.year, testCase.startDate, testCase.endDate)
+	_, err := entity.NewPeriod(testCase.code, testCase.name, testCase.year, testCase.startDate, testCase.endDate)
 	if err.Error() != testCase.expected {
 		t.Errorf("Error expected: %s - Error received: %s", testCase.expected, err)
 	}
 }
 
-func TestNewMonthInvalidEndDate(t *testing.T) {
+func TestNewPeriodInvalidEndDate(t *testing.T) {
 	testCase := testCase{
 		code:      "11",
 		name:      "November",
@@ -121,13 +121,13 @@ func TestNewMonthInvalidEndDate(t *testing.T) {
 		startDate: time.Now(),
 		expected:  "end date is required",
 	}
-	_, err := entity.NewMonth(testCase.code, testCase.name, testCase.year, testCase.startDate, testCase.endDate)
+	_, err := entity.NewPeriod(testCase.code, testCase.name, testCase.year, testCase.startDate, testCase.endDate)
 	if err.Error() != testCase.expected {
 		t.Errorf("Error expected: %s - Error received: %s", testCase.expected, err)
 	}
 }
 
-func TestNewMonthEqualDates(t *testing.T) {
+func TestNewPeriodEqualDates(t *testing.T) {
 	sameDate := time.Now()
 	testCase := testCase{
 		code:      "11",
@@ -137,13 +137,13 @@ func TestNewMonthEqualDates(t *testing.T) {
 		endDate:   sameDate,
 		expected:  "start date must be greater than the end date",
 	}
-	_, err := entity.NewMonth(testCase.code, testCase.name, testCase.year, testCase.startDate, testCase.endDate)
+	_, err := entity.NewPeriod(testCase.code, testCase.name, testCase.year, testCase.startDate, testCase.endDate)
 	if err.Error() != testCase.expected {
 		t.Errorf("Error expected: %s - Error received: %s", testCase.expected, err)
 	}
 }
 
-func TestNewMonthInvalidDates(t *testing.T) {
+func TestNewPeriodInvalidDates(t *testing.T) {
 	sameDate := time.Now()
 	testCase := testCase{
 		code:      "11",
@@ -153,7 +153,7 @@ func TestNewMonthInvalidDates(t *testing.T) {
 		endDate:   sameDate,
 		expected:  "start date must be greater than the end date",
 	}
-	_, err := entity.NewMonth(testCase.code, testCase.name, testCase.year, testCase.startDate, testCase.endDate)
+	_, err := entity.NewPeriod(testCase.code, testCase.name, testCase.year, testCase.startDate, testCase.endDate)
 	if err.Error() != testCase.expected {
 		t.Errorf("Error expected: %s - Error received: %s", testCase.expected, err)
 	}

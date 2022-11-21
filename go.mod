@@ -1,4 +1,4 @@
-module marcelofelixsalgado/financial-month-api
+module marcelofelixsalgado/financial-period-api
 
 go 1.19
 

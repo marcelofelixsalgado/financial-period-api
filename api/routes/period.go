@@ -4,13 +4,13 @@ import (
 	"encoding/json"
 	"io"
 	"log"
-	"marcelofelixsalgado/financial-month-api/api/responses"
-	"marcelofelixsalgado/financial-month-api/pkg/infrastructure/repository"
-	"marcelofelixsalgado/financial-month-api/pkg/usecase/month/create"
+	"marcelofelixsalgado/financial-period-api/api/responses"
+	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository"
+	"marcelofelixsalgado/financial-period-api/pkg/usecase/period/create"
 	"net/http"
 )
 
-func CreateMonth(w http.ResponseWriter, r *http.Request) {
+func CreatePeriod(w http.ResponseWriter, r *http.Request) {
 	requestBody, err := io.ReadAll(r.Body)
 	if err != nil {
 		log.Printf("Error reading request body: %s", err)
@@ -27,7 +27,7 @@ func CreateMonth(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var input create.InputCreateMonthDto
+	var input create.InputCreatePeriodDto
 
 	if erro := json.Unmarshal([]byte(requestBody), &input); erro != nil {
 		log.Printf("Error converting input data: %s", err)

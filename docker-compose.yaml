@@ -6,8 +6,8 @@ services:
     build:
       dockerfile: Dockerfile
       context: .
-    image: marcelofelixsalgado/financial-month-api
-    container_name: financial-month-api
+    image: marcelofelixsalgado/financial-period-api
+    container_name: financial-period-api
     ports: 
       - "8081:8081"
     networks: 

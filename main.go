@@ -4,18 +4,18 @@ import (
 	"fmt"
 	"log"
 
-	"marcelofelixsalgado/financial-month-api/api/routes"
+	"marcelofelixsalgado/financial-period-api/api/routes"
 	"net/http"
 
 	"github.com/gorilla/mux"
 )
 
 var port = ":8081"
-var basepath = "/v1/months"
+var basepath = "/v1/periods"
 
 func setupRoutes(router *mux.Router) {
 	// POST
-	router.HandleFunc(basepath, routes.CreateMonth).Methods(http.MethodPost)
+	router.HandleFunc(basepath, routes.CreatePeriod).Methods(http.MethodPost)
 
 	// // GET
 	// router.HandleFunc(path, routes.GetBalances).Methods(http.MethodGet)

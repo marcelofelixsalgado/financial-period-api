@@ -1,19 +1,19 @@
 package repository
 
 import (
-	"marcelofelixsalgado/financial-month-api/pkg/domain/month/entity"
+	"marcelofelixsalgado/financial-period-api/pkg/domain/period/entity"
 	"time"
 )
 
 type IRepository interface {
-	Create(entity.IMonth) error
+	Create(entity.IPeriod) error
 	Update() error
-	Find(id string) (entity.Month, error)
-	FindAll() ([]entity.Month, error)
+	Find(id string) (entity.Period, error)
+	FindAll() ([]entity.Period, error)
 	Delete(id string) error
 }
 
-type MonthModel struct {
+type PeriodModel struct {
 	id        string
 	code      string
 	name      string

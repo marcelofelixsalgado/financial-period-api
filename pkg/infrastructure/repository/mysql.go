@@ -2,7 +2,7 @@ package repository
 
 import (
 	"database/sql"
-	"marcelofelixsalgado/financial-month-api/pkg/domain/month/entity"
+	"marcelofelixsalgado/financial-period-api/pkg/domain/period/entity"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -22,9 +22,9 @@ func connect() (*sql.DB, error) {
 	return db, nil
 }
 
-func (model MonthModel) Create(entity entity.IMonth) error {
+func (model PeriodModel) Create(entity entity.IPeriod) error {
 
-	model = MonthModel{
+	model = PeriodModel{
 		id:        entity.GetId(),
 		code:      entity.GetCode(),
 		name:      entity.GetName(),
@@ -40,7 +40,7 @@ func (model MonthModel) Create(entity entity.IMonth) error {
 	}
 	defer db.Close()
 
-	statement, err := db.Prepare("insert into months (id, code, name, year, start_date, end_date, created_at) values (?, ?, ?, ?, ?, ?, ?)")
+	statement, err := db.Prepare("insert into periods (id, code, name, year, start_date, end_date, created_at) values (?, ?, ?, ?, ?, ?, ?)")
 	if err != nil {
 		return err
 	}
@@ -54,22 +54,22 @@ func (model MonthModel) Create(entity entity.IMonth) error {
 	return nil
 }
 
-func (model MonthModel) Update() error {
+func (model PeriodModel) Update() error {
 	return nil
 }
 
-func (model MonthModel) Find(id string) (entity.Month, error) {
-	return entity.Month{}, nil
+func (model PeriodModel) Find(id string) (entity.Period, error) {
+	return entity.Period{}, nil
 }
 
-func (model MonthModel) FindAll() ([]entity.Month, error) {
+func (model PeriodModel) FindAll() ([]entity.Period, error) {
 	return nil, nil
 }
 
-func (model MonthModel) Delete(id string) error {
+func (model PeriodModel) Delete(id string) error {
 	return nil
 }
 
 func NewRepository() IRepository {
-	return MonthModel{}
+	return PeriodModel{}
 }

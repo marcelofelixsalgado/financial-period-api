@@ -3,7 +3,7 @@ package responses_test
 import (
 	"errors"
 	"fmt"
-	"marcelofelixsalgado/financial-month-api/api/responses"
+	"marcelofelixsalgado/financial-period-api/api/responses"
 	"reflect"
 	"testing"
 )
