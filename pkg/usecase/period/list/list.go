@@ -2,6 +2,7 @@ package list
 
 import (
 	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository"
+	"time"
 )
 
 func Execute(input InputListPeriodDto, repository repository.IRepository) (OutputListPeriodDto, error) {
@@ -20,8 +21,8 @@ func Execute(input InputListPeriodDto, repository repository.IRepository) (Outpu
 			Code:      item.GetCode(),
 			Name:      item.GetName(),
 			Year:      item.GetYear(),
-			StartDate: item.GetStartDate().String(),
-			EndDate:   item.GetEndDate().String(),
+			StartDate: item.GetStartDate().Format(time.RFC3339),
+			EndDate:   item.GetEndDate().Format(time.RFC3339),
 		}
 
 		outputListPeriodDto.Periods = append(outputListPeriodDto.Periods, period)

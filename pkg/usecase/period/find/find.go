@@ -1,6 +1,9 @@
 package find
 
-import "marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository"
+import (
+	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository"
+	"time"
+)
 
 func Execute(input InputFindPeriodDto, repository repository.IRepository) (OutputFindPeriodDto, error) {
 
@@ -14,13 +17,13 @@ func Execute(input InputFindPeriodDto, repository repository.IRepository) (Outpu
 		Code:      period.GetCode(),
 		Name:      period.GetName(),
 		Year:      period.GetYear(),
-		StartDate: period.GetStartDate().String(),
-		EndDate:   period.GetEndDate().String(),
-		CreatedAt: period.GetCreatedAt().String(),
+		StartDate: period.GetStartDate().Format(time.RFC3339),
+		EndDate:   period.GetEndDate().Format(time.RFC3339),
+		CreatedAt: period.GetCreatedAt().Format(time.RFC3339),
 	}
 
 	if !period.GetUpdatedAt().IsZero() {
-		outputFindPeriodDto.UpdatedAt = period.GetUpdatedAt().String()
+		outputFindPeriodDto.UpdatedAt = period.GetUpdatedAt().Format(time.RFC3339)
 	}
 
 	return outputFindPeriodDto, nil

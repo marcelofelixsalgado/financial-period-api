@@ -7,7 +7,7 @@ import (
 
 type IRepository interface {
 	Create(entity.IPeriod) error
-	// Update(id string) error
+	Update(entity.IPeriod) error
 	FindById(id string) (entity.IPeriod, error)
 	FindAll() ([]entity.IPeriod, error)
 	// Delete(id string) error

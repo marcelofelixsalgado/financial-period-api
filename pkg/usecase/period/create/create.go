@@ -38,9 +38,9 @@ func Execute(input InputCreatePeriodDto, repository repository.IRepository) (Out
 		Code:      entity.GetCode(),
 		Name:      entity.GetName(),
 		Year:      entity.GetYear(),
-		StartDate: entity.GetStartDate().String(),
-		EndDate:   entity.GetEndDate().String(),
-		CreatedAt: entity.GetCreatedAt(),
+		StartDate: entity.GetStartDate().Format(time.RFC3339),
+		EndDate:   entity.GetEndDate().Format(time.RFC3339),
+		CreatedAt: entity.GetCreatedAt().Format(time.RFC3339),
 	}
 
 	return outputCreatePeriodDto, nil

@@ -7,6 +7,10 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
+func NewRepository() IRepository {
+	return PeriodModel{}
+}
+
 func connect() (*sql.DB, error) {
 	connectionUrl := "root:root@tcp(financial-db:3306)/financial_db?charset=utf8&parseTime=True&loc=Local"
 	db, err := sql.Open("mysql", connectionUrl)
@@ -54,37 +58,6 @@ func (model PeriodModel) Create(entity entity.IPeriod) error {
 
 	return nil
 }
-
-// func (model PeriodModel) Update(id string) error {
-// 	model = PeriodModel{
-// 		id:        entity.GetId(),
-// 		code:      entity.GetCode(),
-// 		name:      entity.GetName(),
-// 		year:      entity.GetYear(),
-// 		startDate: entity.GetStartDate(),
-// 		endDate:   entity.GetEndDate(),
-// 		createdAt: entity.GetCreatedAt(),
-// 	}
-
-// 	db, err := connect()
-// 	if err != nil {
-// 		return err
-// 	}
-// 	defer db.Close()
-
-// 	statement, err := db.Prepare("insert into periods (id, code, name, year, start_date, end_date, created_at) values (?, ?, ?, ?, ?, ?, ?)")
-// 	if err != nil {
-// 		return err
-// 	}
-// 	defer statement.Close()
-
-// 	_, err = statement.Exec(model.id, model.code, model.name, model.year, model.startDate, model.endDate, model.createdAt)
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	return nil
-// }
 
 func (model PeriodModel) FindById(id string) (entity.IPeriod, error) {
 	db, err := connect()
@@ -151,6 +124,34 @@ func (model PeriodModel) Delete(id string) error {
 	return nil
 }
 
-func NewRepository() IRepository {
-	return PeriodModel{}
+func (model PeriodModel) Update(entity entity.IPeriod) error {
+
+	model = PeriodModel{
+		id:        entity.GetId(),
+		code:      entity.GetCode(),
+		name:      entity.GetName(),
+		year:      entity.GetYear(),
+		startDate: entity.GetStartDate(),
+		endDate:   entity.GetEndDate(),
+		updatedAt: entity.GetUpdatedAt(),
+	}
+
+	db, err := connect()
+	if err != nil {
+		return err
+	}
+	defer db.Close()
+
+	statement, err := db.Prepare("update periods set code = ?, name = ?, year = ?, start_date = ?, end_date = ?, updated_at = ? where id = ?")
+	if err != nil {
+		return err
+	}
+	defer statement.Close()
+
+	_, err = statement.Exec(model.code, model.name, model.year, model.startDate, model.endDate, model.updatedAt, model.id)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
