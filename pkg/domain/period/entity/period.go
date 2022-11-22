@@ -96,7 +96,7 @@ func (period Period) SetUpdatedAt(updatedAt time.Time) {
 	validate(period)
 }
 
-func NewPeriod(id string, code string, name string, year int, startDate time.Time, endDate time.Time) (IPeriod, error) {
+func NewPeriod(id string, code string, name string, year int, startDate time.Time, endDate time.Time, createdAt time.Time, updatedAt time.Time) (IPeriod, error) {
 	period := Period{
 		id:        id,
 		code:      code,
@@ -104,7 +104,8 @@ func NewPeriod(id string, code string, name string, year int, startDate time.Tim
 		year:      year,
 		startDate: startDate,
 		endDate:   endDate,
-		createdAt: time.Now(),
+		createdAt: createdAt,
+		updatedAt: updatedAt,
 	}
 	if err := validate(period); err != nil {
 		return nil, err

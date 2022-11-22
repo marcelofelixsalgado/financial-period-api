@@ -7,8 +7,11 @@ import (
 	"marcelofelixsalgado/financial-period-api/api/responses"
 	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/period/create"
+	"marcelofelixsalgado/financial-period-api/pkg/usecase/period/find"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/period/list"
 	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
 func CreatePeriod(w http.ResponseWriter, r *http.Request) {
@@ -73,9 +76,6 @@ func CreatePeriod(w http.ResponseWriter, r *http.Request) {
 	w.Write(outputJSON)
 }
 
-func FindPeriod(w http.ResponseWriter, r *http.Request) {
-}
-
 func ListPeriods(w http.ResponseWriter, r *http.Request) {
 	var input list.InputListPeriodDto
 
@@ -93,6 +93,42 @@ func ListPeriods(w http.ResponseWriter, r *http.Request) {
 	}
 
 	outputJSON, err := json.Marshal(output.Periods)
+	if err != nil {
+		log.Printf("Error converting struct to response body: %s", err)
+		message := responses.NewResponseMessage()
+		message.AddMessageByErrorCode(responses.InternalServerError)
+		jsonMessage, _ := message.GetJsonMessage()
+		w.WriteHeader(message.GetMessage().HttpStatusCode)
+		w.Write(jsonMessage)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write(outputJSON)
+}
+
+func GetPeriodById(w http.ResponseWriter, r *http.Request) {
+	parameters := mux.Vars(r)
+	Id := parameters["id"]
+
+	input := find.InputFindPeriodDto{
+		Id: Id,
+	}
+
+	repository := repository.NewRepository()
+
+	output, err := find.Execute(input, repository)
+	if err != nil {
+		log.Printf("Error finding the entity: %s", err)
+		message := responses.NewResponseMessage()
+		message.AddMessageByErrorCode(responses.InternalServerError)
+		jsonMessage, _ := message.GetJsonMessage()
+		w.WriteHeader(message.GetMessage().HttpStatusCode)
+		w.Write(jsonMessage)
+		return
+	}
+
+	outputJSON, err := json.Marshal(output)
 	if err != nil {
 		log.Printf("Error converting struct to response body: %s", err)
 		message := responses.NewResponseMessage()
