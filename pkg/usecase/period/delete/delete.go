@@ -1,29 +1,30 @@
 package delete
 
-// func Execute(input InputDeletePeriodDto, repository repository.IRepository) (OutputDeletePeriodDto, error) {
+import (
+	"marcelofelixsalgado/financial-period-api/pkg/domain/period/entity"
+	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository"
+)
 
-// 	var outputDeletePeriodDto OutputDeletePeriodDto
+func Execute(input InputDeletePeriodDto, repository repository.IRepository) (OutputDeletePeriodDto, error) {
 
-// 	entity, err := entity.NewPeriod(input.Code, input.Name, input.Year, startDate, endDate)
-// 	if err != nil {
-// 		return outputCreatePeriodDto, err
-// 	}
+	var outputDeletePeriodDto OutputDeletePeriodDto
 
-// 	// Persists in dabatase
-// 	err = repository.Create(entity)
-// 	if err != nil {
-// 		return outputCreatePeriodDto, err
-// 	}
+	// Find the entity before update
+	findEntity, err := repository.FindById(input.Id)
+	if err != nil {
+		return outputDeletePeriodDto, err
+	}
 
-// 	outputCreatePeriodDto = OutputCreatePeriodDto{
-// 		Id:        entity.GetId(),
-// 		Code:      entity.GetCode(),
-// 		Name:      entity.GetName(),
-// 		Year:      entity.GetYear(),
-// 		StartDate: entity.GetStartDate().String(),
-// 		EndDate:   entity.GetEndDate().String(),
-// 		CreatedAt: entity.GetCreatedAt(),
-// 	}
+	_, err = entity.NewPeriod(input.Id, findEntity.GetCode(), findEntity.GetName(), findEntity.GetYear(), findEntity.GetStartDate(), findEntity.GetEndDate(), findEntity.GetCreatedAt(), findEntity.GetUpdatedAt())
+	if err != nil {
+		return outputDeletePeriodDto, err
+	}
 
-// 	return outputCreatePeriodDto, nil
-// }
+	// Apply in dabatase
+	err = repository.Delete(input.Id)
+	if err != nil {
+		return outputDeletePeriodDto, err
+	}
+
+	return outputDeletePeriodDto, nil
+}

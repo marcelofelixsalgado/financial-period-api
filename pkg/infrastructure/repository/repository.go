@@ -10,7 +10,7 @@ type IRepository interface {
 	Update(entity.IPeriod) error
 	FindById(id string) (entity.IPeriod, error)
 	FindAll() ([]entity.IPeriod, error)
-	// Delete(id string) error
+	Delete(id string) error
 }
 
 type PeriodModel struct {

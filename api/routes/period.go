@@ -7,6 +7,7 @@ import (
 	"marcelofelixsalgado/financial-period-api/api/responses"
 	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/period/create"
+	"marcelofelixsalgado/financial-period-api/pkg/usecase/period/delete"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/period/find"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/period/list"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/period/update"
@@ -211,4 +212,25 @@ func UpdatePeriod(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeletePeriod(w http.ResponseWriter, r *http.Request) {
+	parameters := mux.Vars(r)
+	Id := parameters["id"]
+
+	var input = delete.InputDeletePeriodDto{
+		Id: Id,
+	}
+
+	repository := repository.NewRepository()
+
+	_, err := delete.Execute(input, repository)
+	if err != nil {
+		log.Printf("Error removing the entity: %s", err)
+		message := responses.NewResponseMessage()
+		message.AddMessageByErrorCode(responses.InternalServerError)
+		jsonMessage, _ := message.GetJsonMessage()
+		w.WriteHeader(message.GetMessage().HttpStatusCode)
+		w.Write(jsonMessage)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
 }
