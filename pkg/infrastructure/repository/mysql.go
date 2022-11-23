@@ -28,16 +28,15 @@ func connect() (*sql.DB, error) {
 
 func (model PeriodModel) Create(entity entity.IPeriod) error {
 
-	// model = PeriodModel{
-	// 	id:        entity.GetId(),
-	// 	code:      entity.GetCode(),
-	// 	name:      entity.GetName(),
-	// 	year:      entity.GetYear(),
-	// 	startDate: entity.GetStartDate(),
-	// 	endDate:   entity.GetEndDate(),
-	// 	createdAt: entity.GetCreatedAt(),
-	// 	updatedAt: entity.GetUpdatedAt(),
-	// }
+	model = PeriodModel{
+		id:        entity.GetId(),
+		code:      entity.GetCode(),
+		name:      entity.GetName(),
+		year:      entity.GetYear(),
+		startDate: entity.GetStartDate(),
+		endDate:   entity.GetEndDate(),
+		createdAt: entity.GetCreatedAt(),
+	}
 
 	db, err := connect()
 	if err != nil {
@@ -121,6 +120,16 @@ func (model PeriodModel) FindAll() ([]entity.IPeriod, error) {
 }
 
 func (model PeriodModel) Update(entity entity.IPeriod) error {
+
+	model = PeriodModel{
+		id:        entity.GetId(),
+		code:      entity.GetCode(),
+		name:      entity.GetName(),
+		year:      entity.GetYear(),
+		startDate: entity.GetStartDate(),
+		endDate:   entity.GetEndDate(),
+		updatedAt: entity.GetUpdatedAt(),
+	}
 
 	db, err := connect()
 	if err != nil {

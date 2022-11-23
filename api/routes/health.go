@@ -1,25 +1,17 @@
 package routes
 
 import (
-	"encoding/json"
-	"log"
+	"marcelofelixsalgado/financial-period-api/api/controllers"
 	"net/http"
 )
 
-type message struct {
-	Status string `json:"status"`
-}
+var healthBasepath = "/v1/health"
 
-func health(w http.ResponseWriter, r *http.Request) {
-
-	successMessage := message{
-		Status: "Ok",
-	}
-
-	messageJSON, err := json.Marshal(successMessage)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	w.Write([]byte(messageJSON))
+var healthRoutes = []Route{
+	{
+		URI:                    healthBasepath,
+		Method:                 http.MethodGet,
+		Function:               controllers.Health,
+		RequiresAuthentication: false,
+	},
 }

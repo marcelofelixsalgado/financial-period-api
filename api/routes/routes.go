@@ -6,29 +6,26 @@ import (
 	"github.com/gorilla/mux"
 )
 
-var basepath = "/v1/periods"
+type Route struct {
+	URI                    string
+	Method                 string
+	Function               func(w http.ResponseWriter, r *http.Request)
+	RequiresAuthentication bool
+}
 
 func SetupRoutes() *mux.Router {
 	router := mux.NewRouter()
 	router.Use(responseFormatMiddleware)
 
-	// POST
-	router.HandleFunc(basepath, createPeriod).Methods(http.MethodPost)
+	// period routes
+	for _, route := range periodRoutes {
+		router.HandleFunc(route.URI, route.Function).Methods(route.Method)
+	}
 
-	// GET
-	router.HandleFunc(basepath, listPeriods).Methods(http.MethodGet)
-
-	// GET
-	router.HandleFunc(basepath+"/{id}", getPeriodById).Methods(http.MethodGet)
-
-	// PUT
-	router.HandleFunc(basepath+"/{id}", updatePeriod).Methods(http.MethodPut)
-
-	// DELETE
-	router.HandleFunc(basepath+"/{id}", deletePeriod).Methods(http.MethodDelete)
-
-	// HEALTH
-	router.HandleFunc(basepath+"/health", health).Methods(http.MethodGet)
+	// health routes
+	for _, route := range healthRoutes {
+		router.HandleFunc(route.URI, route.Function).Methods(route.Method)
+	}
 
 	return router
 }
