@@ -2,34 +2,18 @@ package repository
 
 import (
 	"database/sql"
-	"marcelofelixsalgado/financial-period-api/configs"
 	"marcelofelixsalgado/financial-period-api/pkg/domain/period/entity"
 
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func NewRepository() IRepository {
-	return PeriodModel{}
+func NewRepository(db *sql.DB) *PeriodRepository {
+	return &PeriodRepository{db}
 }
 
-func connect() (*sql.DB, error) {
-	db, err := sql.Open("mysql", configs.DatabaseConnectionString)
-	if err != nil {
-		return nil, err
-	}
+func (repository PeriodRepository) Create(entity entity.IPeriod) error {
 
-	// Checks if connection is open
-	if err = db.Ping(); err != nil {
-		db.Close()
-		return nil, err
-	}
-
-	return db, nil
-}
-
-func (model PeriodModel) Create(entity entity.IPeriod) error {
-
-	model = PeriodModel{
+	model := PeriodModel{
 		id:        entity.GetId(),
 		code:      entity.GetCode(),
 		name:      entity.GetName(),
@@ -39,13 +23,7 @@ func (model PeriodModel) Create(entity entity.IPeriod) error {
 		createdAt: entity.GetCreatedAt(),
 	}
 
-	db, err := connect()
-	if err != nil {
-		return err
-	}
-	defer db.Close()
-
-	statement, err := db.Prepare("insert into periods (id, code, name, year, start_date, end_date, created_at) values (?, ?, ?, ?, ?, ?, ?)")
+	statement, err := repository.db.Prepare("insert into periods (id, code, name, year, start_date, end_date, created_at) values (?, ?, ?, ?, ?, ?, ?)")
 	if err != nil {
 		return err
 	}
@@ -59,14 +37,9 @@ func (model PeriodModel) Create(entity entity.IPeriod) error {
 	return nil
 }
 
-func (model PeriodModel) FindById(id string) (entity.IPeriod, error) {
-	db, err := connect()
-	if err != nil {
-		return entity.Period{}, err
-	}
-	defer db.Close()
+func (repository PeriodRepository) FindById(id string) (entity.IPeriod, error) {
 
-	row, err := db.Query("select id, code, name, year, start_date, end_date, created_at, updated_at from periods where id = ?", id)
+	row, err := repository.db.Query("select id, code, name, year, start_date, end_date, created_at, updated_at from periods where id = ?", id)
 	if err != nil {
 		return entity.Period{}, err
 	}
@@ -87,15 +60,9 @@ func (model PeriodModel) FindById(id string) (entity.IPeriod, error) {
 	return period, nil
 }
 
-func (model PeriodModel) FindAll() ([]entity.IPeriod, error) {
+func (repository PeriodRepository) FindAll() ([]entity.IPeriod, error) {
 
-	db, err := connect()
-	if err != nil {
-		return []entity.IPeriod{}, err
-	}
-	defer db.Close()
-
-	rows, err := db.Query("select id, code, name, year, start_date, end_date, created_at, updated_at from periods")
+	rows, err := repository.db.Query("select id, code, name, year, start_date, end_date, created_at, updated_at from periods")
 	if err != nil {
 		return []entity.IPeriod{}, err
 	}
@@ -120,9 +87,9 @@ func (model PeriodModel) FindAll() ([]entity.IPeriod, error) {
 	return periods, nil
 }
 
-func (model PeriodModel) Update(entity entity.IPeriod) error {
+func (repository PeriodRepository) Update(entity entity.IPeriod) error {
 
-	model = PeriodModel{
+	model := PeriodModel{
 		id:        entity.GetId(),
 		code:      entity.GetCode(),
 		name:      entity.GetName(),
@@ -132,13 +99,7 @@ func (model PeriodModel) Update(entity entity.IPeriod) error {
 		updatedAt: entity.GetUpdatedAt(),
 	}
 
-	db, err := connect()
-	if err != nil {
-		return err
-	}
-	defer db.Close()
-
-	statement, err := db.Prepare("update periods set code = ?, name = ?, year = ?, start_date = ?, end_date = ?, updated_at = ? where id = ?")
+	statement, err := repository.db.Prepare("update periods set code = ?, name = ?, year = ?, start_date = ?, end_date = ?, updated_at = ? where id = ?")
 	if err != nil {
 		return err
 	}
@@ -152,15 +113,9 @@ func (model PeriodModel) Update(entity entity.IPeriod) error {
 	return nil
 }
 
-func (model PeriodModel) Delete(id string) error {
+func (repository PeriodRepository) Delete(id string) error {
 
-	db, err := connect()
-	if err != nil {
-		return err
-	}
-	defer db.Close()
-
-	statement, err := db.Prepare("delete from periods where id = ?")
+	statement, err := repository.db.Prepare("delete from periods where id = ?")
 	if err != nil {
 		return err
 	}

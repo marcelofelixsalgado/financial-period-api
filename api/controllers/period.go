@@ -5,6 +5,7 @@ import (
 	"io"
 	"log"
 	"marcelofelixsalgado/financial-period-api/api/responses"
+	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/database"
 	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/period/create"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/period/delete"
@@ -50,7 +51,16 @@ func CreatePeriod(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	repository := repository.NewRepository()
+	db, err := database.Connect()
+	if err != nil {
+		message := responses.NewResponseMessage()
+		message.AddMessageByErrorCode(responses.InternalServerError)
+		jsonMessage, _ := message.GetJsonMessage()
+		w.WriteHeader(message.GetMessage().HttpStatusCode)
+		w.Write(jsonMessage)
+		return
+	}
+	repository := repository.NewRepository(db)
 
 	output, err := create.Execute(input, repository)
 	if err != nil {
@@ -81,7 +91,16 @@ func CreatePeriod(w http.ResponseWriter, r *http.Request) {
 func ListPeriods(w http.ResponseWriter, r *http.Request) {
 	var input list.InputListPeriodDto
 
-	repository := repository.NewRepository()
+	db, err := database.Connect()
+	if err != nil {
+		message := responses.NewResponseMessage()
+		message.AddMessageByErrorCode(responses.InternalServerError)
+		jsonMessage, _ := message.GetJsonMessage()
+		w.WriteHeader(message.GetMessage().HttpStatusCode)
+		w.Write(jsonMessage)
+		return
+	}
+	repository := repository.NewRepository(db)
 
 	output, err := list.Execute(input, repository)
 	if err != nil {
@@ -117,7 +136,16 @@ func GetPeriodById(w http.ResponseWriter, r *http.Request) {
 		Id: Id,
 	}
 
-	repository := repository.NewRepository()
+	db, err := database.Connect()
+	if err != nil {
+		message := responses.NewResponseMessage()
+		message.AddMessageByErrorCode(responses.InternalServerError)
+		jsonMessage, _ := message.GetJsonMessage()
+		w.WriteHeader(message.GetMessage().HttpStatusCode)
+		w.Write(jsonMessage)
+		return
+	}
+	repository := repository.NewRepository(db)
 
 	output, err := find.Execute(input, repository)
 	if err != nil {
@@ -183,7 +211,16 @@ func UpdatePeriod(w http.ResponseWriter, r *http.Request) {
 	}
 	input.Id = Id
 
-	repository := repository.NewRepository()
+	db, err := database.Connect()
+	if err != nil {
+		message := responses.NewResponseMessage()
+		message.AddMessageByErrorCode(responses.InternalServerError)
+		jsonMessage, _ := message.GetJsonMessage()
+		w.WriteHeader(message.GetMessage().HttpStatusCode)
+		w.Write(jsonMessage)
+		return
+	}
+	repository := repository.NewRepository(db)
 
 	output, err := update.Execute(input, repository)
 	if err != nil {
@@ -219,9 +256,18 @@ func DeletePeriod(w http.ResponseWriter, r *http.Request) {
 		Id: Id,
 	}
 
-	repository := repository.NewRepository()
+	db, err := database.Connect()
+	if err != nil {
+		message := responses.NewResponseMessage()
+		message.AddMessageByErrorCode(responses.InternalServerError)
+		jsonMessage, _ := message.GetJsonMessage()
+		w.WriteHeader(message.GetMessage().HttpStatusCode)
+		w.Write(jsonMessage)
+		return
+	}
+	repository := repository.NewRepository(db)
 
-	_, err := delete.Execute(input, repository)
+	_, err = delete.Execute(input, repository)
 	if err != nil {
 		log.Printf("Error removing the entity: %s", err)
 		message := responses.NewResponseMessage()
