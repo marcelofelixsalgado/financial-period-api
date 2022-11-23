@@ -9,8 +9,10 @@ COPY go.sum ./
 RUN go mod download
 
 COPY *.go ./
-COPY pkg/ ./pkg/
+COPY .env ./
 COPY api/ ./api/
+COPY configs/ ./configs/
+COPY pkg/ ./pkg/
 
 RUN go build -o /financial-period-api
 

@@ -4,13 +4,13 @@ import (
 	"fmt"
 	"log"
 	"marcelofelixsalgado/financial-period-api/api/routes"
+	"marcelofelixsalgado/financial-period-api/configs"
 
 	"net/http"
 )
 
-var port = ":8081"
-
 func startServer() {
+	port := fmt.Sprintf(":%d", configs.ApiHttpPort)
 
 	router := routes.SetupRoutes()
 

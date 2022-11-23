@@ -2,6 +2,7 @@ package repository
 
 import (
 	"database/sql"
+	"marcelofelixsalgado/financial-period-api/configs"
 	"marcelofelixsalgado/financial-period-api/pkg/domain/period/entity"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -12,8 +13,8 @@ func NewRepository() IRepository {
 }
 
 func connect() (*sql.DB, error) {
-	connectionUrl := "root:root@tcp(financial-db:3306)/financial_db?charset=utf8&parseTime=True&loc=Local"
-	db, err := sql.Open("mysql", connectionUrl)
+	// connectionUrl := "root:root@tcp(financial-db:3306)/financial_db?charset=utf8&parseTime=True&loc=Local"
+	db, err := sql.Open("mysql", configs.DatabaseConnectionString)
 	if err != nil {
 		return nil, err
 	}
