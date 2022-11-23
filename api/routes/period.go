@@ -16,7 +16,9 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func CreatePeriod(w http.ResponseWriter, r *http.Request) {
+
+
+func createPeriod(w http.ResponseWriter, r *http.Request) {
 	requestBody, err := io.ReadAll(r.Body)
 	if err != nil {
 		log.Printf("Error reading request body: %s", err)
@@ -78,7 +80,7 @@ func CreatePeriod(w http.ResponseWriter, r *http.Request) {
 	w.Write(outputJSON)
 }
 
-func ListPeriods(w http.ResponseWriter, r *http.Request) {
+func listPeriods(w http.ResponseWriter, r *http.Request) {
 	var input list.InputListPeriodDto
 
 	repository := repository.NewRepository()
@@ -109,7 +111,7 @@ func ListPeriods(w http.ResponseWriter, r *http.Request) {
 	w.Write(outputJSON)
 }
 
-func GetPeriodById(w http.ResponseWriter, r *http.Request) {
+func getPeriodById(w http.ResponseWriter, r *http.Request) {
 	parameters := mux.Vars(r)
 	Id := parameters["id"]
 
@@ -145,7 +147,7 @@ func GetPeriodById(w http.ResponseWriter, r *http.Request) {
 	w.Write(outputJSON)
 }
 
-func UpdatePeriod(w http.ResponseWriter, r *http.Request) {
+func updatePeriod(w http.ResponseWriter, r *http.Request) {
 	parameters := mux.Vars(r)
 	Id := parameters["id"]
 
@@ -211,7 +213,7 @@ func UpdatePeriod(w http.ResponseWriter, r *http.Request) {
 	w.Write(outputJSON)
 }
 
-func DeletePeriod(w http.ResponseWriter, r *http.Request) {
+func deletePeriod(w http.ResponseWriter, r *http.Request) {
 	parameters := mux.Vars(r)
 	Id := parameters["id"]
 

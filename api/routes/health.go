@@ -10,7 +10,7 @@ type message struct {
 	Status string `json:"status"`
 }
 
-func Health(w http.ResponseWriter, r *http.Request) {
+func health(w http.ResponseWriter, r *http.Request) {
 
 	successMessage := message{
 		Status: "Ok",
