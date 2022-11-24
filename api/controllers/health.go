@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 )
 
@@ -16,10 +15,7 @@ func Health(w http.ResponseWriter, r *http.Request) {
 		Status: "Ok",
 	}
 
-	messageJSON, err := json.Marshal(successMessage)
-	if err != nil {
-		log.Fatal(err)
-	}
-
+	messageJSON, _ := json.Marshal(successMessage)
+	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(messageJSON))
 }

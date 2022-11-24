@@ -20,14 +20,13 @@ import (
 func CreatePeriod(w http.ResponseWriter, r *http.Request) {
 	requestBody, err := io.ReadAll(r.Body)
 	if err != nil {
-		log.Printf("Error reading request body: %s", err)
+		log.Printf("Error trying to read the request body: %v", err)
 		message := responses.NewResponseMessage()
 		message.AddMessageByIssue(responses.MalformedRequest, "body", "", "")
 		jsonMessage, err := message.GetJsonMessage()
 		if err != nil {
-			message = responses.NewResponseMessage()
-			message.AddMessageByErrorCode(responses.InternalServerError)
-			jsonMessage, _ = message.GetJsonMessage()
+			responses.JSONErrorByCode(w, responses.InternalServerError)
+			return
 		}
 		w.WriteHeader(message.GetMessage().HttpStatusCode)
 		w.Write(jsonMessage)
@@ -37,50 +36,32 @@ func CreatePeriod(w http.ResponseWriter, r *http.Request) {
 	var input create.InputCreatePeriodDto
 
 	if erro := json.Unmarshal([]byte(requestBody), &input); erro != nil {
-		log.Printf("Error converting input data: %s", err)
+		log.Printf("Error trying to convert the input data: %v", err)
 		message := responses.NewResponseMessage()
 		message.AddMessageByIssue(responses.MalformedRequest, "body", "", "")
 		jsonMessage, err := message.GetJsonMessage()
 		if err != nil {
-			message = responses.NewResponseMessage()
-			message.AddMessageByErrorCode(responses.InternalServerError)
-			jsonMessage, _ = message.GetJsonMessage()
+			responses.JSONErrorByCode(w, responses.InternalServerError)
+			return
 		}
 		w.WriteHeader(message.GetMessage().HttpStatusCode)
 		w.Write(jsonMessage)
 		return
 	}
 
-	db, err := database.Connect()
-	if err != nil {
-		message := responses.NewResponseMessage()
-		message.AddMessageByErrorCode(responses.InternalServerError)
-		jsonMessage, _ := message.GetJsonMessage()
-		w.WriteHeader(message.GetMessage().HttpStatusCode)
-		w.Write(jsonMessage)
-		return
-	}
-	repository := repository.NewRepository(db)
+	repository := repository.NewRepository(database.ConnectionPool)
 
 	output, err := create.Execute(input, repository)
 	if err != nil {
-		log.Printf("Error creating the entity: %s", err)
-		message := responses.NewResponseMessage()
-		message.AddMessageByErrorCode(responses.InternalServerError)
-		jsonMessage, _ := message.GetJsonMessage()
-		w.WriteHeader(message.GetMessage().HttpStatusCode)
-		w.Write(jsonMessage)
+		log.Printf("Error trying to create the entity: %v", err)
+		responses.JSONErrorByCode(w, responses.InternalServerError)
 		return
 	}
 
 	outputJSON, err := json.Marshal(output)
 	if err != nil {
-		log.Printf("Error converting struct to response body: %s", err)
-		message := responses.NewResponseMessage()
-		message.AddMessageByErrorCode(responses.InternalServerError)
-		jsonMessage, _ := message.GetJsonMessage()
-		w.WriteHeader(message.GetMessage().HttpStatusCode)
-		w.Write(jsonMessage)
+		log.Printf("Error trying to convert the output to response body: %v", err)
+		responses.JSONErrorByCode(w, responses.InternalServerError)
 		return
 	}
 
@@ -91,36 +72,19 @@ func CreatePeriod(w http.ResponseWriter, r *http.Request) {
 func ListPeriods(w http.ResponseWriter, r *http.Request) {
 	var input list.InputListPeriodDto
 
-	db, err := database.Connect()
-	if err != nil {
-		message := responses.NewResponseMessage()
-		message.AddMessageByErrorCode(responses.InternalServerError)
-		jsonMessage, _ := message.GetJsonMessage()
-		w.WriteHeader(message.GetMessage().HttpStatusCode)
-		w.Write(jsonMessage)
-		return
-	}
-	repository := repository.NewRepository(db)
+	repository := repository.NewRepository(database.ConnectionPool)
 
 	output, err := list.Execute(input, repository)
 	if err != nil {
-		log.Printf("Error listing the entity: %s", err)
-		message := responses.NewResponseMessage()
-		message.AddMessageByErrorCode(responses.InternalServerError)
-		jsonMessage, _ := message.GetJsonMessage()
-		w.WriteHeader(message.GetMessage().HttpStatusCode)
-		w.Write(jsonMessage)
+		log.Printf("Error listing the entity: %v", err)
+		responses.JSONErrorByCode(w, responses.InternalServerError)
 		return
 	}
 
 	outputJSON, err := json.Marshal(output.Periods)
 	if err != nil {
-		log.Printf("Error converting struct to response body: %s", err)
-		message := responses.NewResponseMessage()
-		message.AddMessageByErrorCode(responses.InternalServerError)
-		jsonMessage, _ := message.GetJsonMessage()
-		w.WriteHeader(message.GetMessage().HttpStatusCode)
-		w.Write(jsonMessage)
+		log.Printf("Error trying to convert the output to response body: %v", err)
+		responses.JSONErrorByCode(w, responses.InternalServerError)
 		return
 	}
 
@@ -136,36 +100,19 @@ func GetPeriodById(w http.ResponseWriter, r *http.Request) {
 		Id: Id,
 	}
 
-	db, err := database.Connect()
-	if err != nil {
-		message := responses.NewResponseMessage()
-		message.AddMessageByErrorCode(responses.InternalServerError)
-		jsonMessage, _ := message.GetJsonMessage()
-		w.WriteHeader(message.GetMessage().HttpStatusCode)
-		w.Write(jsonMessage)
-		return
-	}
-	repository := repository.NewRepository(db)
+	repository := repository.NewRepository(database.ConnectionPool)
 
 	output, err := find.Execute(input, repository)
 	if err != nil {
-		log.Printf("Error finding the entity: %s", err)
-		message := responses.NewResponseMessage()
-		message.AddMessageByErrorCode(responses.InternalServerError)
-		jsonMessage, _ := message.GetJsonMessage()
-		w.WriteHeader(message.GetMessage().HttpStatusCode)
-		w.Write(jsonMessage)
+		log.Printf("Error finding the entity: %v", err)
+		responses.JSONErrorByCode(w, responses.InternalServerError)
 		return
 	}
 
 	outputJSON, err := json.Marshal(output)
 	if err != nil {
-		log.Printf("Error converting struct to response body: %s", err)
-		message := responses.NewResponseMessage()
-		message.AddMessageByErrorCode(responses.InternalServerError)
-		jsonMessage, _ := message.GetJsonMessage()
-		w.WriteHeader(message.GetMessage().HttpStatusCode)
-		w.Write(jsonMessage)
+		log.Printf("Error trying to convert the output to response body: %v", err)
+		responses.JSONErrorByCode(w, responses.InternalServerError)
 		return
 	}
 
@@ -179,14 +126,13 @@ func UpdatePeriod(w http.ResponseWriter, r *http.Request) {
 
 	requestBody, err := io.ReadAll(r.Body)
 	if err != nil {
-		log.Printf("Error reading request body: %s", err)
+		log.Printf("Error trying to read the request body: %v", err)
 		message := responses.NewResponseMessage()
 		message.AddMessageByIssue(responses.MalformedRequest, "body", "", "")
 		jsonMessage, err := message.GetJsonMessage()
 		if err != nil {
-			message = responses.NewResponseMessage()
-			message.AddMessageByErrorCode(responses.InternalServerError)
-			jsonMessage, _ = message.GetJsonMessage()
+			responses.JSONErrorByCode(w, responses.InternalServerError)
+			return
 		}
 		w.WriteHeader(message.GetMessage().HttpStatusCode)
 		w.Write(jsonMessage)
@@ -196,14 +142,12 @@ func UpdatePeriod(w http.ResponseWriter, r *http.Request) {
 	var input update.InputUpdatePeriodDto
 
 	if erro := json.Unmarshal([]byte(requestBody), &input); erro != nil {
-		log.Printf("Error converting input data: %s", err)
+		log.Printf("Error trying to convert the input data: %v", err)
 		message := responses.NewResponseMessage()
 		message.AddMessageByIssue(responses.MalformedRequest, "body", "", "")
 		jsonMessage, err := message.GetJsonMessage()
 		if err != nil {
-			message = responses.NewResponseMessage()
-			message.AddMessageByErrorCode(responses.InternalServerError)
-			jsonMessage, _ = message.GetJsonMessage()
+			responses.JSONErrorByCode(w, responses.InternalServerError)
 		}
 		w.WriteHeader(message.GetMessage().HttpStatusCode)
 		w.Write(jsonMessage)
@@ -211,36 +155,19 @@ func UpdatePeriod(w http.ResponseWriter, r *http.Request) {
 	}
 	input.Id = Id
 
-	db, err := database.Connect()
-	if err != nil {
-		message := responses.NewResponseMessage()
-		message.AddMessageByErrorCode(responses.InternalServerError)
-		jsonMessage, _ := message.GetJsonMessage()
-		w.WriteHeader(message.GetMessage().HttpStatusCode)
-		w.Write(jsonMessage)
-		return
-	}
-	repository := repository.NewRepository(db)
+	repository := repository.NewRepository(database.ConnectionPool)
 
 	output, err := update.Execute(input, repository)
 	if err != nil {
-		log.Printf("Error updating the entity: %s", err)
-		message := responses.NewResponseMessage()
-		message.AddMessageByErrorCode(responses.InternalServerError)
-		jsonMessage, _ := message.GetJsonMessage()
-		w.WriteHeader(message.GetMessage().HttpStatusCode)
-		w.Write(jsonMessage)
+		log.Printf("Error updating the entity: %v", err)
+		responses.JSONErrorByCode(w, responses.InternalServerError)
 		return
 	}
 
 	outputJSON, err := json.Marshal(output)
 	if err != nil {
-		log.Printf("Error converting struct to response body: %s", err)
-		message := responses.NewResponseMessage()
-		message.AddMessageByErrorCode(responses.InternalServerError)
-		jsonMessage, _ := message.GetJsonMessage()
-		w.WriteHeader(message.GetMessage().HttpStatusCode)
-		w.Write(jsonMessage)
+		log.Printf("Error trying to convert the output to response body: %v", err)
+		responses.JSONErrorByCode(w, responses.InternalServerError)
 		return
 	}
 
@@ -256,25 +183,12 @@ func DeletePeriod(w http.ResponseWriter, r *http.Request) {
 		Id: Id,
 	}
 
-	db, err := database.Connect()
-	if err != nil {
-		message := responses.NewResponseMessage()
-		message.AddMessageByErrorCode(responses.InternalServerError)
-		jsonMessage, _ := message.GetJsonMessage()
-		w.WriteHeader(message.GetMessage().HttpStatusCode)
-		w.Write(jsonMessage)
-		return
-	}
-	repository := repository.NewRepository(db)
+	repository := repository.NewRepository(database.ConnectionPool)
 
-	_, err = delete.Execute(input, repository)
+	_, err := delete.Execute(input, repository)
 	if err != nil {
-		log.Printf("Error removing the entity: %s", err)
-		message := responses.NewResponseMessage()
-		message.AddMessageByErrorCode(responses.InternalServerError)
-		jsonMessage, _ := message.GetJsonMessage()
-		w.WriteHeader(message.GetMessage().HttpStatusCode)
-		w.Write(jsonMessage)
+		log.Printf("Error removing the entity: %v", err)
+		responses.JSONErrorByCode(w, responses.InternalServerError)
 		return
 	}
 

@@ -22,12 +22,12 @@ func Load() {
 	var err error
 
 	if err = godotenv.Load(); err != nil {
-		log.Fatal(err)
+		log.Fatalf("Error trying to load the environment variables: %v", err)
 	}
 
 	ApiHttpPort, err = strconv.Atoi(os.Getenv("API_PORT"))
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Could not find the API_PORT environment variable: %v", err)
 	}
 
 	DatabaseConnectionString = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local",
