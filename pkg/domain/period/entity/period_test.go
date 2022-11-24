@@ -2,6 +2,7 @@ package entity_test
 
 import (
 	"marcelofelixsalgado/financial-period-api/pkg/domain/period/entity"
+	"strings"
 	"testing"
 	"time"
 )
@@ -50,6 +51,30 @@ func TestNewPeriodSuccess(t *testing.T) {
 		if received.GetCreatedAt().IsZero() {
 			t.Errorf("CreatedAt must not be zero")
 		}
+	}
+}
+
+func TestNewPeriodTrimSpaces(t *testing.T) {
+	testCase := testCase{
+		code:      "      11           ",
+		name:      "     	November      ",
+		year:      2022,
+		startDate: time.Now(),
+		endDate:   time.Now(),
+	}
+	expectedCode := "11"
+	expectedName := "November"
+
+	received, err := entity.Create(testCase.code, testCase.name, testCase.year, testCase.startDate, testCase.endDate)
+	if err != nil {
+		t.Errorf("Should not return an error: %s", err)
+	}
+
+	if strings.Compare(expectedCode, received.GetCode()) != 0 {
+		t.Errorf("Code expected: [%s] - received: [%s]", expectedCode, received.GetCode())
+	}
+	if strings.Compare(expectedName, received.GetName()) != 0 {
+		t.Errorf("Name expected: [%s] - received: [%s]", expectedName, received.GetName())
 	}
 }
 

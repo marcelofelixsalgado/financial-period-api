@@ -2,6 +2,7 @@ package entity
 
 import (
 	"errors"
+	"strings"
 	"time"
 )
 
@@ -68,32 +69,34 @@ func (period Period) GetUpdatedAt() time.Time {
 
 func (period Period) SetCode(code string) {
 	period.code = code
-	validate(period)
+	period.format()
+	period.validate()
 }
 
 func (period Period) SetName(name string) {
 	period.name = name
-	validate(period)
+	period.format()
+	period.validate()
 }
 
 func (period Period) SetYear(year int) {
 	period.year = year
-	validate(period)
+	period.validate()
 }
 
 func (period Period) SetStartDate(startDate time.Time) {
 	period.startDate = startDate
-	validate(period)
+	period.validate()
 }
 
 func (period Period) SetEndDate(endDate time.Time) {
 	period.endDate = endDate
-	validate(period)
+	period.validate()
 }
 
 func (period Period) SetUpdatedAt(updatedAt time.Time) {
 	period.updatedAt = updatedAt
-	validate(period)
+	period.validate()
 }
 
 func NewPeriod(id string, code string, name string, year int, startDate time.Time, endDate time.Time, createdAt time.Time, updatedAt time.Time) (IPeriod, error) {
@@ -107,13 +110,14 @@ func NewPeriod(id string, code string, name string, year int, startDate time.Tim
 		createdAt: createdAt,
 		updatedAt: updatedAt,
 	}
-	if err := validate(period); err != nil {
+	period.format()
+	if err := period.validate(); err != nil {
 		return nil, err
 	}
 	return period, nil
 }
 
-func validate(period Period) error {
+func (period *Period) validate() error {
 	if period.id == "" {
 		return errors.New("id is required")
 	}
@@ -143,4 +147,9 @@ func validate(period Period) error {
 	}
 
 	return nil
+}
+
+func (period *Period) format() {
+	period.code = strings.TrimSpace(period.code)
+	period.name = strings.TrimSpace(period.name)
 }
