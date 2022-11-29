@@ -80,13 +80,13 @@ func (repository PeriodRepository) FindAll(filterParameters []FilterParameter) (
 		rows, err = repository.db.Query("select id, code, name, year, start_date, end_date, created_at, updated_at from periods")
 	} else {
 		if len(codeFilter) > 0 && len(nameFilter) == 0 {
-			rows, err = repository.db.Query("select id, code, name, year, start_date, end_date, created_at, updated_at from periods where code like ?", codeFilter)
+			rows, err = repository.db.Query("select id, code, name, year, start_date, end_date, created_at, updated_at from periods where code = ?", codeFilter)
 		}
 		if len(codeFilter) == 0 && len(nameFilter) > 0 {
-			rows, err = repository.db.Query("select id, code, name, year, start_date, end_date, created_at, updated_at from periods where name like ?", nameFilter)
+			rows, err = repository.db.Query("select id, code, name, year, start_date, end_date, created_at, updated_at from periods where name = ?", nameFilter)
 		}
 		if len(codeFilter) > 0 && len(nameFilter) > 0 {
-			rows, err = repository.db.Query("select id, code, name, year, start_date, end_date, created_at, updated_at from periods where code like ? and name like ?", codeFilter, nameFilter)
+			rows, err = repository.db.Query("select id, code, name, year, start_date, end_date, created_at, updated_at from periods where code = ? and name = ?", codeFilter, nameFilter)
 		}
 	}
 
