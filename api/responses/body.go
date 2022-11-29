@@ -20,7 +20,7 @@ func JSONErrorByCode(w http.ResponseWriter, errorCode ErrorCode) {
 	message.AddMessageByErrorCode(errorCode)
 	//jsonMessage, _ := message.GetJsonMessage()
 	JSON(w, message.GetMessage().HttpStatusCode, message.GetMessage())
-	w.WriteHeader(message.GetMessage().HttpStatusCode)
+	// w.WriteHeader(message.GetMessage().HttpStatusCode)
 	// w.Write(jsonMessage)
 }
 

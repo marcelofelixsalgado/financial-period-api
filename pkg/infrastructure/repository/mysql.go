@@ -2,7 +2,6 @@ package repository
 
 import (
 	"database/sql"
-	"fmt"
 	"marcelofelixsalgado/financial-period-api/pkg/domain/period/entity"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -68,9 +67,9 @@ func (repository PeriodRepository) FindAll(filterParameters []FilterParameter) (
 	for _, filterParameter := range filterParameters {
 		switch filterParameter.Name {
 		case "code":
-			codeFilter = fmt.Sprintf("%%%s%%", filterParameter.Value) // %code%
+			codeFilter = filterParameter.Value
 		case "name":
-			nameFilter = fmt.Sprintf("%%%s%%", filterParameter.Value) // %name%
+			nameFilter = filterParameter.Value
 		}
 	}
 	// fields := "id, code, name, year, start_date, end_date, created_at, updated_at"

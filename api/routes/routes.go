@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"marcelofelixsalgado/financial-period-api/api/middlewares"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -15,24 +16,21 @@ type Route struct {
 
 func SetupRoutes() *mux.Router {
 	router := mux.NewRouter()
-	router.Use(responseFormatMiddleware)
+	router.Use(middlewares.ResponseFormatMiddleware)
 
 	// period routes
 	for _, route := range periodRoutes {
-		router.HandleFunc(route.URI, route.Function).Methods(route.Method)
+		router.HandleFunc(route.URI,
+			middlewares.Logger(
+				middlewares.Authenticate(route.Function))).Methods(route.Method)
 	}
 
 	// health routes
 	for _, route := range healthRoutes {
-		router.HandleFunc(route.URI, route.Function).Methods(route.Method)
+		router.HandleFunc(route.URI,
+			middlewares.Logger(
+				route.Function)).Methods(route.Method)
 	}
 
 	return router
-}
-
-func responseFormatMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Add("Content-Type", "application/json")
-		next.ServeHTTP(w, r)
-	})
 }

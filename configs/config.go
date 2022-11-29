@@ -15,6 +15,9 @@ var (
 
 	// HTTP Port to expose the API
 	ApiHttpPort = 0
+
+	// Key used to sign the token
+	SecretKey []byte
 )
 
 // Load global parameters from environment variables
@@ -36,4 +39,6 @@ func Load() {
 		os.Getenv("DATABASE_SERVER_ADDRESS"),
 		os.Getenv("DATABASE_SERVER_PORT"),
 		os.Getenv("DATABASE_NAME"))
+
+	SecretKey = []byte(os.Getenv("SECRET_KEY"))
 }
