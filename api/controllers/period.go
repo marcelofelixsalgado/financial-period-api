@@ -74,19 +74,19 @@ func ListPeriods(w http.ResponseWriter, r *http.Request) {
 	var input list.InputListPeriodDto
 
 	filterParameters, err := requests.SetupFilters(r)
-	// if err != nil {
-	// 	log.Printf("Error parsing the querystring parameters: %v", err)
-	// 	message := responses.NewResponseMessage()
-	// 	message.AddMessageByIssue(responses.MalformedRequest, "query_parameter", "", "")
-	// 	jsonMessage, err := message.GetJsonMessage()
-	// 	if err != nil {
-	// 		responses.JSONErrorByCode(w, responses.InternalServerError)
-	// 		return
-	// 	}
-	// 	w.WriteHeader(message.GetMessage().HttpStatusCode)
-	// 	w.Write(jsonMessage)
-	// 	return
-	// }
+	if err != nil {
+		log.Printf("Error parsing the querystring parameters: %v", err)
+		message := responses.NewResponseMessage()
+		message.AddMessageByIssue(responses.MalformedRequest, "query_parameter", "", "")
+		jsonMessage, err := message.GetJsonMessage()
+		if err != nil {
+			responses.JSONErrorByCode(w, responses.InternalServerError)
+			return
+		}
+		w.WriteHeader(message.GetMessage().HttpStatusCode)
+		w.Write(jsonMessage)
+		return
+	}
 
 	repository := repository.NewRepository(database.ConnectionPool)
 
