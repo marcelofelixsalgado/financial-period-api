@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io"
 	"log"
+	"marcelofelixsalgado/financial-period-api/api/requests"
 	"marcelofelixsalgado/financial-period-api/api/responses"
 	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/database"
 	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository"
@@ -72,9 +73,24 @@ func CreatePeriod(w http.ResponseWriter, r *http.Request) {
 func ListPeriods(w http.ResponseWriter, r *http.Request) {
 	var input list.InputListPeriodDto
 
+	filterParameters, err := requests.SetupFilters(r)
+	// if err != nil {
+	// 	log.Printf("Error parsing the querystring parameters: %v", err)
+	// 	message := responses.NewResponseMessage()
+	// 	message.AddMessageByIssue(responses.MalformedRequest, "query_parameter", "", "")
+	// 	jsonMessage, err := message.GetJsonMessage()
+	// 	if err != nil {
+	// 		responses.JSONErrorByCode(w, responses.InternalServerError)
+	// 		return
+	// 	}
+	// 	w.WriteHeader(message.GetMessage().HttpStatusCode)
+	// 	w.Write(jsonMessage)
+	// 	return
+	// }
+
 	repository := repository.NewRepository(database.ConnectionPool)
 
-	output, err := list.Execute(input, repository)
+	output, err := list.Execute(input, filterParameters, repository)
 	if err != nil {
 		log.Printf("Error listing the entity: %v", err)
 		responses.JSONErrorByCode(w, responses.InternalServerError)

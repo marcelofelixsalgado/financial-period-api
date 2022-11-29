@@ -8,6 +8,6 @@ type IRepository interface {
 	Create(entity.IPeriod) error
 	Update(entity.IPeriod) error
 	FindById(id string) (entity.IPeriod, error)
-	FindAll() ([]entity.IPeriod, error)
+	FindAll([]FilterParameter) ([]entity.IPeriod, error)
 	Delete(id string) error
 }

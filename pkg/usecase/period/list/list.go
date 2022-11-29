@@ -5,9 +5,9 @@ import (
 	"time"
 )
 
-func Execute(input InputListPeriodDto, repository repository.IRepository) (OutputListPeriodDto, error) {
+func Execute(input InputListPeriodDto, filterParameters []repository.FilterParameter, repository repository.IRepository) (OutputListPeriodDto, error) {
 
-	periods, err := repository.FindAll()
+	periods, err := repository.FindAll(filterParameters)
 	if err != nil {
 		return OutputListPeriodDto{}, err
 	}

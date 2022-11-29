@@ -2,6 +2,7 @@ package repository
 
 import (
 	"database/sql"
+	"fmt"
 	"marcelofelixsalgado/financial-period-api/pkg/domain/period/entity"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -60,9 +61,35 @@ func (repository PeriodRepository) FindById(id string) (entity.IPeriod, error) {
 	return period, nil
 }
 
-func (repository PeriodRepository) FindAll() ([]entity.IPeriod, error) {
+func (repository PeriodRepository) FindAll(filterParameters []FilterParameter) ([]entity.IPeriod, error) {
 
-	rows, err := repository.db.Query("select id, code, name, year, start_date, end_date, created_at, updated_at from periods")
+	codeFilter := ""
+	nameFilter := ""
+	for _, filterParameter := range filterParameters {
+		switch filterParameter.Name {
+		case "code":
+			codeFilter = fmt.Sprintf("%%%s%%", filterParameter.Value) // %code%
+		case "name":
+			nameFilter = fmt.Sprintf("%%%s%%", filterParameter.Value) // %name%
+		}
+	}
+	// fields := "id, code, name, year, start_date, end_date, created_at, updated_at"
+	var rows *sql.Rows
+	var err error
+	if len(filterParameters) == 0 {
+		rows, err = repository.db.Query("select id, code, name, year, start_date, end_date, created_at, updated_at from periods")
+	} else {
+		if len(codeFilter) > 0 && len(nameFilter) == 0 {
+			rows, err = repository.db.Query("select id, code, name, year, start_date, end_date, created_at, updated_at from periods where code like ?", codeFilter)
+		}
+		if len(codeFilter) == 0 && len(nameFilter) > 0 {
+			rows, err = repository.db.Query("select id, code, name, year, start_date, end_date, created_at, updated_at from periods where name like ?", nameFilter)
+		}
+		if len(codeFilter) > 0 && len(nameFilter) > 0 {
+			rows, err = repository.db.Query("select id, code, name, year, start_date, end_date, created_at, updated_at from periods where code like ? and name like ?", codeFilter, nameFilter)
+		}
+	}
+
 	if err != nil {
 		return []entity.IPeriod{}, err
 	}
