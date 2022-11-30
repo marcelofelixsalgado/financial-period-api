@@ -1,4 +1,4 @@
-package controllers
+package period
 
 import (
 	"encoding/json"
@@ -6,8 +6,6 @@ import (
 	"log"
 	"marcelofelixsalgado/financial-period-api/api/requests"
 	"marcelofelixsalgado/financial-period-api/api/responses"
-	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/database"
-	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/period/create"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/period/delete"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/period/find"
@@ -18,7 +16,33 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func CreatePeriod(w http.ResponseWriter, r *http.Request) {
+type IPeriodHandler interface {
+	CreatePeriod(w http.ResponseWriter, r *http.Request)
+	ListPeriods(w http.ResponseWriter, r *http.Request)
+	GetPeriodById(w http.ResponseWriter, r *http.Request)
+	UpdatePeriod(w http.ResponseWriter, r *http.Request)
+	DeletePeriod(w http.ResponseWriter, r *http.Request)
+}
+
+type PeriodHandler struct {
+	createUseCase create.ICreateUseCase
+	deleteUseCase delete.IDeleteUseCase
+	findUseCase   find.IFindUseCase
+	listUseCase   list.IListUseCase
+	updateUseCase update.IUpdateUseCase
+}
+
+func NewPeriodHandler(createUseCase create.ICreateUseCase, deleteUseCase delete.IDeleteUseCase, findUseCase find.IFindUseCase, listUseCase list.IListUseCase, updateUseCase update.IUpdateUseCase) IPeriodHandler {
+	return &PeriodHandler{
+		createUseCase: createUseCase,
+		deleteUseCase: deleteUseCase,
+		findUseCase:   findUseCase,
+		listUseCase:   listUseCase,
+		updateUseCase: updateUseCase,
+	}
+}
+
+func (periodHandler *PeriodHandler) CreatePeriod(w http.ResponseWriter, r *http.Request) {
 	requestBody, err := io.ReadAll(r.Body)
 	if err != nil {
 		log.Printf("Error trying to read the request body: %v", err)
@@ -50,9 +74,7 @@ func CreatePeriod(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	repository := repository.NewRepository(database.ConnectionPool)
-
-	output, err := create.Execute(input, repository)
+	output, err := periodHandler.createUseCase.Execute(input)
 	if err != nil {
 		log.Printf("Error trying to create the entity: %v", err)
 		responses.JSONErrorByCode(w, responses.InternalServerError)
@@ -70,7 +92,7 @@ func CreatePeriod(w http.ResponseWriter, r *http.Request) {
 	w.Write(outputJSON)
 }
 
-func ListPeriods(w http.ResponseWriter, r *http.Request) {
+func (periodHandler *PeriodHandler) ListPeriods(w http.ResponseWriter, r *http.Request) {
 	var input list.InputListPeriodDto
 
 	filterParameters, err := requests.SetupFilters(r)
@@ -88,9 +110,7 @@ func ListPeriods(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	repository := repository.NewRepository(database.ConnectionPool)
-
-	output, err := list.Execute(input, filterParameters, repository)
+	output, err := periodHandler.listUseCase.Execute(input, filterParameters)
 	if err != nil {
 		log.Printf("Error listing the entity: %v", err)
 		responses.JSONErrorByCode(w, responses.InternalServerError)
@@ -108,7 +128,7 @@ func ListPeriods(w http.ResponseWriter, r *http.Request) {
 	w.Write(outputJSON)
 }
 
-func GetPeriodById(w http.ResponseWriter, r *http.Request) {
+func (periodHandler *PeriodHandler) GetPeriodById(w http.ResponseWriter, r *http.Request) {
 	parameters := mux.Vars(r)
 	Id := parameters["id"]
 
@@ -116,9 +136,7 @@ func GetPeriodById(w http.ResponseWriter, r *http.Request) {
 		Id: Id,
 	}
 
-	repository := repository.NewRepository(database.ConnectionPool)
-
-	output, err := find.Execute(input, repository)
+	output, err := periodHandler.findUseCase.Execute(input)
 	if err != nil {
 		log.Printf("Error finding the entity: %v", err)
 		responses.JSONErrorByCode(w, responses.InternalServerError)
@@ -136,7 +154,7 @@ func GetPeriodById(w http.ResponseWriter, r *http.Request) {
 	w.Write(outputJSON)
 }
 
-func UpdatePeriod(w http.ResponseWriter, r *http.Request) {
+func (periodHandler *PeriodHandler) UpdatePeriod(w http.ResponseWriter, r *http.Request) {
 	parameters := mux.Vars(r)
 	Id := parameters["id"]
 
@@ -171,9 +189,7 @@ func UpdatePeriod(w http.ResponseWriter, r *http.Request) {
 	}
 	input.Id = Id
 
-	repository := repository.NewRepository(database.ConnectionPool)
-
-	output, err := update.Execute(input, repository)
+	output, err := periodHandler.updateUseCase.Execute(input)
 	if err != nil {
 		log.Printf("Error updating the entity: %v", err)
 		responses.JSONErrorByCode(w, responses.InternalServerError)
@@ -191,7 +207,7 @@ func UpdatePeriod(w http.ResponseWriter, r *http.Request) {
 	w.Write(outputJSON)
 }
 
-func DeletePeriod(w http.ResponseWriter, r *http.Request) {
+func (periodHandler *PeriodHandler) DeletePeriod(w http.ResponseWriter, r *http.Request) {
 	parameters := mux.Vars(r)
 	Id := parameters["id"]
 
@@ -199,9 +215,7 @@ func DeletePeriod(w http.ResponseWriter, r *http.Request) {
 		Id: Id,
 	}
 
-	repository := repository.NewRepository(database.ConnectionPool)
-
-	_, err := delete.Execute(input, repository)
+	_, err := periodHandler.deleteUseCase.Execute(input)
 	if err != nil {
 		log.Printf("Error removing the entity: %v", err)
 		responses.JSONErrorByCode(w, responses.InternalServerError)

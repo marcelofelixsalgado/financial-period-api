@@ -5,9 +5,23 @@ import (
 	"time"
 )
 
-func Execute(input InputListPeriodDto, filterParameters []repository.FilterParameter, repository repository.IRepository) (OutputListPeriodDto, error) {
+type IListUseCase interface {
+	Execute(InputListPeriodDto, []repository.FilterParameter) (OutputListPeriodDto, error)
+}
 
-	periods, err := repository.FindAll(filterParameters)
+type ListUseCase struct {
+	repository repository.IRepository
+}
+
+func NewListUseCase(repository repository.IRepository) IListUseCase {
+	return &ListUseCase{
+		repository: repository,
+	}
+}
+
+func (listUseCase *ListUseCase) Execute(input InputListPeriodDto, filterParameters []repository.FilterParameter) (OutputListPeriodDto, error) {
+
+	periods, err := listUseCase.repository.FindAll(filterParameters)
 	if err != nil {
 		return OutputListPeriodDto{}, err
 	}

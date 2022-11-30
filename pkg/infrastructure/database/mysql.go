@@ -4,11 +4,12 @@ import (
 	"database/sql"
 	"log"
 	"marcelofelixsalgado/financial-period-api/configs"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
-var ConnectionPool *sql.DB
+func NewConnection() *sql.DB {
 
-func Connect() {
 	db, err := sql.Open("mysql", configs.DatabaseConnectionString)
 	if err != nil {
 		log.Fatalf("Error trying to connect to database: %v", err)
@@ -24,5 +25,5 @@ func Connect() {
 		log.Fatalf("Error trying to check the database connection: %v", err)
 	}
 
-	ConnectionPool = db
+	return db
 }

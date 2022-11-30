@@ -5,9 +5,23 @@ import (
 	"time"
 )
 
-func Execute(input InputFindPeriodDto, repository repository.IRepository) (OutputFindPeriodDto, error) {
+type IFindUseCase interface {
+	Execute(InputFindPeriodDto) (OutputFindPeriodDto, error)
+}
 
-	period, err := repository.FindById(input.Id)
+type FindUseCase struct {
+	repository repository.IRepository
+}
+
+func NewFindUseCase(repository repository.IRepository) IFindUseCase {
+	return &FindUseCase{
+		repository: repository,
+	}
+}
+
+func (findUseCase *FindUseCase) Execute(input InputFindPeriodDto) (OutputFindPeriodDto, error) {
+
+	period, err := findUseCase.repository.FindById(input.Id)
 	if err != nil {
 		return OutputFindPeriodDto{}, err
 	}

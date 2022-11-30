@@ -6,7 +6,21 @@ import (
 	"time"
 )
 
-func Execute(input InputUpdatePeriodDto, repository repository.IRepository) (OutputUpdatePeriodDto, error) {
+type IUpdateUseCase interface {
+	Execute(InputUpdatePeriodDto) (OutputUpdatePeriodDto, error)
+}
+
+type UpdateUseCase struct {
+	repository repository.IRepository
+}
+
+func NewUpdateUseCase(repository repository.IRepository) IUpdateUseCase {
+	return &UpdateUseCase{
+		repository: repository,
+	}
+}
+
+func (updateUseCase *UpdateUseCase) Execute(input InputUpdatePeriodDto) (OutputUpdatePeriodDto, error) {
 	var outputUpdatePeriodDto OutputUpdatePeriodDto
 
 	startDate, err := time.Parse(time.RFC3339, input.StartDate)
@@ -20,7 +34,7 @@ func Execute(input InputUpdatePeriodDto, repository repository.IRepository) (Out
 	}
 
 	// Find the entity before update
-	findEntity, err := repository.FindById(input.Id)
+	findEntity, err := updateUseCase.repository.FindById(input.Id)
 	if err != nil {
 		return outputUpdatePeriodDto, err
 	}
@@ -31,7 +45,7 @@ func Execute(input InputUpdatePeriodDto, repository repository.IRepository) (Out
 	}
 
 	// Persists in dabatase
-	err = repository.Update(entity)
+	err = updateUseCase.repository.Update(entity)
 	if err != nil {
 		return outputUpdatePeriodDto, err
 	}

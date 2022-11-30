@@ -7,7 +7,21 @@ import (
 	"time"
 )
 
-func Execute(input InputCreatePeriodDto, repository repository.IRepository) (OutputCreatePeriodDto, error) {
+type ICreateUseCase interface {
+	Execute(InputCreatePeriodDto) (OutputCreatePeriodDto, error)
+}
+
+type CreateUseCase struct {
+	repository repository.IRepository
+}
+
+func NewCreateUseCase(repository repository.IRepository) ICreateUseCase {
+	return &CreateUseCase{
+		repository: repository,
+	}
+}
+
+func (createUseCase *CreateUseCase) Execute(input InputCreatePeriodDto) (OutputCreatePeriodDto, error) {
 
 	var outputCreatePeriodDto OutputCreatePeriodDto
 
@@ -28,7 +42,7 @@ func Execute(input InputCreatePeriodDto, repository repository.IRepository) (Out
 	}
 
 	// Persists in dabatase
-	err = repository.Create(entity)
+	err = createUseCase.repository.Create(entity)
 	if err != nil {
 		return outputCreatePeriodDto, err
 	}

@@ -5,12 +5,26 @@ import (
 	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository"
 )
 
-func Execute(input InputDeletePeriodDto, repository repository.IRepository) (OutputDeletePeriodDto, error) {
+type IDeleteUseCase interface {
+	Execute(InputDeletePeriodDto) (OutputDeletePeriodDto, error)
+}
+
+type DeleteUseCase struct {
+	repository repository.IRepository
+}
+
+func NewDeleteUseCase(repository repository.IRepository) IDeleteUseCase {
+	return &DeleteUseCase{
+		repository: repository,
+	}
+}
+
+func (deleteUseCase *DeleteUseCase) Execute(input InputDeletePeriodDto) (OutputDeletePeriodDto, error) {
 
 	var outputDeletePeriodDto OutputDeletePeriodDto
 
 	// Find the entity before update
-	findEntity, err := repository.FindById(input.Id)
+	findEntity, err := deleteUseCase.repository.FindById(input.Id)
 	if err != nil {
 		return outputDeletePeriodDto, err
 	}
@@ -21,7 +35,7 @@ func Execute(input InputDeletePeriodDto, repository repository.IRepository) (Out
 	}
 
 	// Apply in dabatase
-	err = repository.Delete(input.Id)
+	err = deleteUseCase.repository.Delete(input.Id)
 	if err != nil {
 		return outputDeletePeriodDto, err
 	}
