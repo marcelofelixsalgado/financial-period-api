@@ -1,77 +1,11 @@
 package responses_test
 
 import (
-	"errors"
-	"fmt"
 	"marcelofelixsalgado/financial-period-api/api/responses"
+	"marcelofelixsalgado/financial-period-api/api/responses/faults"
 	"reflect"
 	"testing"
 )
-
-type testCase struct {
-	issueParameter    responses.Issue
-	locationParameter responses.Location
-	fieldParameter    string
-	valueParameter    string
-	errorReturned     string
-}
-
-func TestAddMessageSuccess(t *testing.T) {
-	testCases := []testCase{
-		{
-			issueParameter:    responses.DecimalsNotSupported,
-			locationParameter: responses.Body,
-			fieldParameter:    "field1",
-			valueParameter:    "value1",
-			errorReturned:     "",
-		},
-		{
-			issueParameter:    responses.DecimalsNotSupported,
-			locationParameter: "",
-			fieldParameter:    "field1",
-			valueParameter:    "value1",
-			errorReturned:     "location is required",
-		},
-		{
-			issueParameter:    responses.DecimalsNotSupported,
-			locationParameter: responses.Body,
-			fieldParameter:    "",
-			valueParameter:    "value1",
-			errorReturned:     "field is required",
-		},
-		{
-			issueParameter:    responses.DecimalsNotSupported,
-			locationParameter: responses.Body,
-			fieldParameter:    "field",
-			valueParameter:    "",
-			errorReturned:     "value is required",
-		},
-		{
-			issueParameter:    responses.InvalidParameter,
-			locationParameter: responses.Body,
-			fieldParameter:    "field",
-			valueParameter:    "",
-			errorReturned:     "",
-		},
-		{
-			issueParameter:    responses.MalformedRequest,
-			locationParameter: responses.Body,
-			fieldParameter:    "",
-			valueParameter:    "",
-			errorReturned:     "",
-		},
-	}
-
-	for index, testCase := range testCases {
-		err := responses.NewResponseMessage().AddMessageByIssue(testCase.issueParameter, testCase.locationParameter, testCase.fieldParameter, testCase.valueParameter)
-		if err == nil {
-			err = errors.New("")
-		}
-		if fmt.Sprint(err) != testCase.errorReturned {
-			t.Errorf("Test Case [%d/%d] - The error [%s] is different from what it was expetected [%s]", index+1, len(testCases), err, testCase.errorReturned)
-		}
-	}
-}
 
 func TestGetMessages(t *testing.T) {
 
@@ -91,7 +25,7 @@ func TestGetMessages(t *testing.T) {
 	}
 
 	actualMessage := responses.NewResponseMessage()
-	actualMessage.AddMessageByIssue(responses.DecimalsNotSupported, responses.Body, "field3", "value3")
+	actualMessage.AddMessageByIssue(faults.DecimalsNotSupported, responses.Body, "field3", "value3")
 
 	if !reflect.DeepEqual(actualMessage.GetMessage(), expectedMessage) {
 		t.Errorf("Expected message: [%+v]  is not equal Returned Message: [%+v]", expectedMessage, actualMessage)
@@ -123,8 +57,8 @@ func TestGetMessagesMultipleDetais(t *testing.T) {
 	}
 
 	actualMessage := responses.NewResponseMessage()
-	actualMessage.AddMessageByIssue(responses.DecimalsNotSupported, responses.Body, "field1", "value1")
-	actualMessage.AddMessageByIssue(responses.DecimalsNotSupported, responses.Body, "field2", "value2")
+	actualMessage.AddMessageByIssue(faults.DecimalsNotSupported, responses.Body, "field1", "value1")
+	actualMessage.AddMessageByIssue(faults.DecimalsNotSupported, responses.Body, "field2", "value2")
 
 	if !reflect.DeepEqual(actualMessage.GetMessage(), expectedMessage) {
 		t.Errorf("Expected message: [%+v]  is not equal Returned Message: [%+v]", expectedMessage, actualMessage)
@@ -149,21 +83,9 @@ func TestGetMessagesReplacementSuccess(t *testing.T) {
 	}
 
 	actualMessage := responses.NewResponseMessage()
-	actualMessage.AddMessageByIssue(responses.ConditionalFieldNotAllowed, responses.Body, "field1", "value1", "field1", "field2", "value2")
+	actualMessage.AddMessageByIssue(faults.ConditionalFieldNotAllowed, responses.Body, "field1", "value1", "field1", "field2", "value2")
 
 	if !reflect.DeepEqual(actualMessage.GetMessage(), expectedMessage) {
 		t.Errorf("Expected message: [%+v]  is not equal Returned Message: [%+v]", expectedMessage, actualMessage)
-	}
-}
-
-func TestGetMessagesReplacementFail(t *testing.T) {
-
-	expectedError := fmt.Errorf("wrong number of argumentos passed. expected: [3] - received: [1]")
-
-	actualMessage := responses.NewResponseMessage()
-	err := actualMessage.AddMessageByIssue(responses.ConditionalFieldNotAllowed, responses.Body, "field1", "value1", "field2")
-
-	if fmt.Sprint(err) != fmt.Sprint(expectedError) {
-		t.Errorf("The error [%s] is different from what it was expetected [%s]", err, expectedError)
 	}
 }

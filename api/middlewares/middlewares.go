@@ -4,6 +4,7 @@ import (
 	"log"
 	"marcelofelixsalgado/financial-period-api/api/auth"
 	"marcelofelixsalgado/financial-period-api/api/responses"
+	"marcelofelixsalgado/financial-period-api/api/responses/faults"
 	"net/http"
 )
 
@@ -18,7 +19,7 @@ func Authenticate(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if err := auth.ValidateToken(r); err != nil {
 			log.Printf("Token validation error: %v", err)
-			responses.JSONErrorByCode(w, responses.NotAuthorized)
+			responses.NewResponseMessage().AddMessageByErrorCode(faults.NotAuthorized).Write(w)
 			return
 		}
 		next(w, r)

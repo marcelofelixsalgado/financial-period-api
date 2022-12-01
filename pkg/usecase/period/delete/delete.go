@@ -1,12 +1,12 @@
 package delete
 
 import (
-	"marcelofelixsalgado/financial-period-api/pkg/domain/period/entity"
 	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository"
+	"marcelofelixsalgado/financial-period-api/pkg/usecase/status"
 )
 
 type IDeleteUseCase interface {
-	Execute(InputDeletePeriodDto) (OutputDeletePeriodDto, error)
+	Execute(InputDeletePeriodDto) (OutputDeletePeriodDto, status.InternalStatus, error)
 }
 
 type DeleteUseCase struct {
@@ -19,26 +19,24 @@ func NewDeleteUseCase(repository repository.IRepository) IDeleteUseCase {
 	}
 }
 
-func (deleteUseCase *DeleteUseCase) Execute(input InputDeletePeriodDto) (OutputDeletePeriodDto, error) {
-
-	var outputDeletePeriodDto OutputDeletePeriodDto
+func (deleteUseCase *DeleteUseCase) Execute(input InputDeletePeriodDto) (OutputDeletePeriodDto, status.InternalStatus, error) {
 
 	// Find the entity before update
-	findEntity, err := deleteUseCase.repository.FindById(input.Id)
+	entity, err := deleteUseCase.repository.Find(input.Id)
 	if err != nil {
-		return outputDeletePeriodDto, err
+		return OutputDeletePeriodDto{}, status.InternalServerError, err
 	}
-
-	_, err = entity.NewPeriod(input.Id, findEntity.GetCode(), findEntity.GetName(), findEntity.GetYear(), findEntity.GetStartDate(), findEntity.GetEndDate(), findEntity.GetCreatedAt(), findEntity.GetUpdatedAt())
-	if err != nil {
-		return outputDeletePeriodDto, err
+	if entity == nil {
+		return OutputDeletePeriodDto{}, status.InvalidResourceId, err
 	}
 
 	// Apply in dabatase
 	err = deleteUseCase.repository.Delete(input.Id)
 	if err != nil {
-		return outputDeletePeriodDto, err
+		return OutputDeletePeriodDto{}, status.InternalServerError, err
 	}
 
-	return outputDeletePeriodDto, nil
+	var outputDeletePeriodDto OutputDeletePeriodDto
+
+	return outputDeletePeriodDto, status.Success, nil
 }

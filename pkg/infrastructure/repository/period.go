@@ -53,7 +53,7 @@ func (repository *PeriodRepository) Create(entity entity.IPeriod) error {
 	return nil
 }
 
-func (repository *PeriodRepository) FindById(id string) (entity.IPeriod, error) {
+func (repository *PeriodRepository) Find(id string) (entity.IPeriod, error) {
 
 	row, err := repository.client.Query("select id, code, name, year, start_date, end_date, created_at, updated_at from periods where id = ?", id)
 	if err != nil {
@@ -62,21 +62,21 @@ func (repository *PeriodRepository) FindById(id string) (entity.IPeriod, error) 
 	defer row.Close()
 
 	var periodModel PeriodModel
-	for row.Next() {
+	if row.Next() {
 		if err := row.Scan(&periodModel.id, &periodModel.code, &periodModel.name, &periodModel.year, &periodModel.startDate, &periodModel.endDate, &periodModel.createdAt, &periodModel.updatedAt); err != nil {
 			return entity.Period{}, err
 		}
-	}
 
-	period, err := entity.NewPeriod(periodModel.id, periodModel.code, periodModel.name, periodModel.year, periodModel.startDate, periodModel.endDate, periodModel.createdAt, periodModel.updatedAt)
-	if err != nil {
-		return entity.Period{}, err
+		period, err := entity.NewPeriod(periodModel.id, periodModel.code, periodModel.name, periodModel.year, periodModel.startDate, periodModel.endDate, periodModel.createdAt, periodModel.updatedAt)
+		if err != nil {
+			return entity.Period{}, err
+		}
+		return period, nil
 	}
-
-	return period, nil
+	return nil, nil
 }
 
-func (repository *PeriodRepository) FindAll(filterParameters []FilterParameter) ([]entity.IPeriod, error) {
+func (repository *PeriodRepository) List(filterParameters []FilterParameter) ([]entity.IPeriod, error) {
 
 	codeFilter := ""
 	nameFilter := ""

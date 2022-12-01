@@ -3,11 +3,12 @@ package update
 import (
 	"marcelofelixsalgado/financial-period-api/pkg/domain/period/entity"
 	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository"
+	"marcelofelixsalgado/financial-period-api/pkg/usecase/status"
 	"time"
 )
 
 type IUpdateUseCase interface {
-	Execute(InputUpdatePeriodDto) (OutputUpdatePeriodDto, error)
+	Execute(InputUpdatePeriodDto) (OutputUpdatePeriodDto, status.InternalStatus, error)
 }
 
 type UpdateUseCase struct {
@@ -20,37 +21,39 @@ func NewUpdateUseCase(repository repository.IRepository) IUpdateUseCase {
 	}
 }
 
-func (updateUseCase *UpdateUseCase) Execute(input InputUpdatePeriodDto) (OutputUpdatePeriodDto, error) {
-	var outputUpdatePeriodDto OutputUpdatePeriodDto
+func (updateUseCase *UpdateUseCase) Execute(input InputUpdatePeriodDto) (OutputUpdatePeriodDto, status.InternalStatus, error) {
 
 	startDate, err := time.Parse(time.RFC3339, input.StartDate)
 	if err != nil {
-		return outputUpdatePeriodDto, err
+		return OutputUpdatePeriodDto{}, status.InternalServerError, err
 	}
 
 	endDate, err := time.Parse(time.RFC3339, input.EndDate)
 	if err != nil {
-		return outputUpdatePeriodDto, err
+		return OutputUpdatePeriodDto{}, status.InternalServerError, err
 	}
 
 	// Find the entity before update
-	findEntity, err := updateUseCase.repository.FindById(input.Id)
+	currentEntity, err := updateUseCase.repository.Find(input.Id)
 	if err != nil {
-		return outputUpdatePeriodDto, err
+		return OutputUpdatePeriodDto{}, status.InternalServerError, err
+	}
+	if currentEntity == nil {
+		return OutputUpdatePeriodDto{}, status.InvalidResourceId, err
 	}
 
-	entity, err := entity.NewPeriod(input.Id, input.Code, input.Name, input.Year, startDate, endDate, findEntity.GetCreatedAt(), time.Now())
+	entity, err := entity.NewPeriod(input.Id, input.Code, input.Name, input.Year, startDate, endDate, currentEntity.GetCreatedAt(), time.Now())
 	if err != nil {
-		return outputUpdatePeriodDto, err
+		return OutputUpdatePeriodDto{}, status.InternalServerError, err
 	}
 
 	// Persists in dabatase
 	err = updateUseCase.repository.Update(entity)
 	if err != nil {
-		return outputUpdatePeriodDto, err
+		return OutputUpdatePeriodDto{}, status.InternalServerError, err
 	}
 
-	outputUpdatePeriodDto = OutputUpdatePeriodDto{
+	outputUpdatePeriodDto := OutputUpdatePeriodDto{
 		Id:        entity.GetId(),
 		Code:      entity.GetCode(),
 		Name:      entity.GetName(),
@@ -61,5 +64,5 @@ func (updateUseCase *UpdateUseCase) Execute(input InputUpdatePeriodDto) (OutputU
 		UpdatedAt: entity.GetUpdatedAt().Format(time.RFC3339),
 	}
 
-	return outputUpdatePeriodDto, nil
+	return outputUpdatePeriodDto, status.Success, nil
 }

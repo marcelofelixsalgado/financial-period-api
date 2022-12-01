@@ -2,11 +2,12 @@ package find
 
 import (
 	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository"
+	"marcelofelixsalgado/financial-period-api/pkg/usecase/status"
 	"time"
 )
 
 type IFindUseCase interface {
-	Execute(InputFindPeriodDto) (OutputFindPeriodDto, error)
+	Execute(InputFindPeriodDto) (OutputFindPeriodDto, status.InternalStatus, error)
 }
 
 type FindUseCase struct {
@@ -19,11 +20,18 @@ func NewFindUseCase(repository repository.IRepository) IFindUseCase {
 	}
 }
 
-func (findUseCase *FindUseCase) Execute(input InputFindPeriodDto) (OutputFindPeriodDto, error) {
+func (findUseCase *FindUseCase) Execute(input InputFindPeriodDto) (OutputFindPeriodDto, status.InternalStatus, error) {
 
-	period, err := findUseCase.repository.FindById(input.Id)
+	period, err := findUseCase.repository.Find(input.Id)
 	if err != nil {
-		return OutputFindPeriodDto{}, err
+		return OutputFindPeriodDto{}, status.InternalServerError, err
+	}
+	if period == nil {
+		return OutputFindPeriodDto{}, status.InvalidResourceId, err
+	}
+
+	if period.GetId() == "" {
+		return OutputFindPeriodDto{}, status.NoRecordsFound, err
 	}
 
 	outputFindPeriodDto := OutputFindPeriodDto{
@@ -40,5 +48,5 @@ func (findUseCase *FindUseCase) Execute(input InputFindPeriodDto) (OutputFindPer
 		outputFindPeriodDto.UpdatedAt = period.GetUpdatedAt().Format(time.RFC3339)
 	}
 
-	return outputFindPeriodDto, nil
+	return outputFindPeriodDto, status.Success, nil
 }

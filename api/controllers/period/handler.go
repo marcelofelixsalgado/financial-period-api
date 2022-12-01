@@ -6,11 +6,13 @@ import (
 	"log"
 	"marcelofelixsalgado/financial-period-api/api/requests"
 	"marcelofelixsalgado/financial-period-api/api/responses"
+	"marcelofelixsalgado/financial-period-api/api/responses/faults"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/period/create"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/period/delete"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/period/find"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/period/list"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/period/update"
+	"marcelofelixsalgado/financial-period-api/pkg/usecase/status"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -43,18 +45,11 @@ func NewPeriodHandler(createUseCase create.ICreateUseCase, deleteUseCase delete.
 }
 
 func (periodHandler *PeriodHandler) CreatePeriod(w http.ResponseWriter, r *http.Request) {
+
 	requestBody, err := io.ReadAll(r.Body)
 	if err != nil {
 		log.Printf("Error trying to read the request body: %v", err)
-		message := responses.NewResponseMessage()
-		message.AddMessageByIssue(responses.MalformedRequest, "body", "", "")
-		jsonMessage, err := message.GetJsonMessage()
-		if err != nil {
-			responses.JSONErrorByCode(w, responses.InternalServerError)
-			return
-		}
-		w.WriteHeader(message.GetMessage().HttpStatusCode)
-		w.Write(jsonMessage)
+		responses.NewResponseMessage().AddMessageByIssue(faults.MalformedRequest, "body", "", "").Write(w)
 		return
 	}
 
@@ -62,29 +57,21 @@ func (periodHandler *PeriodHandler) CreatePeriod(w http.ResponseWriter, r *http.
 
 	if erro := json.Unmarshal([]byte(requestBody), &input); erro != nil {
 		log.Printf("Error trying to convert the input data: %v", err)
-		message := responses.NewResponseMessage()
-		message.AddMessageByIssue(responses.MalformedRequest, "body", "", "")
-		jsonMessage, err := message.GetJsonMessage()
-		if err != nil {
-			responses.JSONErrorByCode(w, responses.InternalServerError)
-			return
-		}
-		w.WriteHeader(message.GetMessage().HttpStatusCode)
-		w.Write(jsonMessage)
+		responses.NewResponseMessage().AddMessageByIssue(faults.MalformedRequest, "body", "", "").Write(w)
 		return
 	}
 
-	output, err := periodHandler.createUseCase.Execute(input)
-	if err != nil {
+	output, internalStatus, err := periodHandler.createUseCase.Execute(input)
+	if internalStatus != status.Success {
 		log.Printf("Error trying to create the entity: %v", err)
-		responses.JSONErrorByCode(w, responses.InternalServerError)
+		responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)
 		return
 	}
 
 	outputJSON, err := json.Marshal(output)
 	if err != nil {
 		log.Printf("Error trying to convert the output to response body: %v", err)
-		responses.JSONErrorByCode(w, responses.InternalServerError)
+		responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)
 		return
 	}
 
@@ -98,29 +85,25 @@ func (periodHandler *PeriodHandler) ListPeriods(w http.ResponseWriter, r *http.R
 	filterParameters, err := requests.SetupFilters(r)
 	if err != nil {
 		log.Printf("Error parsing the querystring parameters: %v", err)
-		message := responses.NewResponseMessage()
-		message.AddMessageByIssue(responses.MalformedRequest, "query_parameter", "", "")
-		jsonMessage, err := message.GetJsonMessage()
-		if err != nil {
-			responses.JSONErrorByCode(w, responses.InternalServerError)
-			return
-		}
-		w.WriteHeader(message.GetMessage().HttpStatusCode)
-		w.Write(jsonMessage)
+		responses.NewResponseMessage().AddMessageByIssue(faults.MalformedRequest, "query_parameter", "", "").Write(w)
 		return
 	}
 
-	output, err := periodHandler.listUseCase.Execute(input, filterParameters)
-	if err != nil {
+	output, internalStatus, err := periodHandler.listUseCase.Execute(input, filterParameters)
+	if internalStatus == status.InternalServerError {
 		log.Printf("Error listing the entity: %v", err)
-		responses.JSONErrorByCode(w, responses.InternalServerError)
+		responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)
+		return
+	}
+	if internalStatus == status.NoRecordsFound {
+		responses.NewResponseMessage().AddMessageByInternalStatus(internalStatus, "", "", "").Write(w)
 		return
 	}
 
 	outputJSON, err := json.Marshal(output.Periods)
 	if err != nil {
 		log.Printf("Error trying to convert the output to response body: %v", err)
-		responses.JSONErrorByCode(w, responses.InternalServerError)
+		responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)
 		return
 	}
 
@@ -136,17 +119,22 @@ func (periodHandler *PeriodHandler) GetPeriodById(w http.ResponseWriter, r *http
 		Id: Id,
 	}
 
-	output, err := periodHandler.findUseCase.Execute(input)
-	if err != nil {
+	output, internalStatus, err := periodHandler.findUseCase.Execute(input)
+	if internalStatus == status.InternalServerError {
 		log.Printf("Error finding the entity: %v", err)
-		responses.JSONErrorByCode(w, responses.InternalServerError)
+		responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)
+		return
+	}
+	if internalStatus == status.InvalidResourceId {
+		log.Printf("Unable finding the entity: %v", err)
+		responses.NewResponseMessage().AddMessageByInternalStatus(status.InvalidResourceId, responses.PathParameter, "id", Id).Write(w)
 		return
 	}
 
 	outputJSON, err := json.Marshal(output)
 	if err != nil {
 		log.Printf("Error trying to convert the output to response body: %v", err)
-		responses.JSONErrorByCode(w, responses.InternalServerError)
+		responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)
 		return
 	}
 
@@ -161,15 +149,7 @@ func (periodHandler *PeriodHandler) UpdatePeriod(w http.ResponseWriter, r *http.
 	requestBody, err := io.ReadAll(r.Body)
 	if err != nil {
 		log.Printf("Error trying to read the request body: %v", err)
-		message := responses.NewResponseMessage()
-		message.AddMessageByIssue(responses.MalformedRequest, "body", "", "")
-		jsonMessage, err := message.GetJsonMessage()
-		if err != nil {
-			responses.JSONErrorByCode(w, responses.InternalServerError)
-			return
-		}
-		w.WriteHeader(message.GetMessage().HttpStatusCode)
-		w.Write(jsonMessage)
+		responses.NewResponseMessage().AddMessageByIssue(faults.MalformedRequest, "body", "", "").Write(w)
 		return
 	}
 
@@ -177,29 +157,27 @@ func (periodHandler *PeriodHandler) UpdatePeriod(w http.ResponseWriter, r *http.
 
 	if erro := json.Unmarshal([]byte(requestBody), &input); erro != nil {
 		log.Printf("Error trying to convert the input data: %v", err)
-		message := responses.NewResponseMessage()
-		message.AddMessageByIssue(responses.MalformedRequest, "body", "", "")
-		jsonMessage, err := message.GetJsonMessage()
-		if err != nil {
-			responses.JSONErrorByCode(w, responses.InternalServerError)
-		}
-		w.WriteHeader(message.GetMessage().HttpStatusCode)
-		w.Write(jsonMessage)
+		responses.NewResponseMessage().AddMessageByIssue(faults.MalformedRequest, "body", "", "").Write(w)
 		return
 	}
 	input.Id = Id
 
-	output, err := periodHandler.updateUseCase.Execute(input)
-	if err != nil {
+	output, internalStatus, err := periodHandler.updateUseCase.Execute(input)
+	if internalStatus == status.InternalServerError {
 		log.Printf("Error updating the entity: %v", err)
-		responses.JSONErrorByCode(w, responses.InternalServerError)
+		responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)
+		return
+	}
+	if internalStatus == status.InvalidResourceId {
+		log.Printf("Unable finding the entity: %v", err)
+		responses.NewResponseMessage().AddMessageByInternalStatus(status.InvalidResourceId, responses.PathParameter, "id", Id).Write(w)
 		return
 	}
 
 	outputJSON, err := json.Marshal(output)
 	if err != nil {
 		log.Printf("Error trying to convert the output to response body: %v", err)
-		responses.JSONErrorByCode(w, responses.InternalServerError)
+		responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)
 		return
 	}
 
@@ -215,10 +193,15 @@ func (periodHandler *PeriodHandler) DeletePeriod(w http.ResponseWriter, r *http.
 		Id: Id,
 	}
 
-	_, err := periodHandler.deleteUseCase.Execute(input)
-	if err != nil {
+	_, internalStatus, err := periodHandler.deleteUseCase.Execute(input)
+	if internalStatus == status.InternalServerError {
 		log.Printf("Error removing the entity: %v", err)
-		responses.JSONErrorByCode(w, responses.InternalServerError)
+		responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)
+		return
+	}
+	if internalStatus == status.InvalidResourceId {
+		log.Printf("Unable finding the entity: %v", err)
+		responses.NewResponseMessage().AddMessageByInternalStatus(status.InvalidResourceId, responses.PathParameter, "id", Id).Write(w)
 		return
 	}
 

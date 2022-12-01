@@ -3,12 +3,13 @@ package create
 import (
 	"marcelofelixsalgado/financial-period-api/pkg/domain/period/entity"
 	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository"
+	"marcelofelixsalgado/financial-period-api/pkg/usecase/status"
 
 	"time"
 )
 
 type ICreateUseCase interface {
-	Execute(InputCreatePeriodDto) (OutputCreatePeriodDto, error)
+	Execute(InputCreatePeriodDto) (OutputCreatePeriodDto, status.InternalStatus, error)
 }
 
 type CreateUseCase struct {
@@ -21,33 +22,31 @@ func NewCreateUseCase(repository repository.IRepository) ICreateUseCase {
 	}
 }
 
-func (createUseCase *CreateUseCase) Execute(input InputCreatePeriodDto) (OutputCreatePeriodDto, error) {
-
-	var outputCreatePeriodDto OutputCreatePeriodDto
+func (createUseCase *CreateUseCase) Execute(input InputCreatePeriodDto) (OutputCreatePeriodDto, status.InternalStatus, error) {
 
 	startDate, err := time.Parse(time.RFC3339, input.StartDate)
 	if err != nil {
-		return outputCreatePeriodDto, err
+		return OutputCreatePeriodDto{}, status.InternalServerError, err
 	}
 
 	endDate, err := time.Parse(time.RFC3339, input.EndDate)
 	if err != nil {
-		return outputCreatePeriodDto, err
+		return OutputCreatePeriodDto{}, status.InternalServerError, err
 	}
 
 	// Creates an entity
 	entity, err := entity.Create(input.Code, input.Name, input.Year, startDate, endDate)
 	if err != nil {
-		return outputCreatePeriodDto, err
+		return OutputCreatePeriodDto{}, status.InternalServerError, err
 	}
 
 	// Persists in dabatase
 	err = createUseCase.repository.Create(entity)
 	if err != nil {
-		return outputCreatePeriodDto, err
+		return OutputCreatePeriodDto{}, status.InternalServerError, err
 	}
 
-	outputCreatePeriodDto = OutputCreatePeriodDto{
+	outputCreatePeriodDto := OutputCreatePeriodDto{
 		Id:        entity.GetId(),
 		Code:      entity.GetCode(),
 		Name:      entity.GetName(),
@@ -57,5 +56,5 @@ func (createUseCase *CreateUseCase) Execute(input InputCreatePeriodDto) (OutputC
 		CreatedAt: entity.GetCreatedAt().Format(time.RFC3339),
 	}
 
-	return outputCreatePeriodDto, nil
+	return outputCreatePeriodDto, status.Success, nil
 }

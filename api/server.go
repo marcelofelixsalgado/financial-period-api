@@ -54,6 +54,6 @@ func NewServer() *mux.Router {
 func Run(router *mux.Router) {
 	port := fmt.Sprintf(":%d", configs.ApiHttpPort)
 
-	fmt.Printf("Listening on port %s\n", port)
+	log.Printf("Listening on port %s\n", port)
 	log.Fatal(http.ListenAndServe(port, router))
 }
