@@ -51,6 +51,8 @@ const (
 	CannotBeNegative               Issue = "CANNOT_BE_NEGATIVE"
 	CannotBeZeroOrNegative         Issue = "CANNOT_BE_ZERO_OR_NEGATIVE"
 	ConditionalFieldNotAllowed     Issue = "CONDITIONAL_FIELD_NOT_ALLOWED"
+	ConditionalGreaterThan         Issue = "CONDITIONAL_MUST_BE_GREATER_THAN"
+	ConditionalLowerThan           Issue = "CONDITIONAL_MUST_BE_LOWER_THAN"
 	ConditionalInvalidValue        Issue = "CONDITIONAL_INVALID_VALUE"
 	ConditionalMissingField        Issue = "CONDITIONAL_MISSING_FIELD"
 	ConditionalValueTooHigh        Issue = "CONDITIONAL_VALUE_TOO_HIGH"
@@ -165,6 +167,31 @@ var catalog = Catalog{
 					Issue:            ConditionalFieldNotAllowed,
 					Description:      "%s is not allowed when field %s is set to %s",
 					DescriptionArgs:  3,
+					LocationRequired: true,
+					FieldRequired:    true,
+					ValueRequired:    true,
+				},
+
+				{
+					Issue:            ConditionalFieldNotAllowed,
+					Description:      "%s is not allowed when field %s is set to %s",
+					DescriptionArgs:  3,
+					LocationRequired: true,
+					FieldRequired:    true,
+					ValueRequired:    true,
+				},
+				{
+					Issue:            ConditionalGreaterThan,
+					Description:      "The field %s must be greater than field %s",
+					DescriptionArgs:  2,
+					LocationRequired: true,
+					FieldRequired:    true,
+					ValueRequired:    true,
+				},
+				{
+					Issue:            ConditionalLowerThan,
+					Description:      "The field %s must be lower than field %s",
+					DescriptionArgs:  2,
 					LocationRequired: true,
 					FieldRequired:    true,
 					ValueRequired:    true,

@@ -61,6 +61,12 @@ func (periodHandler *PeriodHandler) CreatePeriod(w http.ResponseWriter, r *http.
 		return
 	}
 
+	// Validating input parameters
+	if responseMessage := requests.ValidateCreateRequestBody(input).GetMessage(); responseMessage.ErrorCode != "" {
+		responseMessage.Write(w)
+		return
+	}
+
 	output, internalStatus, err := periodHandler.createUseCase.Execute(input)
 	if internalStatus != status.Success {
 		log.Printf("Error trying to create the entity: %v", err)
@@ -161,6 +167,12 @@ func (periodHandler *PeriodHandler) UpdatePeriod(w http.ResponseWriter, r *http.
 		return
 	}
 	input.Id = Id
+
+	// Validating input parameters
+	if responseMessage := requests.ValidateUpdateRequestBody(input).GetMessage(); responseMessage.ErrorCode != "" {
+		responseMessage.Write(w)
+		return
+	}
 
 	output, internalStatus, err := periodHandler.updateUseCase.Execute(input)
 	if internalStatus == status.InternalServerError {

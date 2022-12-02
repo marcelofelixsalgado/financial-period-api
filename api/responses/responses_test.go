@@ -1,7 +1,7 @@
 package responses_test
 
 import (
-	"marcelofelixsalgado/financial-period-api/api/responses"
+	. "marcelofelixsalgado/financial-period-api/api/responses"
 	"marcelofelixsalgado/financial-period-api/api/responses/faults"
 	"reflect"
 	"testing"
@@ -9,11 +9,11 @@ import (
 
 func TestGetMessages(t *testing.T) {
 
-	expectedMessage := responses.ResponseMessage{
+	expectedMessage := ResponseMessage{
 		ErrorCode:      "INVALID_REQUEST_SYNTAX",
 		Message:        "Request is not well-formed, syntactically incorrect, or violates schema",
 		HttpStatusCode: 400,
-		Details: []responses.ResponseMessageDetail{
+		Details: []ResponseMessageDetail{
 			{
 				Issue:       "DECIMALS_NOT_SUPPORTED",
 				Description: "Field value does not support decimals",
@@ -24,8 +24,8 @@ func TestGetMessages(t *testing.T) {
 		},
 	}
 
-	actualMessage := responses.NewResponseMessage()
-	actualMessage.AddMessageByIssue(faults.DecimalsNotSupported, responses.Body, "field3", "value3")
+	actualMessage := NewResponseMessage()
+	actualMessage.AddMessageByIssue(faults.DecimalsNotSupported, Body, "field3", "value3")
 
 	if !reflect.DeepEqual(actualMessage.GetMessage(), expectedMessage) {
 		t.Errorf("Expected message: [%+v]  is not equal Returned Message: [%+v]", expectedMessage, actualMessage)
@@ -34,11 +34,11 @@ func TestGetMessages(t *testing.T) {
 
 func TestGetMessagesMultipleDetais(t *testing.T) {
 
-	expectedMessage := responses.ResponseMessage{
+	expectedMessage := ResponseMessage{
 		ErrorCode:      "INVALID_REQUEST_SYNTAX",
 		Message:        "Request is not well-formed, syntactically incorrect, or violates schema",
 		HttpStatusCode: 400,
-		Details: []responses.ResponseMessageDetail{
+		Details: []ResponseMessageDetail{
 			{
 				Issue:       "DECIMALS_NOT_SUPPORTED",
 				Description: "Field value does not support decimals",
@@ -56,9 +56,9 @@ func TestGetMessagesMultipleDetais(t *testing.T) {
 		},
 	}
 
-	actualMessage := responses.NewResponseMessage()
-	actualMessage.AddMessageByIssue(faults.DecimalsNotSupported, responses.Body, "field1", "value1")
-	actualMessage.AddMessageByIssue(faults.DecimalsNotSupported, responses.Body, "field2", "value2")
+	actualMessage := NewResponseMessage()
+	actualMessage.AddMessageByIssue(faults.DecimalsNotSupported, Body, "field1", "value1")
+	actualMessage.AddMessageByIssue(faults.DecimalsNotSupported, Body, "field2", "value2")
 
 	if !reflect.DeepEqual(actualMessage.GetMessage(), expectedMessage) {
 		t.Errorf("Expected message: [%+v]  is not equal Returned Message: [%+v]", expectedMessage, actualMessage)
@@ -67,11 +67,11 @@ func TestGetMessagesMultipleDetais(t *testing.T) {
 
 func TestGetMessagesReplacementSuccess(t *testing.T) {
 
-	expectedMessage := responses.ResponseMessage{
+	expectedMessage := ResponseMessage{
 		ErrorCode:      "UNPROCESSABLE_ENTITY",
 		Message:        "The request is semantically incorrect or fails business validation",
 		HttpStatusCode: 422,
-		Details: []responses.ResponseMessageDetail{
+		Details: []ResponseMessageDetail{
 			{
 				Issue:       "CONDITIONAL_FIELD_NOT_ALLOWED",
 				Description: "field1 is not allowed when field field2 is set to value2",
@@ -82,8 +82,8 @@ func TestGetMessagesReplacementSuccess(t *testing.T) {
 		},
 	}
 
-	actualMessage := responses.NewResponseMessage()
-	actualMessage.AddMessageByIssue(faults.ConditionalFieldNotAllowed, responses.Body, "field1", "value1", "field1", "field2", "value2")
+	actualMessage := NewResponseMessage()
+	actualMessage.AddMessageByIssue(faults.ConditionalFieldNotAllowed, Body, "field1", "value1", "field1", "field2", "value2")
 
 	if !reflect.DeepEqual(actualMessage.GetMessage(), expectedMessage) {
 		t.Errorf("Expected message: [%+v]  is not equal Returned Message: [%+v]", expectedMessage, actualMessage)
