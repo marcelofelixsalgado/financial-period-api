@@ -15,13 +15,6 @@ type IPeriod interface {
 	GetEndDate() time.Time
 	GetCreatedAt() time.Time
 	GetUpdatedAt() time.Time
-
-	SetCode(string)
-	SetName(string)
-	SetYear(int)
-	SetStartDate(time.Time)
-	SetEndDate(time.Time)
-	SetUpdatedAt(time.Time)
 }
 
 type Period struct {
@@ -67,34 +60,7 @@ func (period Period) GetUpdatedAt() time.Time {
 	return period.updatedAt
 }
 
-func (period Period) SetCode(code string) {
-	period.code = code
-	period.format()
-	period.validate()
-}
-
-func (period Period) SetName(name string) {
-	period.name = name
-	period.format()
-	period.validate()
-}
-
-func (period Period) SetYear(year int) {
-	period.year = year
-	period.validate()
-}
-
-func (period Period) SetStartDate(startDate time.Time) {
-	period.startDate = startDate
-	period.validate()
-}
-
-func (period Period) SetEndDate(endDate time.Time) {
-	period.endDate = endDate
-	period.validate()
-}
-
-func (period Period) SetUpdatedAt(updatedAt time.Time) {
+func (period *Period) SetUpdatedAt(updatedAt time.Time) {
 	period.updatedAt = updatedAt
 	period.validate()
 }

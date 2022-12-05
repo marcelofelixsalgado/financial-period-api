@@ -3,6 +3,7 @@ package routes
 import (
 	"marcelofelixsalgado/financial-period-api/api/controllers/health"
 	"marcelofelixsalgado/financial-period-api/api/controllers/period"
+	"marcelofelixsalgado/financial-period-api/api/controllers/user"
 	"marcelofelixsalgado/financial-period-api/api/middlewares"
 
 	"github.com/gorilla/mux"
@@ -10,12 +11,14 @@ import (
 
 type Routes struct {
 	periodRoutes period.PeriodRoutes
+	userRoutes   user.UserRoutes
 	healthRoutes health.HealthRoutes
 }
 
-func NewRoutes(periodRoutes period.PeriodRoutes, healthRoutes health.HealthRoutes) *Routes {
+func NewRoutes(periodRoutes period.PeriodRoutes, userRoutes user.UserRoutes, healthRoutes health.HealthRoutes) *Routes {
 	return &Routes{
 		periodRoutes: periodRoutes,
+		userRoutes:   userRoutes,
 		healthRoutes: healthRoutes,
 	}
 }
@@ -26,6 +29,13 @@ func (routes *Routes) SetupRoutes() *mux.Router {
 
 	// period routes
 	for _, route := range routes.periodRoutes.PeriodRouteMapping() {
+		router.HandleFunc(route.URI,
+			middlewares.Logger(
+				middlewares.Authenticate(route.Function))).Methods(route.Method)
+	}
+
+	// user routes
+	for _, route := range routes.userRoutes.UserRouteMapping() {
 		router.HandleFunc(route.URI,
 			middlewares.Logger(
 				middlewares.Authenticate(route.Function))).Methods(route.Method)

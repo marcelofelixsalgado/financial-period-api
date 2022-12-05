@@ -1,8 +1,9 @@
-package repository
+package period
 
 import (
 	"database/sql"
 	"marcelofelixsalgado/financial-period-api/pkg/domain/period/entity"
+	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/filter"
 	"time"
 )
 
@@ -76,7 +77,7 @@ func (repository *PeriodRepository) Find(id string) (entity.IPeriod, error) {
 	return nil, nil
 }
 
-func (repository *PeriodRepository) List(filterParameters []FilterParameter) ([]entity.IPeriod, error) {
+func (repository *PeriodRepository) List(filterParameters []filter.FilterParameter) ([]entity.IPeriod, error) {
 
 	codeFilter := ""
 	nameFilter := ""

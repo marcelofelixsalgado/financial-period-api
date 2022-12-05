@@ -1,7 +1,7 @@
 package find
 
 import (
-	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository"
+	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/period"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/status"
 	"time"
 )
@@ -11,10 +11,10 @@ type IFindUseCase interface {
 }
 
 type FindUseCase struct {
-	repository repository.IRepository
+	repository period.IRepository
 }
 
-func NewFindUseCase(repository repository.IRepository) IFindUseCase {
+func NewFindUseCase(repository period.IRepository) IFindUseCase {
 	return &FindUseCase{
 		repository: repository,
 	}

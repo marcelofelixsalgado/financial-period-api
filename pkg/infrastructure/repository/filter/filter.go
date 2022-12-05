@@ -1,4 +1,4 @@
-package repository
+package filter
 
 type FilterParameter struct {
 	Name     string

@@ -1,26 +1,27 @@
 package list
 
 import (
-	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository"
+	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/filter"
+	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/period"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/status"
 	"time"
 )
 
 type IListUseCase interface {
-	Execute(InputListPeriodDto, []repository.FilterParameter) (OutputListPeriodDto, status.InternalStatus, error)
+	Execute(InputListPeriodDto, []filter.FilterParameter) (OutputListPeriodDto, status.InternalStatus, error)
 }
 
 type ListUseCase struct {
-	repository repository.IRepository
+	repository period.IRepository
 }
 
-func NewListUseCase(repository repository.IRepository) IListUseCase {
+func NewListUseCase(repository period.IRepository) IListUseCase {
 	return &ListUseCase{
 		repository: repository,
 	}
 }
 
-func (listUseCase *ListUseCase) Execute(input InputListPeriodDto, filterParameters []repository.FilterParameter) (OutputListPeriodDto, status.InternalStatus, error) {
+func (listUseCase *ListUseCase) Execute(input InputListPeriodDto, filterParameters []filter.FilterParameter) (OutputListPeriodDto, status.InternalStatus, error) {
 
 	periods, err := listUseCase.repository.List(filterParameters)
 	if err != nil {

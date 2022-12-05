@@ -88,7 +88,7 @@ func TestNewPeriodInvalidCode(t *testing.T) {
 		expected:  "code is required",
 	}
 	_, err := entity.Create(testCase.code, testCase.name, testCase.year, testCase.startDate, testCase.endDate)
-	if err.Error() != testCase.expected {
+	if err == nil || (err.Error() != testCase.expected) {
 		t.Errorf("Error expected: %s - Error received: %s", testCase.expected, err)
 	}
 }
@@ -104,7 +104,7 @@ func TestNewPeriodInvalidName(t *testing.T) {
 	}
 	_, err := entity.Create(testCase.code, testCase.name, testCase.year, testCase.startDate, testCase.endDate)
 
-	if err.Error() != testCase.expected {
+	if err == nil || (err.Error() != testCase.expected) {
 		t.Errorf("Error expected: %s - Error received: %s", testCase.expected, err)
 	}
 }
@@ -119,7 +119,7 @@ func TestNewPeriodInvalidYear(t *testing.T) {
 		expected:  "year is required",
 	}
 	_, err := entity.Create(testCase.code, testCase.name, testCase.year, testCase.startDate, testCase.endDate)
-	if err.Error() != testCase.expected {
+	if err == nil || (err.Error() != testCase.expected) {
 		t.Errorf("Error expected: %s - Error received: %s", testCase.expected, err)
 	}
 }
@@ -133,7 +133,7 @@ func TestNewPeriodInvalidStartDate(t *testing.T) {
 		expected: "start date is required",
 	}
 	_, err := entity.Create(testCase.code, testCase.name, testCase.year, testCase.startDate, testCase.endDate)
-	if err.Error() != testCase.expected {
+	if err == nil || (err.Error() != testCase.expected) {
 		t.Errorf("Error expected: %s - Error received: %s", testCase.expected, err)
 	}
 }
@@ -147,7 +147,7 @@ func TestNewPeriodInvalidEndDate(t *testing.T) {
 		expected:  "end date is required",
 	}
 	_, err := entity.Create(testCase.code, testCase.name, testCase.year, testCase.startDate, testCase.endDate)
-	if err.Error() != testCase.expected {
+	if err == nil || (err.Error() != testCase.expected) {
 		t.Errorf("Error expected: %s - Error received: %s", testCase.expected, err)
 	}
 }
@@ -163,7 +163,7 @@ func TestNewPeriodEqualDates(t *testing.T) {
 		expected:  "start date must be greater than the end date",
 	}
 	_, err := entity.Create(testCase.code, testCase.name, testCase.year, testCase.startDate, testCase.endDate)
-	if err.Error() != testCase.expected {
+	if err == nil || (err.Error() != testCase.expected) {
 		t.Errorf("Error expected: %s - Error received: %s", testCase.expected, err)
 	}
 }
@@ -179,7 +179,7 @@ func TestNewPeriodInvalidDates(t *testing.T) {
 		expected:  "start date must be greater than the end date",
 	}
 	_, err := entity.Create(testCase.code, testCase.name, testCase.year, testCase.startDate, testCase.endDate)
-	if err.Error() != testCase.expected {
+	if err == nil || (err.Error() != testCase.expected) {
 		t.Errorf("Error expected: %s - Error received: %s", testCase.expected, err)
 	}
 }

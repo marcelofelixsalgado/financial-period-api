@@ -2,7 +2,8 @@ package create
 
 import (
 	"marcelofelixsalgado/financial-period-api/pkg/domain/period/entity"
-	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository"
+	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/period"
+
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/status"
 
 	"time"
@@ -13,10 +14,10 @@ type ICreateUseCase interface {
 }
 
 type CreateUseCase struct {
-	repository repository.IRepository
+	repository period.IRepository
 }
 
-func NewCreateUseCase(repository repository.IRepository) ICreateUseCase {
+func NewCreateUseCase(repository period.IRepository) ICreateUseCase {
 	return &CreateUseCase{
 		repository: repository,
 	}

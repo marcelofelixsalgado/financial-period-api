@@ -1,4 +1,4 @@
-package period
+package user
 
 import (
 	"encoding/json"
@@ -7,26 +7,26 @@ import (
 	"marcelofelixsalgado/financial-period-api/api/requests"
 	"marcelofelixsalgado/financial-period-api/api/responses"
 	"marcelofelixsalgado/financial-period-api/api/responses/faults"
-	"marcelofelixsalgado/financial-period-api/pkg/usecase/period/create"
-	"marcelofelixsalgado/financial-period-api/pkg/usecase/period/delete"
-	"marcelofelixsalgado/financial-period-api/pkg/usecase/period/find"
-	"marcelofelixsalgado/financial-period-api/pkg/usecase/period/list"
-	"marcelofelixsalgado/financial-period-api/pkg/usecase/period/update"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/status"
+	"marcelofelixsalgado/financial-period-api/pkg/usecase/user/create"
+	"marcelofelixsalgado/financial-period-api/pkg/usecase/user/delete"
+	"marcelofelixsalgado/financial-period-api/pkg/usecase/user/find"
+	"marcelofelixsalgado/financial-period-api/pkg/usecase/user/list"
+	"marcelofelixsalgado/financial-period-api/pkg/usecase/user/update"
 	"net/http"
 
 	"github.com/gorilla/mux"
 )
 
-type IPeriodHandler interface {
-	CreatePeriod(w http.ResponseWriter, r *http.Request)
-	ListPeriods(w http.ResponseWriter, r *http.Request)
-	GetPeriodById(w http.ResponseWriter, r *http.Request)
-	UpdatePeriod(w http.ResponseWriter, r *http.Request)
-	DeletePeriod(w http.ResponseWriter, r *http.Request)
+type IUserHandler interface {
+	CreateUser(w http.ResponseWriter, r *http.Request)
+	ListUsers(w http.ResponseWriter, r *http.Request)
+	GetUserById(w http.ResponseWriter, r *http.Request)
+	UpdateUser(w http.ResponseWriter, r *http.Request)
+	DeleteUser(w http.ResponseWriter, r *http.Request)
 }
 
-type PeriodHandler struct {
+type UserHandler struct {
 	createUseCase create.ICreateUseCase
 	deleteUseCase delete.IDeleteUseCase
 	findUseCase   find.IFindUseCase
@@ -34,8 +34,8 @@ type PeriodHandler struct {
 	updateUseCase update.IUpdateUseCase
 }
 
-func NewPeriodHandler(createUseCase create.ICreateUseCase, deleteUseCase delete.IDeleteUseCase, findUseCase find.IFindUseCase, listUseCase list.IListUseCase, updateUseCase update.IUpdateUseCase) IPeriodHandler {
-	return &PeriodHandler{
+func NewUserHandler(createUseCase create.ICreateUseCase, deleteUseCase delete.IDeleteUseCase, findUseCase find.IFindUseCase, listUseCase list.IListUseCase, updateUseCase update.IUpdateUseCase) IUserHandler {
+	return &UserHandler{
 		createUseCase: createUseCase,
 		deleteUseCase: deleteUseCase,
 		findUseCase:   findUseCase,
@@ -44,7 +44,7 @@ func NewPeriodHandler(createUseCase create.ICreateUseCase, deleteUseCase delete.
 	}
 }
 
-func (periodHandler *PeriodHandler) CreatePeriod(w http.ResponseWriter, r *http.Request) {
+func (userHandler *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 
 	requestBody, err := io.ReadAll(r.Body)
 	if err != nil {
@@ -53,7 +53,7 @@ func (periodHandler *PeriodHandler) CreatePeriod(w http.ResponseWriter, r *http.
 		return
 	}
 
-	var input create.InputCreatePeriodDto
+	var input create.InputCreateUserDto
 
 	if erro := json.Unmarshal([]byte(requestBody), &input); erro != nil {
 		log.Printf("Error trying to convert the input data: %v", err)
@@ -67,7 +67,7 @@ func (periodHandler *PeriodHandler) CreatePeriod(w http.ResponseWriter, r *http.
 		return
 	}
 
-	output, internalStatus, err := periodHandler.createUseCase.Execute(input)
+	output, internalStatus, err := userHandler.createUseCase.Execute(input)
 	if internalStatus != status.Success {
 		log.Printf("Error trying to create the entity: %v", err)
 		responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)
@@ -85,8 +85,8 @@ func (periodHandler *PeriodHandler) CreatePeriod(w http.ResponseWriter, r *http.
 	w.Write(outputJSON)
 }
 
-func (periodHandler *PeriodHandler) ListPeriods(w http.ResponseWriter, r *http.Request) {
-	var input list.InputListPeriodDto
+func (userHandler *UserHandler) ListUsers(w http.ResponseWriter, r *http.Request) {
+	var input list.InputListUserDto
 
 	filterParameters, err := requests.SetupFilters(r)
 	if err != nil {
@@ -95,7 +95,7 @@ func (periodHandler *PeriodHandler) ListPeriods(w http.ResponseWriter, r *http.R
 		return
 	}
 
-	output, internalStatus, err := periodHandler.listUseCase.Execute(input, filterParameters)
+	output, internalStatus, err := userHandler.listUseCase.Execute(input, filterParameters)
 	if internalStatus == status.InternalServerError {
 		log.Printf("Error listing the entity: %v", err)
 		responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)
@@ -106,7 +106,7 @@ func (periodHandler *PeriodHandler) ListPeriods(w http.ResponseWriter, r *http.R
 		return
 	}
 
-	outputJSON, err := json.Marshal(output.Periods)
+	outputJSON, err := json.Marshal(output.Users)
 	if err != nil {
 		log.Printf("Error trying to convert the output to response body: %v", err)
 		responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)
@@ -117,15 +117,15 @@ func (periodHandler *PeriodHandler) ListPeriods(w http.ResponseWriter, r *http.R
 	w.Write(outputJSON)
 }
 
-func (periodHandler *PeriodHandler) GetPeriodById(w http.ResponseWriter, r *http.Request) {
+func (userHandler *UserHandler) GetUserById(w http.ResponseWriter, r *http.Request) {
 	parameters := mux.Vars(r)
 	Id := parameters["id"]
 
-	input := find.InputFindPeriodDto{
+	input := find.InputFindUserDto{
 		Id: Id,
 	}
 
-	output, internalStatus, err := periodHandler.findUseCase.Execute(input)
+	output, internalStatus, err := userHandler.findUseCase.Execute(input)
 	if internalStatus == status.InternalServerError {
 		log.Printf("Error finding the entity: %v", err)
 		responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)
@@ -148,7 +148,7 @@ func (periodHandler *PeriodHandler) GetPeriodById(w http.ResponseWriter, r *http
 	w.Write(outputJSON)
 }
 
-func (periodHandler *PeriodHandler) UpdatePeriod(w http.ResponseWriter, r *http.Request) {
+func (userHandler *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	parameters := mux.Vars(r)
 	Id := parameters["id"]
 
@@ -159,7 +159,7 @@ func (periodHandler *PeriodHandler) UpdatePeriod(w http.ResponseWriter, r *http.
 		return
 	}
 
-	var input update.InputUpdatePeriodDto
+	var input update.InputUpdateUserDto
 
 	if erro := json.Unmarshal([]byte(requestBody), &input); erro != nil {
 		log.Printf("Error trying to convert the input data: %v", err)
@@ -174,7 +174,7 @@ func (periodHandler *PeriodHandler) UpdatePeriod(w http.ResponseWriter, r *http.
 		return
 	}
 
-	output, internalStatus, err := periodHandler.updateUseCase.Execute(input)
+	output, internalStatus, err := userHandler.updateUseCase.Execute(input)
 	if internalStatus == status.InternalServerError {
 		log.Printf("Error updating the entity: %v", err)
 		responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)
@@ -197,15 +197,15 @@ func (periodHandler *PeriodHandler) UpdatePeriod(w http.ResponseWriter, r *http.
 	w.Write(outputJSON)
 }
 
-func (periodHandler *PeriodHandler) DeletePeriod(w http.ResponseWriter, r *http.Request) {
+func (userHandler *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	parameters := mux.Vars(r)
 	Id := parameters["id"]
 
-	var input = delete.InputDeletePeriodDto{
+	var input = delete.InputDeleteUserDto{
 		Id: Id,
 	}
 
-	_, internalStatus, err := periodHandler.deleteUseCase.Execute(input)
+	_, internalStatus, err := userHandler.deleteUseCase.Execute(input)
 	if internalStatus == status.InternalServerError {
 		log.Printf("Error removing the entity: %v", err)
 		responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)

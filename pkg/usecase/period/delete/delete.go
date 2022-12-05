@@ -1,7 +1,7 @@
 package delete
 
 import (
-	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository"
+	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/period"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/status"
 )
 
@@ -10,10 +10,10 @@ type IDeleteUseCase interface {
 }
 
 type DeleteUseCase struct {
-	repository repository.IRepository
+	repository period.IRepository
 }
 
-func NewDeleteUseCase(repository repository.IRepository) IDeleteUseCase {
+func NewDeleteUseCase(repository period.IRepository) IDeleteUseCase {
 	return &DeleteUseCase{
 		repository: repository,
 	}

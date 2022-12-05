@@ -1,4 +1,4 @@
-package requests
+package period
 
 import (
 	"marcelofelixsalgado/financial-period-api/api/responses"

@@ -1,17 +1,17 @@
 package requests
 
 import (
-	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository"
+	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/filter"
 	"net/http"
 )
 
-func SetupFilters(r *http.Request) ([]repository.FilterParameter, error) {
+func SetupFilters(r *http.Request) ([]filter.FilterParameter, error) {
 
-	filterParameters := []repository.FilterParameter{}
+	filterParameters := []filter.FilterParameter{}
 
 	queryParams := r.URL.Query()
 	for name, value := range queryParams {
-		filterParameter := repository.FilterParameter{
+		filterParameter := filter.FilterParameter{
 			Name:  name,
 			Value: value[0],
 		}

@@ -2,7 +2,7 @@ package update
 
 import (
 	"marcelofelixsalgado/financial-period-api/pkg/domain/period/entity"
-	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository"
+	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/period"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/status"
 	"time"
 )
@@ -12,10 +12,10 @@ type IUpdateUseCase interface {
 }
 
 type UpdateUseCase struct {
-	repository repository.IRepository
+	repository period.IRepository
 }
 
-func NewUpdateUseCase(repository repository.IRepository) IUpdateUseCase {
+func NewUpdateUseCase(repository period.IRepository) IUpdateUseCase {
 	return &UpdateUseCase{
 		repository: repository,
 	}
