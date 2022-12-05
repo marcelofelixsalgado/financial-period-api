@@ -24,7 +24,7 @@ func NewUpdateUseCase(repository user.IRepository) IUpdateUseCase {
 func (updateUseCase *UpdateUseCase) Execute(input InputUpdateUserDto) (OutputUpdateUserDto, status.InternalStatus, error) {
 
 	// Find the entity before update
-	currentEntity, err := updateUseCase.repository.Find(input.Id)
+	currentEntity, err := updateUseCase.repository.FindById(input.Id)
 	if err != nil {
 		return OutputUpdateUserDto{}, status.InternalServerError, err
 	}

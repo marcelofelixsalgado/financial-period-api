@@ -52,9 +52,9 @@ func (repository *UserRepository) Create(entity entity.IUser) error {
 	return nil
 }
 
-func (repository *UserRepository) Find(id string) (entity.IUser, error) {
+func (repository *UserRepository) FindById(id string) (entity.IUser, error) {
 
-	row, err := repository.client.Query("select id, name, password, phone, email, created_at, updated_at from users where id = ?", id)
+	row, err := repository.client.Query("select id, name, phone, email, created_at, updated_at from users where id = ?", id)
 	if err != nil {
 		return entity.User{}, err
 	}
@@ -62,11 +62,11 @@ func (repository *UserRepository) Find(id string) (entity.IUser, error) {
 
 	var userModel UserModel
 	if row.Next() {
-		if err := row.Scan(&userModel.id, &userModel.name, &userModel.password, &userModel.phone, &userModel.email, &userModel.createdAt, &userModel.updatedAt); err != nil {
+		if err := row.Scan(&userModel.id, &userModel.name, &userModel.phone, &userModel.email, &userModel.createdAt, &userModel.updatedAt); err != nil {
 			return entity.User{}, err
 		}
 
-		user, err := entity.NewUser(userModel.id, userModel.name, userModel.password, userModel.phone, userModel.email, userModel.createdAt, userModel.updatedAt)
+		user, err := entity.NewUser(userModel.id, userModel.name, "", userModel.phone, userModel.email, userModel.createdAt, userModel.updatedAt)
 		if err != nil {
 			return entity.User{}, err
 		}
@@ -90,16 +90,16 @@ func (repository *UserRepository) List(filterParameters []filter.FilterParameter
 	var rows *sql.Rows
 	var err error
 	if len(filterParameters) == 0 {
-		rows, err = repository.client.Query("select id, name, password, phone, email, created_at, updated_at from users")
+		rows, err = repository.client.Query("select id, name, phone, email, created_at, updated_at from users")
 	} else {
 		if len(nameFilter) > 0 && len(emailFilter) == 0 {
-			rows, err = repository.client.Query("select id, name, password, phone, email, created_at, updated_at from users where name = ?", nameFilter)
+			rows, err = repository.client.Query("select id, name, phone, email, created_at, updated_at from users where name = ?", nameFilter)
 		}
 		if len(nameFilter) == 0 && len(emailFilter) > 0 {
-			rows, err = repository.client.Query("select id, name, password, phone, email, created_at, updated_at from users where email = ?", emailFilter)
+			rows, err = repository.client.Query("select id, name, phone, email, created_at, updated_at from users where email = ?", emailFilter)
 		}
 		if len(nameFilter) > 0 && len(emailFilter) > 0 {
-			rows, err = repository.client.Query("select id, name, password, phone, email, created_at, updated_at from users where name = ? and email = ?", nameFilter, emailFilter)
+			rows, err = repository.client.Query("select id, name, phone, email, created_at, updated_at from users where name = ? and email = ?", nameFilter, emailFilter)
 		}
 	}
 
@@ -112,11 +112,11 @@ func (repository *UserRepository) List(filterParameters []filter.FilterParameter
 	for rows.Next() {
 		var userModel UserModel
 
-		if err := rows.Scan(&userModel.id, &userModel.name, &userModel.password, &userModel.phone, &userModel.email, &userModel.createdAt, &userModel.updatedAt); err != nil {
+		if err := rows.Scan(&userModel.id, &userModel.name, &userModel.phone, &userModel.email, &userModel.createdAt, &userModel.updatedAt); err != nil {
 			return []entity.IUser{}, err
 		}
 
-		user, err := entity.NewUser(userModel.id, userModel.name, userModel.password, userModel.phone, userModel.email, userModel.createdAt, userModel.updatedAt)
+		user, err := entity.NewUser(userModel.id, userModel.name, "", userModel.phone, userModel.email, userModel.createdAt, userModel.updatedAt)
 		if err != nil {
 			return []entity.IUser{}, err
 		}

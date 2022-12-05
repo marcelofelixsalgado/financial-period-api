@@ -22,7 +22,7 @@ func NewFindUseCase(repository user.IRepository) IFindUseCase {
 
 func (findUseCase *FindUseCase) Execute(input InputFindUserDto) (OutputFindUserDto, status.InternalStatus, error) {
 
-	user, err := findUseCase.repository.Find(input.Id)
+	user, err := findUseCase.repository.FindById(input.Id)
 	if err != nil {
 		return OutputFindUserDto{}, status.InternalServerError, err
 	}
@@ -37,7 +37,6 @@ func (findUseCase *FindUseCase) Execute(input InputFindUserDto) (OutputFindUserD
 	outputFindUserDto := OutputFindUserDto{
 		Id:        user.GetId(),
 		Name:      user.GetName(),
-		Password:  user.GetPassword(),
 		Phone:     user.GetPhone(),
 		Email:     user.GetEmail(),
 		CreatedAt: user.GetCreatedAt().Format(time.RFC3339),

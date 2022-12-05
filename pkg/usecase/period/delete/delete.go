@@ -22,7 +22,7 @@ func NewDeleteUseCase(repository period.IRepository) IDeleteUseCase {
 func (deleteUseCase *DeleteUseCase) Execute(input InputDeletePeriodDto) (OutputDeletePeriodDto, status.InternalStatus, error) {
 
 	// Find the entity before update
-	entity, err := deleteUseCase.repository.Find(input.Id)
+	entity, err := deleteUseCase.repository.FindById(input.Id)
 	if err != nil {
 		return OutputDeletePeriodDto{}, status.InternalServerError, err
 	}

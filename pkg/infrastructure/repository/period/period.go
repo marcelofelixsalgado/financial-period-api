@@ -54,7 +54,7 @@ func (repository *PeriodRepository) Create(entity entity.IPeriod) error {
 	return nil
 }
 
-func (repository *PeriodRepository) Find(id string) (entity.IPeriod, error) {
+func (repository *PeriodRepository) FindById(id string) (entity.IPeriod, error) {
 
 	row, err := repository.client.Query("select id, code, name, year, start_date, end_date, created_at, updated_at from periods where id = ?", id)
 	if err != nil {

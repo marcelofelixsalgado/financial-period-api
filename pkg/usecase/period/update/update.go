@@ -34,7 +34,7 @@ func (updateUseCase *UpdateUseCase) Execute(input InputUpdatePeriodDto) (OutputU
 	}
 
 	// Find the entity before update
-	currentEntity, err := updateUseCase.repository.Find(input.Id)
+	currentEntity, err := updateUseCase.repository.FindById(input.Id)
 	if err != nil {
 		return OutputUpdatePeriodDto{}, status.InternalServerError, err
 	}

@@ -22,7 +22,7 @@ func NewFindUseCase(repository period.IRepository) IFindUseCase {
 
 func (findUseCase *FindUseCase) Execute(input InputFindPeriodDto) (OutputFindPeriodDto, status.InternalStatus, error) {
 
-	period, err := findUseCase.repository.Find(input.Id)
+	period, err := findUseCase.repository.FindById(input.Id)
 	if err != nil {
 		return OutputFindPeriodDto{}, status.InternalServerError, err
 	}

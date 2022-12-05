@@ -8,7 +8,7 @@ import (
 type IRepository interface {
 	Create(entity.IUser) error
 	Update(entity.IUser) error
-	Find(id string) (entity.IUser, error)
+	FindById(id string) (entity.IUser, error)
 	List([]filter.FilterParameter) ([]entity.IUser, error)
 	Delete(id string) error
 }

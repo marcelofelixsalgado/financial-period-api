@@ -8,7 +8,7 @@ import (
 type IRepository interface {
 	Create(entity.IPeriod) error
 	Update(entity.IPeriod) error
-	Find(id string) (entity.IPeriod, error)
+	FindById(id string) (entity.IPeriod, error)
 	List([]filter.FilterParameter) ([]entity.IPeriod, error)
 	Delete(id string) error
 }
