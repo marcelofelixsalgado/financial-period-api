@@ -7,9 +7,23 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/golang-jwt/jwt"
 )
+
+func CreateToken(userID string) (string, error) {
+	permissions := jwt.MapClaims{}
+	permissions["Authorized"] = true
+	permissions["exp"] = time.Now().Add(time.Hour * 6).Unix()
+	permissions["userId"] = userID
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, permissions)
+	jwtToken, err := token.SignedString(configs.SecretKey)
+	if err != nil {
+		return "", err
+	}
+	return jwtToken, nil
+}
 
 func ValidateToken(r *http.Request) error {
 	tokenString := extractToken(r)

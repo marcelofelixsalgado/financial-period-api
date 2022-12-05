@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"marcelofelixsalgado/financial-period-api/api/controllers/health"
+	"marcelofelixsalgado/financial-period-api/api/controllers/login"
 	"marcelofelixsalgado/financial-period-api/api/controllers/period"
 	"marcelofelixsalgado/financial-period-api/api/controllers/user"
 	"marcelofelixsalgado/financial-period-api/api/routes"
@@ -17,6 +18,8 @@ import (
 	periodFind "marcelofelixsalgado/financial-period-api/pkg/usecase/period/find"
 	periodList "marcelofelixsalgado/financial-period-api/pkg/usecase/period/list"
 	periodUpdate "marcelofelixsalgado/financial-period-api/pkg/usecase/period/update"
+
+	loginUseCase "marcelofelixsalgado/financial-period-api/pkg/usecase/user/login"
 
 	userRepository "marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/user"
 	userCreate "marcelofelixsalgado/financial-period-api/pkg/usecase/user/create"
@@ -37,12 +40,13 @@ func NewServer() *mux.Router {
 	// Connects to database
 	databaseClient := database.NewConnection()
 
-	periodRoutes := setupPeriodRoutes(databaseClient)
+	loginRoutes := setupLoginRoutes(databaseClient)
 	userRoutes := setupUserRoutes(databaseClient)
+	periodRoutes := setupPeriodRoutes(databaseClient)
 	healthRoutes := setupHealthRoutes()
 
 	// Setup all routes
-	routes := routes.NewRoutes(periodRoutes, userRoutes, healthRoutes)
+	routes := routes.NewRoutes(loginRoutes, userRoutes, periodRoutes, healthRoutes)
 
 	router := routes.SetupRoutes()
 	return router
@@ -55,24 +59,20 @@ func Run(router *mux.Router) {
 	log.Fatal(http.ListenAndServe(port, router))
 }
 
-func setupPeriodRoutes(databaseClient *sql.DB) period.PeriodRoutes {
+func setupLoginRoutes(databaseClient *sql.DB) login.LoginRoutes {
 	// setup respository
-	repository := periodRepository.NewPeriodRepository(databaseClient)
+	repository := userRepository.NewUserRepository(databaseClient)
 
 	// setup Use Cases (services)
-	createUseCase := periodCreate.NewCreateUseCase(repository)
-	deleteUseCase := periodDelete.NewDeleteUseCase(repository)
-	findUseCase := periodFind.NewFindUseCase(repository)
-	listUseCase := periodList.NewListUseCase(repository)
-	updateUseCase := periodUpdate.NewUpdateUseCase(repository)
+	loginUseCase := loginUseCase.NewLoginUseCase(repository)
 
 	// setup router handlers
-	periodHandler := period.NewPeriodHandler(createUseCase, deleteUseCase, findUseCase, listUseCase, updateUseCase)
+	loginHandler := login.NewLoginHandler(loginUseCase)
 
 	// setup routes
-	periodRoutes := period.NewPeriodRoutes(periodHandler)
+	loginRoutes := login.NewLoginRoutes(loginHandler)
 
-	return periodRoutes
+	return loginRoutes
 }
 
 func setupUserRoutes(databaseClient *sql.DB) user.UserRoutes {
@@ -93,6 +93,26 @@ func setupUserRoutes(databaseClient *sql.DB) user.UserRoutes {
 	userRoutes := user.NewUserRoutes(userHandler)
 
 	return userRoutes
+}
+
+func setupPeriodRoutes(databaseClient *sql.DB) period.PeriodRoutes {
+	// setup respository
+	repository := periodRepository.NewPeriodRepository(databaseClient)
+
+	// setup Use Cases (services)
+	createUseCase := periodCreate.NewCreateUseCase(repository)
+	deleteUseCase := periodDelete.NewDeleteUseCase(repository)
+	findUseCase := periodFind.NewFindUseCase(repository)
+	listUseCase := periodList.NewListUseCase(repository)
+	updateUseCase := periodUpdate.NewUpdateUseCase(repository)
+
+	// setup router handlers
+	periodHandler := period.NewPeriodHandler(createUseCase, deleteUseCase, findUseCase, listUseCase, updateUseCase)
+
+	// setup routes
+	periodRoutes := period.NewPeriodRoutes(periodHandler)
+
+	return periodRoutes
 }
 
 func setupHealthRoutes() health.HealthRoutes {

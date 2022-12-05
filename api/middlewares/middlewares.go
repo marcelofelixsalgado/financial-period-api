@@ -2,9 +2,9 @@ package middlewares
 
 import (
 	"log"
-	"marcelofelixsalgado/financial-period-api/api/auth"
 	"marcelofelixsalgado/financial-period-api/api/responses"
 	"marcelofelixsalgado/financial-period-api/api/responses/faults"
+	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/auth"
 	"net/http"
 )
 

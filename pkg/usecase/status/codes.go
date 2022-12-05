@@ -7,4 +7,5 @@ const (
 	InvalidResourceId   InternalStatus = "INVALID_RESOURCE_ID"
 	NoRecordsFound      InternalStatus = "NO_RECORDS_FOUND"
 	InternalServerError InternalStatus = "INVALID_CONTENT_TYPE"
+	LoginFailed         InternalStatus = "LOGIN_FAILED"
 )
