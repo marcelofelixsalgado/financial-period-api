@@ -12,10 +12,10 @@ type IListUseCase interface {
 }
 
 type ListUseCase struct {
-	repository period.IRepository
+	repository period.IPeriodRepository
 }
 
-func NewListUseCase(repository period.IRepository) IListUseCase {
+func NewListUseCase(repository period.IPeriodRepository) IListUseCase {
 	return &ListUseCase{
 		repository: repository,
 	}

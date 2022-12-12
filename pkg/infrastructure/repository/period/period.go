@@ -22,7 +22,7 @@ type PeriodModel struct {
 	updatedAt time.Time
 }
 
-func NewPeriodRepository(client *sql.DB) IRepository {
+func NewPeriodRepository(client *sql.DB) IPeriodRepository {
 	return &PeriodRepository{
 		client: client,
 	}

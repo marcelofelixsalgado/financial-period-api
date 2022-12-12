@@ -11,10 +11,10 @@ type IFindUseCase interface {
 }
 
 type FindUseCase struct {
-	repository period.IRepository
+	repository period.IPeriodRepository
 }
 
-func NewFindUseCase(repository period.IRepository) IFindUseCase {
+func NewFindUseCase(repository period.IPeriodRepository) IFindUseCase {
 	return &FindUseCase{
 		repository: repository,
 	}

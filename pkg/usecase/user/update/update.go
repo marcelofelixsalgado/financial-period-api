@@ -12,10 +12,10 @@ type IUpdateUseCase interface {
 }
 
 type UpdateUseCase struct {
-	repository user.IRepository
+	repository user.IUserRepository
 }
 
-func NewUpdateUseCase(repository user.IRepository) IUpdateUseCase {
+func NewUpdateUseCase(repository user.IUserRepository) IUpdateUseCase {
 	return &UpdateUseCase{
 		repository: repository,
 	}
@@ -32,7 +32,7 @@ func (updateUseCase *UpdateUseCase) Execute(input InputUpdateUserDto) (OutputUpd
 		return OutputUpdateUserDto{}, status.InvalidResourceId, err
 	}
 
-	entity, err := entity.NewUser(input.Id, input.Name, input.Password, input.Phone, input.Email, currentEntity.GetCreatedAt(), time.Now())
+	entity, err := entity.NewUser(input.Id, input.Name, input.Phone, input.Email, currentEntity.GetCreatedAt(), time.Now())
 	if err != nil {
 		return OutputUpdateUserDto{}, status.InternalServerError, err
 	}
@@ -46,7 +46,6 @@ func (updateUseCase *UpdateUseCase) Execute(input InputUpdateUserDto) (OutputUpd
 	outputUpdateUserDto := OutputUpdateUserDto{
 		Id:        entity.GetId(),
 		Name:      entity.GetName(),
-		Password:  entity.GetPassword(),
 		Phone:     entity.GetPhone(),
 		Email:     entity.GetEmail(),
 		CreatedAt: entity.GetCreatedAt().Format(time.RFC3339),

@@ -9,7 +9,6 @@ import (
 type IUser interface {
 	GetId() string
 	GetName() string
-	GetPassword() string
 	GetPhone() string
 	GetEmail() string
 	GetCreatedAt() time.Time
@@ -19,18 +18,16 @@ type IUser interface {
 type User struct {
 	id        string
 	name      string
-	password  string
 	phone     string
 	email     string
 	createdAt time.Time
 	updatedAt time.Time
 }
 
-func NewUser(id string, name string, password string, phone string, email string, createdAt time.Time, updatedAt time.Time) (IUser, error) {
+func NewUser(id string, name string, phone string, email string, createdAt time.Time, updatedAt time.Time) (IUser, error) {
 	user := User{
 		id:        id,
 		name:      name,
-		password:  password,
 		phone:     phone,
 		email:     email,
 		createdAt: createdAt,
@@ -51,10 +48,6 @@ func (user User) GetId() string {
 
 func (user User) GetName() string {
 	return user.name
-}
-
-func (user User) GetPassword() string {
-	return user.password
 }
 
 func (user User) GetPhone() string {
@@ -88,10 +81,6 @@ func (user *User) validate() error {
 
 	if user.name == "" {
 		return errors.New("name is required")
-	}
-
-	if user.password == "" {
-		return errors.New("password is required")
 	}
 
 	if user.phone == "" {

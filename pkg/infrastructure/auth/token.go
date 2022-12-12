@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"marcelofelixsalgado/financial-period-api/configs"
 	"net/http"
-	"strconv"
 	"strings"
 	"time"
 
@@ -56,18 +55,15 @@ func getVerificationKey(token *jwt.Token) (interface{}, error) {
 	return configs.SecretKey, nil
 }
 
-func ExtractUserId(r *http.Request) (uint64, error) {
+func ExtractUserId(r *http.Request) (string, error) {
 	tokenString := extractToken(r)
 	token, err := jwt.Parse(tokenString, getVerificationKey)
 	if err != nil {
-		return 0, err
+		return "", err
 	}
 	if permissions, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		userID, err := strconv.ParseUint(fmt.Sprintf("%.f", permissions["userId"]), 10, 64)
-		if err != nil {
-			return 0, err
-		}
-		return userID, nil
+		//userID, err := strconv.ParseUint(fmt.Sprintf("%.f", permissions["userId"]), 10, 64)
+		return permissions["userId"].(string), nil
 	}
-	return 0, errors.New("ivalid token")
+	return "", errors.New("ivalid token")
 }

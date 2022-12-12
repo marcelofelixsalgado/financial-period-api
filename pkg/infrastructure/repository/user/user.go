@@ -2,9 +2,13 @@ package user
 
 import (
 	"database/sql"
+	"errors"
 	"marcelofelixsalgado/financial-period-api/pkg/domain/user/entity"
 	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/filter"
+	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/status"
 	"time"
+
+	"github.com/go-sql-driver/mysql"
 )
 
 type UserRepository struct {
@@ -14,47 +18,50 @@ type UserRepository struct {
 type UserModel struct {
 	id        string
 	name      string
-	password  string
 	phone     string
 	email     string
 	createdAt time.Time
 	updatedAt time.Time
 }
 
-func NewUserRepository(client *sql.DB) IRepository {
+func NewUserRepository(client *sql.DB) IUserRepository {
 	return &UserRepository{
 		client: client,
 	}
 }
 
-func (repository *UserRepository) Create(entity entity.IUser) error {
+func (repository *UserRepository) Create(entity entity.IUser) (status.RepositoryInternalStatus, error) {
+	var mysqlErr *mysql.MySQLError
 
 	model := UserModel{
 		id:        entity.GetId(),
 		name:      entity.GetName(),
-		password:  entity.GetPassword(),
 		phone:     entity.GetPhone(),
 		email:     entity.GetEmail(),
 		createdAt: entity.GetCreatedAt(),
 	}
 
-	statement, err := repository.client.Prepare("insert into users (id, name, password, phone, email, created_at) values (?, ?, ?, ?, ?, ?)")
+	statement, err := repository.client.Prepare("insert into users (id, name, phone, email, created_at) values (?, ?, ?, ?, ?)")
 	if err != nil {
-		return err
+		return status.InternalServerError, err
 	}
 	defer statement.Close()
 
-	_, err = statement.Exec(model.id, model.name, model.password, model.phone, model.email, model.createdAt)
+	_, err = statement.Exec(model.id, model.name, model.phone, model.email, model.createdAt)
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1062 {
+		// Unique key violated
+		return status.EntityWithSameKeyAlreadyExists, err
+	}
 	if err != nil {
-		return err
+		return status.InternalServerError, err
 	}
 
-	return nil
+	return status.Success, nil
 }
 
 func (repository *UserRepository) FindById(id string) (entity.IUser, error) {
 
-	row, err := repository.client.Query("select id, name, password, phone, email, created_at, updated_at from users where id = ?", id)
+	row, err := repository.client.Query("select id, name, phone, email, created_at, updated_at from users where id = ?", id)
 	if err != nil {
 		return entity.User{}, err
 	}
@@ -62,11 +69,11 @@ func (repository *UserRepository) FindById(id string) (entity.IUser, error) {
 
 	var userModel UserModel
 	if row.Next() {
-		if err := row.Scan(&userModel.id, &userModel.name, &userModel.password, &userModel.phone, &userModel.email, &userModel.createdAt, &userModel.updatedAt); err != nil {
+		if err := row.Scan(&userModel.id, &userModel.name, &userModel.phone, &userModel.email, &userModel.createdAt, &userModel.updatedAt); err != nil {
 			return entity.User{}, err
 		}
 
-		user, err := entity.NewUser(userModel.id, userModel.name, userModel.password, userModel.phone, userModel.email, userModel.createdAt, userModel.updatedAt)
+		user, err := entity.NewUser(userModel.id, userModel.name, userModel.phone, userModel.email, userModel.createdAt, userModel.updatedAt)
 		if err != nil {
 			return entity.User{}, err
 		}
@@ -77,7 +84,7 @@ func (repository *UserRepository) FindById(id string) (entity.IUser, error) {
 
 func (repository *UserRepository) FindByEmail(email string) (entity.IUser, error) {
 
-	row, err := repository.client.Query("select id, name, password, phone, email, created_at, updated_at from users where email = ?", email)
+	row, err := repository.client.Query("select id, name, phone, email, created_at, updated_at from users where email = ?", email)
 	if err != nil {
 		return entity.User{}, err
 	}
@@ -85,11 +92,11 @@ func (repository *UserRepository) FindByEmail(email string) (entity.IUser, error
 
 	var userModel UserModel
 	if row.Next() {
-		if err := row.Scan(&userModel.id, &userModel.name, &userModel.password, &userModel.phone, &userModel.email, &userModel.createdAt, &userModel.updatedAt); err != nil {
+		if err := row.Scan(&userModel.id, &userModel.name, &userModel.phone, &userModel.email, &userModel.createdAt, &userModel.updatedAt); err != nil {
 			return entity.User{}, err
 		}
 
-		user, err := entity.NewUser(userModel.id, userModel.name, userModel.password, userModel.phone, userModel.email, userModel.createdAt, userModel.updatedAt)
+		user, err := entity.NewUser(userModel.id, userModel.name, userModel.phone, userModel.email, userModel.createdAt, userModel.updatedAt)
 		if err != nil {
 			return entity.User{}, err
 		}
@@ -113,16 +120,16 @@ func (repository *UserRepository) List(filterParameters []filter.FilterParameter
 	var rows *sql.Rows
 	var err error
 	if len(filterParameters) == 0 {
-		rows, err = repository.client.Query("select id, name, password, phone, email, created_at, updated_at from users")
+		rows, err = repository.client.Query("select id, name, phone, email, created_at, updated_at from users")
 	} else {
 		if len(nameFilter) > 0 && len(emailFilter) == 0 {
-			rows, err = repository.client.Query("select id, name, password, phone, email, created_at, updated_at from users where name = ?", nameFilter)
+			rows, err = repository.client.Query("select id, name, phone, email, created_at, updated_at from users where name = ?", nameFilter)
 		}
 		if len(nameFilter) == 0 && len(emailFilter) > 0 {
-			rows, err = repository.client.Query("select id, name, password, phone, email, created_at, updated_at from users where email = ?", emailFilter)
+			rows, err = repository.client.Query("select id, name, phone, email, created_at, updated_at from users where email = ?", emailFilter)
 		}
 		if len(nameFilter) > 0 && len(emailFilter) > 0 {
-			rows, err = repository.client.Query("select id, name, password, phone, email, created_at, updated_at from users where name = ? and email = ?", nameFilter, emailFilter)
+			rows, err = repository.client.Query("select id, name, phone, email, created_at, updated_at from users where name = ? and email = ?", nameFilter, emailFilter)
 		}
 	}
 
@@ -135,11 +142,11 @@ func (repository *UserRepository) List(filterParameters []filter.FilterParameter
 	for rows.Next() {
 		var userModel UserModel
 
-		if err := rows.Scan(&userModel.id, &userModel.name, &userModel.password, &userModel.phone, &userModel.email, &userModel.createdAt, &userModel.updatedAt); err != nil {
+		if err := rows.Scan(&userModel.id, &userModel.name, &userModel.phone, &userModel.email, &userModel.createdAt, &userModel.updatedAt); err != nil {
 			return []entity.IUser{}, err
 		}
 
-		user, err := entity.NewUser(userModel.id, userModel.name, userModel.password, userModel.phone, userModel.email, userModel.createdAt, userModel.updatedAt)
+		user, err := entity.NewUser(userModel.id, userModel.name, userModel.phone, userModel.email, userModel.createdAt, userModel.updatedAt)
 		if err != nil {
 			return []entity.IUser{}, err
 		}
@@ -155,19 +162,18 @@ func (repository *UserRepository) Update(entity entity.IUser) error {
 	model := UserModel{
 		id:        entity.GetId(),
 		name:      entity.GetName(),
-		password:  entity.GetPassword(),
 		phone:     entity.GetPhone(),
 		email:     entity.GetEmail(),
 		updatedAt: entity.GetUpdatedAt(),
 	}
 
-	statement, err := repository.client.Prepare("update users set name = ?, password = ?, phone = ?, email = ?, updated_at = ? where id = ?")
+	statement, err := repository.client.Prepare("update users set name = ?, phone = ?, email = ?, updated_at = ? where id = ?")
 	if err != nil {
 		return err
 	}
 	defer statement.Close()
 
-	_, err = statement.Exec(model.name, model.password, model.phone, model.email, model.updatedAt, model.id)
+	_, err = statement.Exec(model.name, model.phone, model.email, model.updatedAt, model.id)
 	if err != nil {
 		return err
 	}

@@ -10,10 +10,10 @@ type IDeleteUseCase interface {
 }
 
 type DeleteUseCase struct {
-	repository user.IRepository
+	repository user.IUserRepository
 }
 
-func NewDeleteUseCase(repository user.IRepository) IDeleteUseCase {
+func NewDeleteUseCase(repository user.IUserRepository) IDeleteUseCase {
 	return &DeleteUseCase{
 		repository: repository,
 	}

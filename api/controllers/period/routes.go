@@ -24,31 +24,31 @@ func (periodRoutes *PeriodRoutes) PeriodRouteMapping() []controllers.Route {
 			URI:                    periodBasepath,
 			Method:                 http.MethodPost,
 			Function:               periodRoutes.periodHandler.CreatePeriod,
-			RequiresAuthentication: false,
+			RequiresAuthentication: true,
 		},
 		{
 			URI:                    periodBasepath,
 			Method:                 http.MethodGet,
 			Function:               periodRoutes.periodHandler.ListPeriods,
-			RequiresAuthentication: false,
+			RequiresAuthentication: true,
 		},
 		{
 			URI:                    periodBasepath + "/{id}",
 			Method:                 http.MethodGet,
 			Function:               periodRoutes.periodHandler.GetPeriodById,
-			RequiresAuthentication: false,
+			RequiresAuthentication: true,
 		},
 		{
 			URI:                    periodBasepath + "/{id}",
 			Method:                 http.MethodPut,
 			Function:               periodRoutes.periodHandler.UpdatePeriod,
-			RequiresAuthentication: false,
+			RequiresAuthentication: true,
 		},
 		{
 			URI:                    periodBasepath + "/{id}",
 			Method:                 http.MethodDelete,
 			Function:               periodRoutes.periodHandler.DeletePeriod,
-			RequiresAuthentication: false,
+			RequiresAuthentication: true,
 		},
 	}
 }

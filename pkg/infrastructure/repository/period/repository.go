@@ -5,7 +5,7 @@ import (
 	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/filter"
 )
 
-type IRepository interface {
+type IPeriodRepository interface {
 	Create(entity.IPeriod) error
 	Update(entity.IPeriod) error
 	FindById(id string) (entity.IPeriod, error)

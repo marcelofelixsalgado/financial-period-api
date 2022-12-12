@@ -12,10 +12,10 @@ type IUpdateUseCase interface {
 }
 
 type UpdateUseCase struct {
-	repository period.IRepository
+	repository period.IPeriodRepository
 }
 
-func NewUpdateUseCase(repository period.IRepository) IUpdateUseCase {
+func NewUpdateUseCase(repository period.IPeriodRepository) IUpdateUseCase {
 	return &UpdateUseCase{
 		repository: repository,
 	}

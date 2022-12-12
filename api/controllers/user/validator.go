@@ -8,18 +8,16 @@ import (
 )
 
 type InputUserDto struct {
-	name     string
-	password string
-	phone    string
-	email    string
+	name  string
+	phone string
+	email string
 }
 
 func ValidateCreateRequestBody(inputCreateUserDto create.InputCreateUserDto) *responses.ResponseMessage {
 	inputUserDto := InputUserDto{
-		name:     inputCreateUserDto.Name,
-		password: inputCreateUserDto.Password,
-		phone:    inputCreateUserDto.Phone,
-		email:    inputCreateUserDto.Email,
+		name:  inputCreateUserDto.Name,
+		phone: inputCreateUserDto.Phone,
+		email: inputCreateUserDto.Email,
 	}
 	return validateRequestBody(inputUserDto)
 }
@@ -28,10 +26,9 @@ func ValidateUpdateRequestBody(inputUpdateUserDto update.InputUpdateUserDto) *re
 		return responses.NewResponseMessage().AddMessageByIssue(faults.MissingRequiredField, responses.PathParameter, "id", "")
 	}
 	inputUserDto := InputUserDto{
-		name:     inputUpdateUserDto.Name,
-		password: inputUpdateUserDto.Password,
-		phone:    inputUpdateUserDto.Phone,
-		email:    inputUpdateUserDto.Email,
+		name:  inputUpdateUserDto.Name,
+		phone: inputUpdateUserDto.Phone,
+		email: inputUpdateUserDto.Email,
 	}
 	return validateRequestBody(inputUserDto)
 }
@@ -42,10 +39,6 @@ func validateRequestBody(inputUserDto InputUserDto) *responses.ResponseMessage {
 
 	if inputUserDto.name == "" {
 		responseMessage.AddMessageByIssue(faults.MissingRequiredField, responses.Body, "name", "")
-	}
-
-	if inputUserDto.password == "" {
-		responseMessage.AddMessageByIssue(faults.MissingRequiredField, responses.Body, "password", "")
 	}
 
 	if inputUserDto.phone == "" {

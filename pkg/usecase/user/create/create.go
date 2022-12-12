@@ -2,6 +2,7 @@ package create
 
 import (
 	"marcelofelixsalgado/financial-period-api/pkg/domain/user/entity"
+	repositoryStatus "marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/status"
 	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/user"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/status"
 
@@ -13,36 +14,38 @@ type ICreateUseCase interface {
 }
 
 type CreateUseCase struct {
-	repository user.IRepository
+	userRepository user.IUserRepository
 }
 
-func NewCreateUseCase(repository user.IRepository) ICreateUseCase {
+func NewCreateUseCase(userRepository user.IUserRepository) ICreateUseCase {
 	return &CreateUseCase{
-		repository: repository,
+		userRepository: userRepository,
 	}
 }
 
 func (createUseCase *CreateUseCase) Execute(input InputCreateUserDto) (OutputCreateUserDto, status.InternalStatus, error) {
 
 	// Creates an entity
-	entity, err := entity.Create(input.Name, input.Password, input.Phone, input.Email)
+	user, err := entity.Create(input.Name, input.Phone, input.Email)
 	if err != nil {
 		return OutputCreateUserDto{}, status.InternalServerError, err
 	}
 
-	// Persists in dabatase
-	err = createUseCase.repository.Create(entity)
+	// Persists the user
+	repositoryInternalStatus, err := createUseCase.userRepository.Create(user)
+	if repositoryInternalStatus == repositoryStatus.EntityWithSameKeyAlreadyExists {
+		return OutputCreateUserDto{}, status.EntityWithSameKeyAlreadyExists, err
+	}
 	if err != nil {
 		return OutputCreateUserDto{}, status.InternalServerError, err
 	}
 
 	outputCreateUserDto := OutputCreateUserDto{
-		Id:        entity.GetId(),
-		Name:      entity.GetName(),
-		Password:  entity.GetPassword(),
-		Phone:     entity.GetPhone(),
-		Email:     entity.GetEmail(),
-		CreatedAt: entity.GetCreatedAt().Format(time.RFC3339),
+		Id:        user.GetId(),
+		Name:      user.GetName(),
+		Phone:     user.GetPhone(),
+		Email:     user.GetEmail(),
+		CreatedAt: user.GetCreatedAt().Format(time.RFC3339),
 	}
 
 	return outputCreateUserDto, status.Success, nil

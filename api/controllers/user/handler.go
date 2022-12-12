@@ -7,6 +7,7 @@ import (
 	"marcelofelixsalgado/financial-period-api/api/requests"
 	"marcelofelixsalgado/financial-period-api/api/responses"
 	"marcelofelixsalgado/financial-period-api/api/responses/faults"
+	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/auth"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/status"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/user/create"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/user/delete"
@@ -14,6 +15,7 @@ import (
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/user/list"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/user/update"
 	"net/http"
+	"strings"
 
 	"github.com/gorilla/mux"
 )
@@ -68,6 +70,11 @@ func (userHandler *UserHandler) CreateUser(w http.ResponseWriter, r *http.Reques
 	}
 
 	output, internalStatus, err := userHandler.createUseCase.Execute(input)
+	if internalStatus == status.EntityWithSameKeyAlreadyExists {
+		log.Printf("Error trying to create the entity - duplicate key: %v", err)
+		responses.NewResponseMessage().AddMessageByIssue(faults.EntityWithSameKeyAlreadyExists, "body", "phone", input.Phone).AddMessageByIssue(faults.EntityWithSameKeyAlreadyExists, "body", "email", input.Email).Write(w)
+		return
+	}
 	if internalStatus != status.Success {
 		log.Printf("Error trying to create the entity: %v", err)
 		responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)
@@ -121,6 +128,18 @@ func (userHandler *UserHandler) GetUserById(w http.ResponseWriter, r *http.Reque
 	parameters := mux.Vars(r)
 	Id := parameters["id"]
 
+	sameUser, err := checkSameUser(Id, r)
+	if err != nil {
+		log.Printf("Error extracting the user id from token: %v", err)
+		responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)
+		return
+	}
+	if !sameUser {
+		log.Printf("A user cannot update another user info")
+		responses.NewResponseMessage().AddMessageByIssue(faults.PermissionDenied, "", "", "").Write(w)
+		return
+	}
+
 	input := find.InputFindUserDto{
 		Id: Id,
 	}
@@ -132,7 +151,7 @@ func (userHandler *UserHandler) GetUserById(w http.ResponseWriter, r *http.Reque
 		return
 	}
 	if internalStatus == status.InvalidResourceId {
-		log.Printf("Unable finding the entity: %v", err)
+		log.Printf("Unable finding the entity")
 		responses.NewResponseMessage().AddMessageByInternalStatus(status.InvalidResourceId, responses.PathParameter, "id", Id).Write(w)
 		return
 	}
@@ -151,6 +170,18 @@ func (userHandler *UserHandler) GetUserById(w http.ResponseWriter, r *http.Reque
 func (userHandler *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	parameters := mux.Vars(r)
 	Id := parameters["id"]
+
+	sameUser, err := checkSameUser(Id, r)
+	if err != nil {
+		log.Printf("Error extracting the user id from token: %v", err)
+		responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)
+		return
+	}
+	if !sameUser {
+		log.Printf("A user cannot update another user info")
+		responses.NewResponseMessage().AddMessageByIssue(faults.PermissionDenied, "", "", "").Write(w)
+		return
+	}
 
 	requestBody, err := io.ReadAll(r.Body)
 	if err != nil {
@@ -201,6 +232,18 @@ func (userHandler *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Reques
 	parameters := mux.Vars(r)
 	Id := parameters["id"]
 
+	sameUser, err := checkSameUser(Id, r)
+	if err != nil {
+		log.Printf("Error extracting the user id from token: %v", err)
+		responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)
+		return
+	}
+	if !sameUser {
+		log.Printf("A user cannot update another user info")
+		responses.NewResponseMessage().AddMessageByIssue(faults.PermissionDenied, "", "", "").Write(w)
+		return
+	}
+
 	var input = delete.InputDeleteUserDto{
 		Id: Id,
 	}
@@ -218,4 +261,15 @@ func (userHandler *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Reques
 	}
 
 	w.WriteHeader(http.StatusNoContent)
+}
+
+func checkSameUser(requestUserId string, r *http.Request) (bool, error) {
+	tokenUserId, err := auth.ExtractUserId(r)
+	if err != nil {
+		return false, err
+	}
+	if !strings.EqualFold(requestUserId, tokenUserId) {
+		return false, nil
+	}
+	return true, nil
 }

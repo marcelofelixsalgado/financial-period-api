@@ -6,13 +6,12 @@ import (
 	"github.com/google/uuid"
 )
 
-func Create(name string, password string, phone string, email string) (IUser, error) {
+func Create(name string, phone string, email string) (IUser, error) {
 
-	hashedPassword, err := Hash(password)
+	user, err := NewUser(uuid.NewString(), name, phone, email, time.Now(), time.Time{})
 	if err != nil {
 		return nil, err
 	}
-	password = string(hashedPassword)
 
-	return NewUser(uuid.NewString(), name, password, phone, email, time.Now(), time.Time{})
+	return user, nil
 }

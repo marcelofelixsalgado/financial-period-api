@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"marcelofelixsalgado/financial-period-api/api/controllers/credentials"
 	"marcelofelixsalgado/financial-period-api/api/controllers/health"
-	"marcelofelixsalgado/financial-period-api/api/controllers/login"
 	"marcelofelixsalgado/financial-period-api/api/controllers/period"
 	"marcelofelixsalgado/financial-period-api/api/controllers/user"
 	"marcelofelixsalgado/financial-period-api/api/routes"
@@ -19,7 +19,9 @@ import (
 	periodList "marcelofelixsalgado/financial-period-api/pkg/usecase/period/list"
 	periodUpdate "marcelofelixsalgado/financial-period-api/pkg/usecase/period/update"
 
-	loginUseCase "marcelofelixsalgado/financial-period-api/pkg/usecase/user/login"
+	userCredentialsCreate "marcelofelixsalgado/financial-period-api/pkg/usecase/credentials/create"
+	userCredentialsLogin "marcelofelixsalgado/financial-period-api/pkg/usecase/credentials/login"
+	userCredentialsUpdate "marcelofelixsalgado/financial-period-api/pkg/usecase/credentials/update"
 
 	userRepository "marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/user"
 	userCreate "marcelofelixsalgado/financial-period-api/pkg/usecase/user/create"
@@ -27,6 +29,8 @@ import (
 	userFind "marcelofelixsalgado/financial-period-api/pkg/usecase/user/find"
 	userList "marcelofelixsalgado/financial-period-api/pkg/usecase/user/list"
 	userUpdate "marcelofelixsalgado/financial-period-api/pkg/usecase/user/update"
+
+	userCredentialsRepository "marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/credentials"
 
 	"net/http"
 
@@ -40,13 +44,13 @@ func NewServer() *mux.Router {
 	// Connects to database
 	databaseClient := database.NewConnection()
 
-	loginRoutes := setupLoginRoutes(databaseClient)
 	userRoutes := setupUserRoutes(databaseClient)
+	userCredentialsRoutes := setupUserCredentialsRoutes(databaseClient)
 	periodRoutes := setupPeriodRoutes(databaseClient)
 	healthRoutes := setupHealthRoutes()
 
 	// Setup all routes
-	routes := routes.NewRoutes(loginRoutes, userRoutes, periodRoutes, healthRoutes)
+	routes := routes.NewRoutes(userCredentialsRoutes, userRoutes, periodRoutes, healthRoutes)
 
 	router := routes.SetupRoutes()
 	return router
@@ -59,32 +63,16 @@ func Run(router *mux.Router) {
 	log.Fatal(http.ListenAndServe(port, router))
 }
 
-func setupLoginRoutes(databaseClient *sql.DB) login.LoginRoutes {
-	// setup respository
-	repository := userRepository.NewUserRepository(databaseClient)
-
-	// setup Use Cases (services)
-	loginUseCase := loginUseCase.NewLoginUseCase(repository)
-
-	// setup router handlers
-	loginHandler := login.NewLoginHandler(loginUseCase)
-
-	// setup routes
-	loginRoutes := login.NewLoginRoutes(loginHandler)
-
-	return loginRoutes
-}
-
 func setupUserRoutes(databaseClient *sql.DB) user.UserRoutes {
-	// setup respository
-	repository := userRepository.NewUserRepository(databaseClient)
+	// setup respositories
+	userRepository := userRepository.NewUserRepository(databaseClient)
 
 	// setup Use Cases (services)
-	createUseCase := userCreate.NewCreateUseCase(repository)
-	deleteUseCase := userDelete.NewDeleteUseCase(repository)
-	findUseCase := userFind.NewFindUseCase(repository)
-	listUseCase := userList.NewListUseCase(repository)
-	updateUseCase := userUpdate.NewUpdateUseCase(repository)
+	createUseCase := userCreate.NewCreateUseCase(userRepository)
+	deleteUseCase := userDelete.NewDeleteUseCase(userRepository)
+	findUseCase := userFind.NewFindUseCase(userRepository)
+	listUseCase := userList.NewListUseCase(userRepository)
+	updateUseCase := userUpdate.NewUpdateUseCase(userRepository)
 
 	// setup router handlers
 	userHandler := user.NewUserHandler(createUseCase, deleteUseCase, findUseCase, listUseCase, updateUseCase)
@@ -93,6 +81,25 @@ func setupUserRoutes(databaseClient *sql.DB) user.UserRoutes {
 	userRoutes := user.NewUserRoutes(userHandler)
 
 	return userRoutes
+}
+
+func setupUserCredentialsRoutes(databaseClient *sql.DB) credentials.UserCredentialsRoutes {
+	// setup respository
+	userRepository := userRepository.NewUserRepository(databaseClient)
+	credentialsRepository := userCredentialsRepository.NewUserCredentialsRepository(databaseClient)
+
+	// setup Use Cases (services)
+	createUseCase := userCredentialsCreate.NewCreateUseCase(credentialsRepository, userRepository)
+	updateUseCase := userCredentialsUpdate.NewUpdateUseCase(credentialsRepository)
+	loginUseCase := userCredentialsLogin.NewLoginUseCase(credentialsRepository)
+
+	// setup router handlers
+	userCredentialsHandler := credentials.NewUserCredentialsHandler(createUseCase, updateUseCase, loginUseCase)
+
+	// setup routes
+	userCredentialsRoutes := credentials.NewUserCredentialsRoutes(userCredentialsHandler)
+
+	return userCredentialsRoutes
 }
 
 func setupPeriodRoutes(databaseClient *sql.DB) period.PeriodRoutes {

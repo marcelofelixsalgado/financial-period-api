@@ -30,25 +30,25 @@ func (userRoutes *UserRoutes) UserRouteMapping() []controllers.Route {
 			URI:                    userBasepath,
 			Method:                 http.MethodGet,
 			Function:               userRoutes.userHandler.ListUsers,
-			RequiresAuthentication: false,
+			RequiresAuthentication: true,
 		},
 		{
 			URI:                    userBasepath + "/{id}",
 			Method:                 http.MethodGet,
 			Function:               userRoutes.userHandler.GetUserById,
-			RequiresAuthentication: false,
+			RequiresAuthentication: true,
 		},
 		{
 			URI:                    userBasepath + "/{id}",
 			Method:                 http.MethodPut,
 			Function:               userRoutes.userHandler.UpdateUser,
-			RequiresAuthentication: false,
+			RequiresAuthentication: true,
 		},
 		{
 			URI:                    userBasepath + "/{id}",
 			Method:                 http.MethodDelete,
 			Function:               userRoutes.userHandler.DeleteUser,
-			RequiresAuthentication: false,
+			RequiresAuthentication: true,
 		},
 	}
 }

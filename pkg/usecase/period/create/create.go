@@ -14,10 +14,10 @@ type ICreateUseCase interface {
 }
 
 type CreateUseCase struct {
-	repository period.IRepository
+	repository period.IPeriodRepository
 }
 
-func NewCreateUseCase(repository period.IRepository) ICreateUseCase {
+func NewCreateUseCase(repository period.IPeriodRepository) ICreateUseCase {
 	return &CreateUseCase{
 		repository: repository,
 	}
