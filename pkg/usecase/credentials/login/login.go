@@ -45,6 +45,9 @@ func (loginUseCase *LoginUseCase) Execute(input InputUserLoginDto) (OutputUserLo
 	}
 
 	outputUserLoginDto := OutputUserLoginDto{
+		User: userDto{
+			Id: userCredentials.GetId(),
+		},
 		AccessToken: accessToken,
 	}
 

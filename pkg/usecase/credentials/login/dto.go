@@ -6,5 +6,10 @@ type InputUserLoginDto struct {
 }
 
 type OutputUserLoginDto struct {
-	AccessToken string `json:"access_token"`
+	User        userDto `json:"user"`
+	AccessToken string  `json:"access_token"`
+}
+
+type userDto struct {
+	Id string `json:"id"`
 }
