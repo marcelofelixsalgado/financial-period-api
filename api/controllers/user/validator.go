@@ -21,6 +21,7 @@ func ValidateCreateRequestBody(inputCreateUserDto create.InputCreateUserDto) *re
 	}
 	return validateRequestBody(inputUserDto)
 }
+
 func ValidateUpdateRequestBody(inputUpdateUserDto update.InputUpdateUserDto) *responses.ResponseMessage {
 	if inputUpdateUserDto.Id == "" {
 		return responses.NewResponseMessage().AddMessageByIssue(faults.MissingRequiredField, responses.PathParameter, "id", "")

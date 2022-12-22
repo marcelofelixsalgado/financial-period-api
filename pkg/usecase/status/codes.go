@@ -9,4 +9,5 @@ const (
 	InternalServerError            InternalStatus = "INVALID_CONTENT_TYPE"
 	LoginFailed                    InternalStatus = "LOGIN_FAILED"
 	EntityWithSameKeyAlreadyExists InternalStatus = "ENTITY_WITH_SAME_KEY_ALREADY_EXISTS"
+	PasswordsDontMatch             InternalStatus = "PASSWORDS_DONT_MATCH"
 )

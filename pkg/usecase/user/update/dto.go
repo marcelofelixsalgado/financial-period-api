@@ -1,7 +1,7 @@
 package update
 
 type InputUpdateUserDto struct {
-	Id    string `json:"_"`
+	Id    string `json:"-"`
 	Name  string `json:"name"`
 	Phone string `json:"phone"`
 	Email string `json:"email"`

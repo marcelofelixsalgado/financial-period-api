@@ -1,7 +1,7 @@
 package create
 
 type InputCreateUserCredentialsDto struct {
-	UserId   string `json:"_"`
+	UserId   string `json:"-"`
 	Password string `json:"password"`
 }
 

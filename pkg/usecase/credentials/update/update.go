@@ -24,7 +24,7 @@ func NewUpdateUseCase(repository credentials.IUserCredentialsRepository) IUpdate
 func (updateUseCase *UpdateUseCase) Execute(input InputUpdateUserCredentialsDto) (OutputUpdateUserCredentialsDto, status.InternalStatus, error) {
 
 	// Find the entity before update
-	currentEntity, err := updateUseCase.repository.FindById(input.Id)
+	currentEntity, err := updateUseCase.repository.FindByUserId(input.UserId)
 	if err != nil {
 		return OutputUpdateUserCredentialsDto{}, status.InternalServerError, err
 	}
@@ -32,7 +32,19 @@ func (updateUseCase *UpdateUseCase) Execute(input InputUpdateUserCredentialsDto)
 		return OutputUpdateUserCredentialsDto{}, status.InvalidResourceId, err
 	}
 
-	entity, err := entity.NewUserCredentials(input.Id, input.UserId, input.Password, currentEntity.GetCreatedAt(), time.Now())
+	// If current password persisted in database and the received current password don't match
+	if err := entity.VerfifyPassword(currentEntity.GetPassword(), input.CurrentPassword); err != nil {
+		return OutputUpdateUserCredentialsDto{}, status.PasswordsDontMatch, err
+	}
+
+	// Generates the hash from the new password
+	hashedPassword, err := entity.Hash(input.NewPassword)
+	if err != nil {
+		return OutputUpdateUserCredentialsDto{}, status.InternalServerError, err
+	}
+	input.NewPassword = string(hashedPassword)
+
+	entity, err := entity.NewUserCredentials(currentEntity.GetId(), input.UserId, input.NewPassword, currentEntity.GetCreatedAt(), time.Now())
 	if err != nil {
 		return OutputUpdateUserCredentialsDto{}, status.InternalServerError, err
 	}

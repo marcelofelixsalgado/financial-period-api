@@ -91,6 +91,29 @@ func (repository *UserCredentialsRepository) FindById(id string) (entity.IUserCr
 	return nil, nil
 }
 
+func (repository *UserCredentialsRepository) FindByUserId(userId string) (entity.IUserCredentials, error) {
+
+	row, err := repository.client.Query("select id, user_id, password, created_at, updated_at from user_credentials where user_id = ?", userId)
+	if err != nil {
+		return entity.UserCredentials{}, err
+	}
+	defer row.Close()
+
+	var userCredentialsModel UserCredentialsModel
+	if row.Next() {
+		if err := row.Scan(&userCredentialsModel.id, &userCredentialsModel.userId, &userCredentialsModel.password, &userCredentialsModel.createdAt, &userCredentialsModel.updatedAt); err != nil {
+			return entity.UserCredentials{}, err
+		}
+
+		user, err := entity.NewUserCredentials(userCredentialsModel.id, userCredentialsModel.userId, userCredentialsModel.password, userCredentialsModel.createdAt, userCredentialsModel.updatedAt)
+		if err != nil {
+			return entity.UserCredentials{}, err
+		}
+		return user, nil
+	}
+	return nil, nil
+}
+
 func (repository *UserCredentialsRepository) FindByUserEmail(userEmail string) (entity.IUserCredentials, error) {
 	row, err := repository.client.Query("select user_credentials.id, user_credentials.user_id, user_credentials.password, user_credentials.created_at, user_credentials.updated_at from user_credentials inner join users on user_credentials.user_id = users.id where users.email = ?", userEmail)
 	if err != nil {

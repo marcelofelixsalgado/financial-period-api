@@ -27,7 +27,7 @@ func (userCredentialsRoutes *UserCredentialsRoutes) UserCredentialsRouteMapping(
 			RequiresAuthentication: false,
 		},
 		{
-			URI:                    userBasepath + "/users/{id}/credentials/{id}",
+			URI:                    userBasepath + "/users/{id}/credentials",
 			Method:                 http.MethodPut,
 			Function:               userCredentialsRoutes.userCredentialsHandler.UpdateUserCredentials,
 			RequiresAuthentication: true,

@@ -11,7 +11,7 @@ CREATE TABLE users(
     phone varchar(50) not null,
     email varchar(255) not null,
     created_at datetime not null,
-    updated_at datetime,
+    updated_at datetime default '0001-01-01 00:00:00',
 
     CONSTRAINT UC_Phone UNIQUE (phone),
     CONSTRAINT UC_Email UNIQUE (email)
@@ -22,7 +22,7 @@ CREATE TABLE user_credentials(
     user_id varchar(255) not null,
     password varchar(255) not null,
     created_at datetime not null,
-    updated_at datetime,
+    updated_at datetime default '0001-01-01 00:00:00',
 
     CONSTRAINT FK_UserCredentials FOREIGN KEY (user_id)
     REFERENCES users(id) ON DELETE CASCADE
@@ -36,7 +36,7 @@ CREATE TABLE periods(
     start_date datetime not null,
     end_date datetime not null,
     created_at datetime not null,
-    updated_at datetime
+    updated_at datetime default '0001-01-01 00:00:00'
 );
 
 

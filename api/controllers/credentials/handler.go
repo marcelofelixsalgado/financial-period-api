@@ -40,7 +40,7 @@ func NewUserCredentialsHandler(createUseCase createUseCase.ICreateUseCase, updat
 
 func (userCredentialsHandler *UserCredentialsHandler) CreateUserCredentials(w http.ResponseWriter, r *http.Request) {
 	parameters := mux.Vars(r)
-	Id := parameters["id"]
+	id := parameters["id"]
 
 	requestBody, err := io.ReadAll(r.Body)
 	if err != nil {
@@ -56,7 +56,7 @@ func (userCredentialsHandler *UserCredentialsHandler) CreateUserCredentials(w ht
 		responses.NewResponseMessage().AddMessageByIssue(faults.MalformedRequest, "body", "", "").Write(w)
 		return
 	}
-	input.UserId = Id
+	input.UserId = id
 
 	// Validating input parameters
 	if responseMessage := ValidateCreateRequestBody(input).GetMessage(); responseMessage.ErrorCode != "" {
@@ -65,6 +65,11 @@ func (userCredentialsHandler *UserCredentialsHandler) CreateUserCredentials(w ht
 	}
 
 	output, internalStatus, err := userCredentialsHandler.createUseCase.Execute(input)
+	if internalStatus == status.EntityWithSameKeyAlreadyExists {
+		log.Printf("Error trying to create the entity - The user already has a password")
+		responses.NewResponseMessage().AddMessageByInternalStatus(internalStatus, responses.PathParameter, "id", id).Write(w)
+		return
+	}
 	if internalStatus != status.Success {
 		log.Printf("Error trying to create the entity: %v", err)
 		responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)
@@ -84,7 +89,7 @@ func (userCredentialsHandler *UserCredentialsHandler) CreateUserCredentials(w ht
 
 func (userCredentialsHandler *UserCredentialsHandler) UpdateUserCredentials(w http.ResponseWriter, r *http.Request) {
 	parameters := mux.Vars(r)
-	Id := parameters["id"]
+	id := parameters["id"]
 
 	requestBody, err := io.ReadAll(r.Body)
 	if err != nil {
@@ -100,7 +105,7 @@ func (userCredentialsHandler *UserCredentialsHandler) UpdateUserCredentials(w ht
 		responses.NewResponseMessage().AddMessageByIssue(faults.MalformedRequest, "body", "", "").Write(w)
 		return
 	}
-	input.Id = Id
+	input.UserId = id
 
 	// Validating input parameters
 	if responseMessage := ValidateUpdateRequestBody(input).GetMessage(); responseMessage.ErrorCode != "" {
@@ -115,8 +120,13 @@ func (userCredentialsHandler *UserCredentialsHandler) UpdateUserCredentials(w ht
 		return
 	}
 	if internalStatus == status.InvalidResourceId {
-		log.Printf("Unable finding the entity: %v", err)
-		responses.NewResponseMessage().AddMessageByInternalStatus(status.InvalidResourceId, responses.PathParameter, "id", Id).Write(w)
+		log.Printf("Error updating the entity - Unable finding the entity")
+		responses.NewResponseMessage().AddMessageByInternalStatus(internalStatus, responses.PathParameter, "id", id).Write(w)
+		return
+	}
+	if internalStatus == status.PasswordsDontMatch {
+		log.Printf("Error updating the entity - passwords don't match")
+		responses.NewResponseMessage().AddMessageByInternalStatus(internalStatus, "", "", "").Write(w)
 		return
 	}
 

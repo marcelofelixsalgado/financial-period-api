@@ -119,10 +119,10 @@ func (periodHandler *PeriodHandler) ListPeriods(w http.ResponseWriter, r *http.R
 
 func (periodHandler *PeriodHandler) GetPeriodById(w http.ResponseWriter, r *http.Request) {
 	parameters := mux.Vars(r)
-	Id := parameters["id"]
+	id := parameters["id"]
 
 	input := find.InputFindPeriodDto{
-		Id: Id,
+		Id: id,
 	}
 
 	output, internalStatus, err := periodHandler.findUseCase.Execute(input)
@@ -133,7 +133,7 @@ func (periodHandler *PeriodHandler) GetPeriodById(w http.ResponseWriter, r *http
 	}
 	if internalStatus == status.InvalidResourceId {
 		log.Printf("Unable finding the entity: %v", err)
-		responses.NewResponseMessage().AddMessageByInternalStatus(status.InvalidResourceId, responses.PathParameter, "id", Id).Write(w)
+		responses.NewResponseMessage().AddMessageByInternalStatus(status.InvalidResourceId, responses.PathParameter, "id", id).Write(w)
 		return
 	}
 
@@ -150,7 +150,7 @@ func (periodHandler *PeriodHandler) GetPeriodById(w http.ResponseWriter, r *http
 
 func (periodHandler *PeriodHandler) UpdatePeriod(w http.ResponseWriter, r *http.Request) {
 	parameters := mux.Vars(r)
-	Id := parameters["id"]
+	id := parameters["id"]
 
 	requestBody, err := io.ReadAll(r.Body)
 	if err != nil {
@@ -166,7 +166,7 @@ func (periodHandler *PeriodHandler) UpdatePeriod(w http.ResponseWriter, r *http.
 		responses.NewResponseMessage().AddMessageByIssue(faults.MalformedRequest, "body", "", "").Write(w)
 		return
 	}
-	input.Id = Id
+	input.Id = id
 
 	// Validating input parameters
 	if responseMessage := ValidateUpdateRequestBody(input).GetMessage(); responseMessage.ErrorCode != "" {
@@ -182,7 +182,7 @@ func (periodHandler *PeriodHandler) UpdatePeriod(w http.ResponseWriter, r *http.
 	}
 	if internalStatus == status.InvalidResourceId {
 		log.Printf("Unable finding the entity: %v", err)
-		responses.NewResponseMessage().AddMessageByInternalStatus(status.InvalidResourceId, responses.PathParameter, "id", Id).Write(w)
+		responses.NewResponseMessage().AddMessageByInternalStatus(status.InvalidResourceId, responses.PathParameter, "id", id).Write(w)
 		return
 	}
 
@@ -199,10 +199,10 @@ func (periodHandler *PeriodHandler) UpdatePeriod(w http.ResponseWriter, r *http.
 
 func (periodHandler *PeriodHandler) DeletePeriod(w http.ResponseWriter, r *http.Request) {
 	parameters := mux.Vars(r)
-	Id := parameters["id"]
+	id := parameters["id"]
 
 	var input = delete.InputDeletePeriodDto{
-		Id: Id,
+		Id: id,
 	}
 
 	_, internalStatus, err := periodHandler.deleteUseCase.Execute(input)
@@ -213,7 +213,7 @@ func (periodHandler *PeriodHandler) DeletePeriod(w http.ResponseWriter, r *http.
 	}
 	if internalStatus == status.InvalidResourceId {
 		log.Printf("Unable finding the entity: %v", err)
-		responses.NewResponseMessage().AddMessageByInternalStatus(status.InvalidResourceId, responses.PathParameter, "id", Id).Write(w)
+		responses.NewResponseMessage().AddMessageByInternalStatus(status.InvalidResourceId, responses.PathParameter, "id", id).Write(w)
 		return
 	}
 

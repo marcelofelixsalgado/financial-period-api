@@ -121,10 +121,13 @@ func (responseMessage *ResponseMessage) AddMessageByInternalStatus(internalStatu
 		responseMessage.AddMessageByIssue(faults.InvalidResourceId, location, field, value)
 	case status.NoRecordsFound:
 		responseMessage.AddMessageByIssue(faults.NoRecordsFound, location, field, value)
+	case status.EntityWithSameKeyAlreadyExists:
+		responseMessage.AddMessageByIssue(faults.EntityWithSameKeyAlreadyExists, location, field, value)
 	case status.LoginFailed:
 		responseMessage.AddMessageByIssue(faults.AuthenticationFailure, location, field, value)
+	case status.PasswordsDontMatch:
+		responseMessage.AddMessageByIssue(faults.PermissionDenied, "", "", "")
 	}
-
 	return responseMessage
 }
 

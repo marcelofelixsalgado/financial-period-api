@@ -126,9 +126,9 @@ func (userHandler *UserHandler) ListUsers(w http.ResponseWriter, r *http.Request
 
 func (userHandler *UserHandler) GetUserById(w http.ResponseWriter, r *http.Request) {
 	parameters := mux.Vars(r)
-	Id := parameters["id"]
+	id := parameters["id"]
 
-	sameUser, err := checkSameUser(Id, r)
+	sameUser, err := checkSameUser(id, r)
 	if err != nil {
 		log.Printf("Error extracting the user id from token: %v", err)
 		responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)
@@ -141,7 +141,7 @@ func (userHandler *UserHandler) GetUserById(w http.ResponseWriter, r *http.Reque
 	}
 
 	input := find.InputFindUserDto{
-		Id: Id,
+		Id: id,
 	}
 
 	output, internalStatus, err := userHandler.findUseCase.Execute(input)
@@ -152,7 +152,7 @@ func (userHandler *UserHandler) GetUserById(w http.ResponseWriter, r *http.Reque
 	}
 	if internalStatus == status.InvalidResourceId {
 		log.Printf("Unable finding the entity")
-		responses.NewResponseMessage().AddMessageByInternalStatus(status.InvalidResourceId, responses.PathParameter, "id", Id).Write(w)
+		responses.NewResponseMessage().AddMessageByInternalStatus(status.InvalidResourceId, responses.PathParameter, "id", id).Write(w)
 		return
 	}
 
@@ -169,9 +169,9 @@ func (userHandler *UserHandler) GetUserById(w http.ResponseWriter, r *http.Reque
 
 func (userHandler *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	parameters := mux.Vars(r)
-	Id := parameters["id"]
+	id := parameters["id"]
 
-	sameUser, err := checkSameUser(Id, r)
+	sameUser, err := checkSameUser(id, r)
 	if err != nil {
 		log.Printf("Error extracting the user id from token: %v", err)
 		responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)
@@ -197,7 +197,7 @@ func (userHandler *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Reques
 		responses.NewResponseMessage().AddMessageByIssue(faults.MalformedRequest, "body", "", "").Write(w)
 		return
 	}
-	input.Id = Id
+	input.Id = id
 
 	// Validating input parameters
 	if responseMessage := ValidateUpdateRequestBody(input).GetMessage(); responseMessage.ErrorCode != "" {
@@ -213,7 +213,7 @@ func (userHandler *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Reques
 	}
 	if internalStatus == status.InvalidResourceId {
 		log.Printf("Unable finding the entity: %v", err)
-		responses.NewResponseMessage().AddMessageByInternalStatus(status.InvalidResourceId, responses.PathParameter, "id", Id).Write(w)
+		responses.NewResponseMessage().AddMessageByInternalStatus(status.InvalidResourceId, responses.PathParameter, "id", id).Write(w)
 		return
 	}
 
@@ -230,9 +230,9 @@ func (userHandler *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Reques
 
 func (userHandler *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	parameters := mux.Vars(r)
-	Id := parameters["id"]
+	id := parameters["id"]
 
-	sameUser, err := checkSameUser(Id, r)
+	sameUser, err := checkSameUser(id, r)
 	if err != nil {
 		log.Printf("Error extracting the user id from token: %v", err)
 		responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)
@@ -245,7 +245,7 @@ func (userHandler *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Reques
 	}
 
 	var input = delete.InputDeleteUserDto{
-		Id: Id,
+		Id: id,
 	}
 
 	_, internalStatus, err := userHandler.deleteUseCase.Execute(input)
@@ -256,7 +256,7 @@ func (userHandler *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Reques
 	}
 	if internalStatus == status.InvalidResourceId {
 		log.Printf("Unable finding the entity: %v", err)
-		responses.NewResponseMessage().AddMessageByInternalStatus(status.InvalidResourceId, responses.PathParameter, "id", Id).Write(w)
+		responses.NewResponseMessage().AddMessageByInternalStatus(status.InvalidResourceId, responses.PathParameter, "id", id).Write(w)
 		return
 	}
 
