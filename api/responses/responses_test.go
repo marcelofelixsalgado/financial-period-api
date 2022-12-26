@@ -1,11 +1,14 @@
 package responses_test
 
 import (
+	"fmt"
 	. "marcelofelixsalgado/financial-period-api/api/responses"
 	"marcelofelixsalgado/financial-period-api/api/responses/faults"
 	"reflect"
 	"testing"
 )
+
+const fieldDoesNotSupportDecimals = "Field value does not support decimals"
 
 func TestGetMessages(t *testing.T) {
 
@@ -16,7 +19,7 @@ func TestGetMessages(t *testing.T) {
 		Details: []ResponseMessageDetail{
 			{
 				Issue:       "DECIMALS_NOT_SUPPORTED",
-				Description: "Field value does not support decimals",
+				Description: fieldDoesNotSupportDecimals,
 				Location:    "body",
 				Field:       "field3",
 				Value:       "value3",
@@ -28,7 +31,7 @@ func TestGetMessages(t *testing.T) {
 	actualMessage.AddMessageByIssue(faults.DecimalsNotSupported, Body, "field3", "value3")
 
 	if !reflect.DeepEqual(actualMessage.GetMessage(), expectedMessage) {
-		t.Errorf("Expected message: [%+v]  is not equal Returned Message: [%+v]", expectedMessage, actualMessage)
+		t.Errorf(formatMessageDiff(expectedMessage, actualMessage))
 	}
 }
 
@@ -41,14 +44,14 @@ func TestGetMessagesMultipleDetais(t *testing.T) {
 		Details: []ResponseMessageDetail{
 			{
 				Issue:       "DECIMALS_NOT_SUPPORTED",
-				Description: "Field value does not support decimals",
+				Description: fieldDoesNotSupportDecimals,
 				Location:    "body",
 				Field:       "field1",
 				Value:       "value1",
 			},
 			{
 				Issue:       "DECIMALS_NOT_SUPPORTED",
-				Description: "Field value does not support decimals",
+				Description: fieldDoesNotSupportDecimals,
 				Location:    "body",
 				Field:       "field2",
 				Value:       "value2",
@@ -61,7 +64,7 @@ func TestGetMessagesMultipleDetais(t *testing.T) {
 	actualMessage.AddMessageByIssue(faults.DecimalsNotSupported, Body, "field2", "value2")
 
 	if !reflect.DeepEqual(actualMessage.GetMessage(), expectedMessage) {
-		t.Errorf("Expected message: [%+v]  is not equal Returned Message: [%+v]", expectedMessage, actualMessage)
+		t.Errorf(formatMessageDiff(expectedMessage, actualMessage))
 	}
 }
 
@@ -86,6 +89,10 @@ func TestGetMessagesReplacementSuccess(t *testing.T) {
 	actualMessage.AddMessageByIssue(faults.ConditionalFieldNotAllowed, Body, "field1", "value1", "field1", "field2", "value2")
 
 	if !reflect.DeepEqual(actualMessage.GetMessage(), expectedMessage) {
-		t.Errorf("Expected message: [%+v]  is not equal Returned Message: [%+v]", expectedMessage, actualMessage)
+		t.Errorf(formatMessageDiff(expectedMessage, actualMessage))
 	}
+}
+
+func formatMessageDiff(expectedMessage ResponseMessage, actualMessage *ResponseMessage) string {
+	return fmt.Sprintf("Expected message: [%+v] is not equal Returned Message: [%+v]", expectedMessage, actualMessage)
 }

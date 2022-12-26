@@ -30,6 +30,10 @@ type UserCredentialsHandler struct {
 	loginUseCase  loginUsecase.ILoginUseCase
 }
 
+const requestBodyErrorMessage = "Error trying to read the request body: "
+const inputConversionErrorMessage = "Error trying to convert the input data: "
+const outputConversionErrorMessage = "Error trying to convert the output to response body: "
+
 func NewUserCredentialsHandler(createUseCase createUseCase.ICreateUseCase, updateUseCase updateUseCase.IUpdateUseCase, loginUseCase loginUsecase.ILoginUseCase) IUserCredentialsHandler {
 	return &UserCredentialsHandler{
 		createUseCase: createUseCase,
@@ -44,7 +48,7 @@ func (userCredentialsHandler *UserCredentialsHandler) CreateUserCredentials(w ht
 
 	requestBody, err := io.ReadAll(r.Body)
 	if err != nil {
-		log.Printf("Error trying to read the request body: %v", err)
+		log.Printf("%s%v", requestBodyErrorMessage, err)
 		responses.NewResponseMessage().AddMessageByIssue(faults.MalformedRequest, "body", "", "").Write(w)
 		return
 	}
@@ -52,7 +56,7 @@ func (userCredentialsHandler *UserCredentialsHandler) CreateUserCredentials(w ht
 	var input create.InputCreateUserCredentialsDto
 
 	if erro := json.Unmarshal([]byte(requestBody), &input); erro != nil {
-		log.Printf("Error trying to convert the input data: %v", err)
+		log.Printf("%s%v", inputConversionErrorMessage, err)
 		responses.NewResponseMessage().AddMessageByIssue(faults.MalformedRequest, "body", "", "").Write(w)
 		return
 	}
@@ -78,7 +82,7 @@ func (userCredentialsHandler *UserCredentialsHandler) CreateUserCredentials(w ht
 
 	outputJSON, err := json.Marshal(output)
 	if err != nil {
-		log.Printf("Error trying to convert the output to response body: %v", err)
+		log.Printf("%s%v", outputConversionErrorMessage, err)
 		responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)
 		return
 	}
@@ -93,7 +97,7 @@ func (userCredentialsHandler *UserCredentialsHandler) UpdateUserCredentials(w ht
 
 	requestBody, err := io.ReadAll(r.Body)
 	if err != nil {
-		log.Printf("Error trying to read the request body: %v", err)
+		log.Printf("%s%v", requestBodyErrorMessage, err)
 		responses.NewResponseMessage().AddMessageByIssue(faults.MalformedRequest, "body", "", "").Write(w)
 		return
 	}
@@ -101,7 +105,7 @@ func (userCredentialsHandler *UserCredentialsHandler) UpdateUserCredentials(w ht
 	var input update.InputUpdateUserCredentialsDto
 
 	if erro := json.Unmarshal([]byte(requestBody), &input); erro != nil {
-		log.Printf("Error trying to convert the input data: %v", err)
+		log.Printf("%s%v", inputConversionErrorMessage, err)
 		responses.NewResponseMessage().AddMessageByIssue(faults.MalformedRequest, "body", "", "").Write(w)
 		return
 	}
@@ -132,7 +136,7 @@ func (userCredentialsHandler *UserCredentialsHandler) UpdateUserCredentials(w ht
 
 	outputJSON, err := json.Marshal(output)
 	if err != nil {
-		log.Printf("Error trying to convert the output to response body: %v", err)
+		log.Printf("%s%v", outputConversionErrorMessage, err)
 		responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)
 		return
 	}
@@ -144,7 +148,7 @@ func (userCredentialsHandler *UserCredentialsHandler) UpdateUserCredentials(w ht
 func (userCredentialsHandler *UserCredentialsHandler) Login(w http.ResponseWriter, r *http.Request) {
 	requestBody, err := io.ReadAll(r.Body)
 	if err != nil {
-		log.Printf("Error trying to read the request body: %v", err)
+		log.Printf("%s%v", requestBodyErrorMessage, err)
 		responses.NewResponseMessage().AddMessageByIssue(faults.MalformedRequest, "body", "", "").Write(w)
 		return
 	}
@@ -152,7 +156,7 @@ func (userCredentialsHandler *UserCredentialsHandler) Login(w http.ResponseWrite
 	var input loginUsecase.InputUserLoginDto
 
 	if erro := json.Unmarshal([]byte(requestBody), &input); erro != nil {
-		log.Printf("Error trying to convert the input data: %v", err)
+		log.Printf("%s%v", inputConversionErrorMessage, err)
 		responses.NewResponseMessage().AddMessageByIssue(faults.MalformedRequest, "body", "", "").Write(w)
 		return
 	}
@@ -182,7 +186,7 @@ func (userCredentialsHandler *UserCredentialsHandler) Login(w http.ResponseWrite
 
 	outputJSON, err := json.Marshal(output)
 	if err != nil {
-		log.Printf("Error trying to convert the output to response body: %v", err)
+		log.Printf("%s%v", outputConversionErrorMessage, err)
 		responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)
 		return
 	}

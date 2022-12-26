@@ -36,6 +36,12 @@ type UserHandler struct {
 	updateUseCase update.IUpdateUseCase
 }
 
+const requestBodyErrorMessage = "Error trying to read the request body: "
+const inputConversionErrorMessage = "Error trying to convert the input data: "
+const outputConversionErrorMessage = "Error trying to convert the output to response body: "
+const extractingUserIdErrorMessage = "Error extracting the user id from token: "
+const userAccessAnotherUserErrorMessage = "The user is not allowed to access another user info"
+
 func NewUserHandler(createUseCase create.ICreateUseCase, deleteUseCase delete.IDeleteUseCase, findUseCase find.IFindUseCase, listUseCase list.IListUseCase, updateUseCase update.IUpdateUseCase) IUserHandler {
 	return &UserHandler{
 		createUseCase: createUseCase,
@@ -50,7 +56,7 @@ func (userHandler *UserHandler) CreateUser(w http.ResponseWriter, r *http.Reques
 
 	requestBody, err := io.ReadAll(r.Body)
 	if err != nil {
-		log.Printf("Error trying to read the request body: %v", err)
+		log.Printf("%s%v", requestBodyErrorMessage, err)
 		responses.NewResponseMessage().AddMessageByIssue(faults.MalformedRequest, "body", "", "").Write(w)
 		return
 	}
@@ -58,7 +64,7 @@ func (userHandler *UserHandler) CreateUser(w http.ResponseWriter, r *http.Reques
 	var input create.InputCreateUserDto
 
 	if erro := json.Unmarshal([]byte(requestBody), &input); erro != nil {
-		log.Printf("Error trying to convert the input data: %v", err)
+		log.Printf("%s%v", inputConversionErrorMessage, err)
 		responses.NewResponseMessage().AddMessageByIssue(faults.MalformedRequest, "body", "", "").Write(w)
 		return
 	}
@@ -83,7 +89,7 @@ func (userHandler *UserHandler) CreateUser(w http.ResponseWriter, r *http.Reques
 
 	outputJSON, err := json.Marshal(output)
 	if err != nil {
-		log.Printf("Error trying to convert the output to response body: %v", err)
+		log.Printf("%s%v", outputConversionErrorMessage, err)
 		responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)
 		return
 	}
@@ -115,7 +121,7 @@ func (userHandler *UserHandler) ListUsers(w http.ResponseWriter, r *http.Request
 
 	outputJSON, err := json.Marshal(output.Users)
 	if err != nil {
-		log.Printf("Error trying to convert the output to response body: %v", err)
+		log.Printf("%s%v", outputConversionErrorMessage, err)
 		responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)
 		return
 	}
@@ -130,12 +136,12 @@ func (userHandler *UserHandler) GetUserById(w http.ResponseWriter, r *http.Reque
 
 	sameUser, err := checkSameUser(id, r)
 	if err != nil {
-		log.Printf("Error extracting the user id from token: %v", err)
+		log.Printf("%s%v", extractingUserIdErrorMessage, err)
 		responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)
 		return
 	}
 	if !sameUser {
-		log.Printf("A user cannot update another user info")
+		log.Printf("%s", userAccessAnotherUserErrorMessage)
 		responses.NewResponseMessage().AddMessageByIssue(faults.PermissionDenied, "", "", "").Write(w)
 		return
 	}
@@ -158,7 +164,7 @@ func (userHandler *UserHandler) GetUserById(w http.ResponseWriter, r *http.Reque
 
 	outputJSON, err := json.Marshal(output)
 	if err != nil {
-		log.Printf("Error trying to convert the output to response body: %v", err)
+		log.Printf("%s%v", outputConversionErrorMessage, err)
 		responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)
 		return
 	}
@@ -173,19 +179,19 @@ func (userHandler *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Reques
 
 	sameUser, err := checkSameUser(id, r)
 	if err != nil {
-		log.Printf("Error extracting the user id from token: %v", err)
+		log.Printf("%s%v", extractingUserIdErrorMessage, err)
 		responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)
 		return
 	}
 	if !sameUser {
-		log.Printf("A user cannot update another user info")
+		log.Printf("%s", userAccessAnotherUserErrorMessage)
 		responses.NewResponseMessage().AddMessageByIssue(faults.PermissionDenied, "", "", "").Write(w)
 		return
 	}
 
 	requestBody, err := io.ReadAll(r.Body)
 	if err != nil {
-		log.Printf("Error trying to read the request body: %v", err)
+		log.Printf("%s%v", requestBodyErrorMessage, err)
 		responses.NewResponseMessage().AddMessageByIssue(faults.MalformedRequest, "body", "", "").Write(w)
 		return
 	}
@@ -193,7 +199,7 @@ func (userHandler *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Reques
 	var input update.InputUpdateUserDto
 
 	if erro := json.Unmarshal([]byte(requestBody), &input); erro != nil {
-		log.Printf("Error trying to convert the input data: %v", err)
+		log.Printf("%s%v", inputConversionErrorMessage, err)
 		responses.NewResponseMessage().AddMessageByIssue(faults.MalformedRequest, "body", "", "").Write(w)
 		return
 	}
@@ -219,7 +225,7 @@ func (userHandler *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Reques
 
 	outputJSON, err := json.Marshal(output)
 	if err != nil {
-		log.Printf("Error trying to convert the output to response body: %v", err)
+		log.Printf("%s%v", outputConversionErrorMessage, err)
 		responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)
 		return
 	}
@@ -234,12 +240,12 @@ func (userHandler *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Reques
 
 	sameUser, err := checkSameUser(id, r)
 	if err != nil {
-		log.Printf("Error extracting the user id from token: %v", err)
+		log.Printf("%s%v", extractingUserIdErrorMessage, err)
 		responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)
 		return
 	}
 	if !sameUser {
-		log.Printf("A user cannot update another user info")
+		log.Printf("%s", userAccessAnotherUserErrorMessage)
 		responses.NewResponseMessage().AddMessageByIssue(faults.PermissionDenied, "", "", "").Write(w)
 		return
 	}

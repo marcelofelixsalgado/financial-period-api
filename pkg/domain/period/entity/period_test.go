@@ -1,6 +1,7 @@
 package entity_test
 
 import (
+	"fmt"
 	"marcelofelixsalgado/financial-period-api/pkg/domain/period/entity"
 	"strings"
 	"testing"
@@ -89,7 +90,7 @@ func TestNewPeriodInvalidCode(t *testing.T) {
 	}
 	_, err := entity.Create(testCase.code, testCase.name, testCase.year, testCase.startDate, testCase.endDate)
 	if err == nil || (err.Error() != testCase.expected) {
-		t.Errorf("Error expected: %s - Error received: %s", testCase.expected, err)
+		t.Errorf(formatErrorDiff(testCase.expected, err))
 	}
 }
 
@@ -105,7 +106,7 @@ func TestNewPeriodInvalidName(t *testing.T) {
 	_, err := entity.Create(testCase.code, testCase.name, testCase.year, testCase.startDate, testCase.endDate)
 
 	if err == nil || (err.Error() != testCase.expected) {
-		t.Errorf("Error expected: %s - Error received: %s", testCase.expected, err)
+		t.Errorf(formatErrorDiff(testCase.expected, err))
 	}
 }
 
@@ -120,7 +121,7 @@ func TestNewPeriodInvalidYear(t *testing.T) {
 	}
 	_, err := entity.Create(testCase.code, testCase.name, testCase.year, testCase.startDate, testCase.endDate)
 	if err == nil || (err.Error() != testCase.expected) {
-		t.Errorf("Error expected: %s - Error received: %s", testCase.expected, err)
+		t.Errorf(formatErrorDiff(testCase.expected, err))
 	}
 }
 
@@ -134,7 +135,7 @@ func TestNewPeriodInvalidStartDate(t *testing.T) {
 	}
 	_, err := entity.Create(testCase.code, testCase.name, testCase.year, testCase.startDate, testCase.endDate)
 	if err == nil || (err.Error() != testCase.expected) {
-		t.Errorf("Error expected: %s - Error received: %s", testCase.expected, err)
+		t.Errorf(formatErrorDiff(testCase.expected, err))
 	}
 }
 
@@ -148,7 +149,7 @@ func TestNewPeriodInvalidEndDate(t *testing.T) {
 	}
 	_, err := entity.Create(testCase.code, testCase.name, testCase.year, testCase.startDate, testCase.endDate)
 	if err == nil || (err.Error() != testCase.expected) {
-		t.Errorf("Error expected: %s - Error received: %s", testCase.expected, err)
+		t.Errorf(formatErrorDiff(testCase.expected, err))
 	}
 }
 
@@ -164,7 +165,7 @@ func TestNewPeriodEqualDates(t *testing.T) {
 	}
 	_, err := entity.Create(testCase.code, testCase.name, testCase.year, testCase.startDate, testCase.endDate)
 	if err == nil || (err.Error() != testCase.expected) {
-		t.Errorf("Error expected: %s - Error received: %s", testCase.expected, err)
+		t.Errorf(formatErrorDiff(testCase.expected, err))
 	}
 }
 
@@ -180,6 +181,10 @@ func TestNewPeriodInvalidDates(t *testing.T) {
 	}
 	_, err := entity.Create(testCase.code, testCase.name, testCase.year, testCase.startDate, testCase.endDate)
 	if err == nil || (err.Error() != testCase.expected) {
-		t.Errorf("Error expected: %s - Error received: %s", testCase.expected, err)
+		t.Errorf(formatErrorDiff(testCase.expected, err))
 	}
+}
+
+func formatErrorDiff(expected string, received error) string {
+	return fmt.Sprintf("Error expected: %s - Error received: %s", expected, received)
 }

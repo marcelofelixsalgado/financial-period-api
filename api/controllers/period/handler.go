@@ -34,6 +34,11 @@ type PeriodHandler struct {
 	updateUseCase update.IUpdateUseCase
 }
 
+const requestBodyErrorMessage = "Error trying to read the request body: "
+const inputConversionErrorMessage = "Error trying to convert the input data: "
+const outputConversionErrorMessage = "Error trying to convert the output to response body: "
+const unableFindEntityErrorMessage = "Unable to find the entity"
+
 func NewPeriodHandler(createUseCase create.ICreateUseCase, deleteUseCase delete.IDeleteUseCase, findUseCase find.IFindUseCase, listUseCase list.IListUseCase, updateUseCase update.IUpdateUseCase) IPeriodHandler {
 	return &PeriodHandler{
 		createUseCase: createUseCase,
@@ -48,7 +53,7 @@ func (periodHandler *PeriodHandler) CreatePeriod(w http.ResponseWriter, r *http.
 
 	requestBody, err := io.ReadAll(r.Body)
 	if err != nil {
-		log.Printf("Error trying to read the request body: %v", err)
+		log.Printf("%s%v", requestBodyErrorMessage, err)
 		responses.NewResponseMessage().AddMessageByIssue(faults.MalformedRequest, "body", "", "").Write(w)
 		return
 	}
@@ -56,7 +61,7 @@ func (periodHandler *PeriodHandler) CreatePeriod(w http.ResponseWriter, r *http.
 	var input create.InputCreatePeriodDto
 
 	if erro := json.Unmarshal([]byte(requestBody), &input); erro != nil {
-		log.Printf("Error trying to convert the input data: %v", err)
+		log.Printf("%s%v", inputConversionErrorMessage, err)
 		responses.NewResponseMessage().AddMessageByIssue(faults.MalformedRequest, "body", "", "").Write(w)
 		return
 	}
@@ -76,7 +81,7 @@ func (periodHandler *PeriodHandler) CreatePeriod(w http.ResponseWriter, r *http.
 
 	outputJSON, err := json.Marshal(output)
 	if err != nil {
-		log.Printf("Error trying to convert the output to response body: %v", err)
+		log.Printf("%s%v", outputConversionErrorMessage, err)
 		responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)
 		return
 	}
@@ -108,7 +113,7 @@ func (periodHandler *PeriodHandler) ListPeriods(w http.ResponseWriter, r *http.R
 
 	outputJSON, err := json.Marshal(output.Periods)
 	if err != nil {
-		log.Printf("Error trying to convert the output to response body: %v", err)
+		log.Printf("%s%v", outputConversionErrorMessage, err)
 		responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)
 		return
 	}
@@ -132,14 +137,14 @@ func (periodHandler *PeriodHandler) GetPeriodById(w http.ResponseWriter, r *http
 		return
 	}
 	if internalStatus == status.InvalidResourceId {
-		log.Printf("Unable finding the entity: %v", err)
+		log.Printf("%s", unableFindEntityErrorMessage)
 		responses.NewResponseMessage().AddMessageByInternalStatus(status.InvalidResourceId, responses.PathParameter, "id", id).Write(w)
 		return
 	}
 
 	outputJSON, err := json.Marshal(output)
 	if err != nil {
-		log.Printf("Error trying to convert the output to response body: %v", err)
+		log.Printf("%s%v", outputConversionErrorMessage, err)
 		responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)
 		return
 	}
@@ -154,7 +159,7 @@ func (periodHandler *PeriodHandler) UpdatePeriod(w http.ResponseWriter, r *http.
 
 	requestBody, err := io.ReadAll(r.Body)
 	if err != nil {
-		log.Printf("Error trying to read the request body: %v", err)
+		log.Printf("%s%v", requestBodyErrorMessage, err)
 		responses.NewResponseMessage().AddMessageByIssue(faults.MalformedRequest, "body", "", "").Write(w)
 		return
 	}
@@ -162,7 +167,7 @@ func (periodHandler *PeriodHandler) UpdatePeriod(w http.ResponseWriter, r *http.
 	var input update.InputUpdatePeriodDto
 
 	if erro := json.Unmarshal([]byte(requestBody), &input); erro != nil {
-		log.Printf("Error trying to convert the input data: %v", err)
+		log.Printf("%s%v", inputConversionErrorMessage, err)
 		responses.NewResponseMessage().AddMessageByIssue(faults.MalformedRequest, "body", "", "").Write(w)
 		return
 	}
@@ -181,14 +186,14 @@ func (periodHandler *PeriodHandler) UpdatePeriod(w http.ResponseWriter, r *http.
 		return
 	}
 	if internalStatus == status.InvalidResourceId {
-		log.Printf("Unable finding the entity: %v", err)
+		log.Printf("%s", unableFindEntityErrorMessage)
 		responses.NewResponseMessage().AddMessageByInternalStatus(status.InvalidResourceId, responses.PathParameter, "id", id).Write(w)
 		return
 	}
 
 	outputJSON, err := json.Marshal(output)
 	if err != nil {
-		log.Printf("Error trying to convert the output to response body: %v", err)
+		log.Printf("%s%v", outputConversionErrorMessage, err)
 		responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)
 		return
 	}
@@ -212,7 +217,7 @@ func (periodHandler *PeriodHandler) DeletePeriod(w http.ResponseWriter, r *http.
 		return
 	}
 	if internalStatus == status.InvalidResourceId {
-		log.Printf("Unable finding the entity: %v", err)
+		log.Printf("%s", unableFindEntityErrorMessage)
 		responses.NewResponseMessage().AddMessageByInternalStatus(status.InvalidResourceId, responses.PathParameter, "id", id).Write(w)
 		return
 	}

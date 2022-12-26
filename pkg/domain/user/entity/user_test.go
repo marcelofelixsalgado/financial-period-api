@@ -1,6 +1,7 @@
 package entity_test
 
 import (
+	"fmt"
 	"marcelofelixsalgado/financial-period-api/pkg/domain/user/entity"
 	"strings"
 	"testing"
@@ -13,13 +14,15 @@ type testCase struct {
 	expected string
 }
 
+const email = "john@test.com"
+
 func TestNewUserSuccess(t *testing.T) {
 
 	testCases := []testCase{
 		{
 			name:  "John",
 			phone: "123456",
-			email: "john@test.com",
+			email: email,
 		},
 	}
 
@@ -47,7 +50,7 @@ func TestNewUserTrimSpaces(t *testing.T) {
 	testCase := testCase{
 		name:  "     	John      ",
 		phone: "123456",
-		email: "john@test.com",
+		email: email,
 	}
 	expectedName := "John"
 
@@ -65,12 +68,12 @@ func TestNewUserInvalidName(t *testing.T) {
 	testCase := testCase{
 		name:     "",
 		phone:    "123456",
-		email:    "john@test.com",
+		email:    email,
 		expected: "name is required",
 	}
 	_, err := entity.Create(testCase.name, testCase.phone, testCase.email)
 	if err == nil || (err.Error() != testCase.expected) {
-		t.Errorf("Error expected: %s - Error received: %s", testCase.expected, err)
+		t.Errorf(formatErrorDiff(testCase.expected, err))
 	}
 }
 
@@ -78,12 +81,12 @@ func TestNewUserInvalidPassword(t *testing.T) {
 	testCase := testCase{
 		name:     "John",
 		phone:    "123456",
-		email:    "john@test.com",
+		email:    email,
 		expected: "password is required",
 	}
 	_, err := entity.Create(testCase.name, testCase.phone, testCase.email)
 	if err == nil || (err.Error() != testCase.expected) {
-		t.Errorf("Error expected: %s - Error received: %s", testCase.expected, err)
+		t.Errorf(formatErrorDiff(testCase.expected, err))
 	}
 }
 
@@ -91,12 +94,12 @@ func TestNewUserInvalidPhone(t *testing.T) {
 	testCase := testCase{
 		name:     "John",
 		phone:    "",
-		email:    "john@test.com",
+		email:    email,
 		expected: "phone is required",
 	}
 	_, err := entity.Create(testCase.name, testCase.phone, testCase.email)
 	if err == nil || (err.Error() != testCase.expected) {
-		t.Errorf("Error expected: %s - Error received: %s", testCase.expected, err)
+		t.Errorf(formatErrorDiff(testCase.expected, err))
 	}
 }
 
@@ -109,6 +112,10 @@ func TestNewUserInvalidEmail(t *testing.T) {
 	}
 	_, err := entity.Create(testCase.name, testCase.phone, testCase.email)
 	if err == nil || (err.Error() != testCase.expected) {
-		t.Errorf("Error expected: %s - Error received: %s", testCase.expected, err)
+		t.Errorf(formatErrorDiff(testCase.expected, err))
 	}
+}
+
+func formatErrorDiff(expected string, received error) string {
+	return fmt.Sprintf("Error expected: %s - Error received: %s", expected, received)
 }
