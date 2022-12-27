@@ -2,89 +2,63 @@ package routes
 
 import (
 	"marcelofelixsalgado/financial-period-api/api/controllers"
-	"marcelofelixsalgado/financial-period-api/api/controllers/credentials"
 	"marcelofelixsalgado/financial-period-api/api/controllers/health"
+	"marcelofelixsalgado/financial-period-api/api/controllers/login"
 	"marcelofelixsalgado/financial-period-api/api/controllers/period"
 	"marcelofelixsalgado/financial-period-api/api/controllers/user"
 	"marcelofelixsalgado/financial-period-api/api/middlewares"
 
-	"github.com/gorilla/mux"
+	"github.com/labstack/echo/v4"
 )
 
 type Routes struct {
-	userCredentialRoutes credentials.UserCredentialsRoutes
-	userRoutes           user.UserRoutes
-	periodRoutes         period.PeriodRoutes
-	healthRoutes         health.HealthRoutes
+	loginRoutes  login.LoginRoutes
+	userRoutes   user.UserRoutes
+	periodRoutes period.PeriodRoutes
+	healthRoutes health.HealthRoutes
 }
 
-func NewRoutes(userCredentialRoutes credentials.UserCredentialsRoutes, userRoutes user.UserRoutes, periodRoutes period.PeriodRoutes, healthRoutes health.HealthRoutes) *Routes {
+func NewRoutes(loginRoutes login.LoginRoutes, userRoutes user.UserRoutes,
+	periodRoutes period.PeriodRoutes, healthRoutes health.HealthRoutes) *Routes {
 	return &Routes{
-		userCredentialRoutes: userCredentialRoutes,
-		userRoutes:           userRoutes,
-		periodRoutes:         periodRoutes,
-		healthRoutes:         healthRoutes,
+		loginRoutes:  loginRoutes,
+		userRoutes:   userRoutes,
+		periodRoutes: periodRoutes,
+		healthRoutes: healthRoutes,
 	}
 }
 
-func (routes *Routes) SetupRoutes() *mux.Router {
-	router := mux.NewRouter()
-	router.Use(middlewares.ResponseFormatMiddleware)
+func (routes *Routes) RouteMapping(http *echo.Echo) {
+
+	// router.Use(middlewares.ResponseFormatMiddleware)
 
 	// user credentials routes
-	setupRoute(router, routes.userCredentialRoutes.UserCredentialsRouteMapping())
-	// for _, route := range routes.userCredentialRoutes.UserCredentialsRouteMapping() {
-	// 	if route.RequiresAuthentication {
-	// 		router.HandleFunc(route.URI,
-	// 			middlewares.Logger(
-	// 				middlewares.Authenticate(route.Function))).Methods(route.Method)
-	// 	} else {
-	// 		router.HandleFunc(route.URI,
-	// 			middlewares.Logger(route.Function)).Methods(route.Method)
-
-	// 	}
-	// }
+	basePath, loginRoutes := routes.loginRoutes.LoginRouteMapping()
+	setupRoute(http, basePath, loginRoutes)
 
 	// user routes
-	setupRoute(router, routes.userRoutes.UserRouteMapping())
-	// for _, route := range routes.userRoutes.UserRouteMapping() {
-	// 	router.HandleFunc(route.URI,
-	// 		middlewares.Logger(
-	// 			middlewares.Authenticate(route.Function))).Methods(route.Method)
-	// }
+	basePath, userRoutes := routes.userRoutes.UserRouteMapping()
+	setupRoute(http, basePath, userRoutes)
 
 	// period routes
-	setupRoute(router, routes.periodRoutes.PeriodRouteMapping())
-	// for _, route := range routes.periodRoutes.PeriodRouteMapping() {
-	// 	router.HandleFunc(route.URI,
-	// 		middlewares.Logger(
-	// 			middlewares.Authenticate(route.Function))).Methods(route.Method)
-	// }
+	basePath, periodRoutes := routes.periodRoutes.PeriodRouteMapping()
+	setupRoute(http, basePath, periodRoutes)
 
 	// health routes
-	setupRoute(router, routes.healthRoutes.HealthRouteMapping())
-	// for _, route := range routes.healthRoutes.HealthRouteMapping() {
-	// 	router.HandleFunc(route.URI,
-	// 		middlewares.Logger(
-	// 			route.Function)).Methods(route.Method)
-	// }
+	basePath, healthRoutes := routes.healthRoutes.HealthRouteMapping()
+	setupRoute(http, basePath, healthRoutes)
 
-	return router
+	// return server
 }
 
-func setupRoute(router *mux.Router, routes []controllers.Route) {
-	// router := mux.NewRouter()
+func setupRoute(http *echo.Echo, basePath string, routes []controllers.Route) {
+	group := http.Group(basePath)
 
 	for _, route := range routes {
 		if route.RequiresAuthentication {
-			router.HandleFunc(route.URI,
-				middlewares.Logger(
-					middlewares.Authenticate(route.Function))).Methods(route.Method)
+			group.Add(route.Method, route.URI, route.Function, middlewares.Authenticate)
 		} else {
-			router.HandleFunc(route.URI,
-				middlewares.Logger(route.Function)).Methods(route.Method)
-
+			group.Add(route.Method, route.URI, route.Function)
 		}
 	}
-	// return router
 }

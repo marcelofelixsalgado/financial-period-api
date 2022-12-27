@@ -5,6 +5,9 @@ import (
 	"marcelofelixsalgado/financial-period-api/api/responses/faults"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/user/create"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/user/update"
+
+	userCredentialsCreate "marcelofelixsalgado/financial-period-api/pkg/usecase/credentials/create"
+	userCredentialsUpdate "marcelofelixsalgado/financial-period-api/pkg/usecase/credentials/update"
 )
 
 type InputUserDto struct {
@@ -49,5 +52,40 @@ func validateRequestBody(inputUserDto InputUserDto) *responses.ResponseMessage {
 	if inputUserDto.email == "" {
 		responseMessage.AddMessageByIssue(faults.MissingRequiredField, responses.Body, "email", "")
 	}
+	return responseMessage
+}
+
+func ValidateUserCredentialsCreateRequestBody(inputCreateUserCredentialsDto userCredentialsCreate.InputCreateUserCredentialsDto) *responses.ResponseMessage {
+	responseMessage := responses.NewResponseMessage()
+
+	if inputCreateUserCredentialsDto.UserId == "" {
+		responseMessage.AddMessageByIssue(faults.MissingRequiredField, responses.Body, "user.id", "")
+	}
+
+	if inputCreateUserCredentialsDto.Password == "" {
+		responseMessage.AddMessageByIssue(faults.MissingRequiredField, responses.Body, "password", "")
+	}
+
+	return responseMessage
+}
+
+func ValidateUserCredentialsUpdateRequestBody(inputUpdateUserCredentialsDto userCredentialsUpdate.InputUpdateUserCredentialsDto) *responses.ResponseMessage {
+	responseMessage := responses.NewResponseMessage()
+	if inputUpdateUserCredentialsDto.UserId == "" {
+		return responses.NewResponseMessage().AddMessageByIssue(faults.MissingRequiredField, responses.PathParameter, "id", "")
+	}
+
+	if inputUpdateUserCredentialsDto.UserId == "" {
+		responseMessage.AddMessageByIssue(faults.MissingRequiredField, responses.Body, "user.id", "")
+	}
+
+	if inputUpdateUserCredentialsDto.NewPassword == "" {
+		responseMessage.AddMessageByIssue(faults.MissingRequiredField, responses.Body, "new_password", "")
+	}
+
+	if inputUpdateUserCredentialsDto.CurrentPassword == "" {
+		responseMessage.AddMessageByIssue(faults.MissingRequiredField, responses.Body, "current_password", "")
+	}
+
 	return responseMessage
 }

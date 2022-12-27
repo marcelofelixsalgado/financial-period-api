@@ -17,35 +17,35 @@ func NewPeriodRoutes(periodHandler IPeriodHandler) PeriodRoutes {
 	}
 }
 
-func (periodRoutes *PeriodRoutes) PeriodRouteMapping() []controllers.Route {
+func (periodRoutes *PeriodRoutes) PeriodRouteMapping() (string, []controllers.Route) {
 
-	return []controllers.Route{
+	return periodBasepath, []controllers.Route{
 		{
-			URI:                    periodBasepath,
+			URI:                    "",
 			Method:                 http.MethodPost,
 			Function:               periodRoutes.periodHandler.CreatePeriod,
 			RequiresAuthentication: true,
 		},
 		{
-			URI:                    periodBasepath,
+			URI:                    "",
 			Method:                 http.MethodGet,
 			Function:               periodRoutes.periodHandler.ListPeriods,
 			RequiresAuthentication: true,
 		},
 		{
-			URI:                    periodBasepath + "/{id}",
+			URI:                    "/:id",
 			Method:                 http.MethodGet,
 			Function:               periodRoutes.periodHandler.GetPeriodById,
 			RequiresAuthentication: true,
 		},
 		{
-			URI:                    periodBasepath + "/{id}",
+			URI:                    "/:id",
 			Method:                 http.MethodPut,
 			Function:               periodRoutes.periodHandler.UpdatePeriod,
 			RequiresAuthentication: true,
 		},
 		{
-			URI:                    periodBasepath + "/{id}",
+			URI:                    "/:id",
 			Method:                 http.MethodDelete,
 			Function:               periodRoutes.periodHandler.DeletePeriod,
 			RequiresAuthentication: true,

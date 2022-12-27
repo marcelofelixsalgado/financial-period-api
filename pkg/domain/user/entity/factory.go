@@ -3,12 +3,12 @@ package entity
 import (
 	"time"
 
-	"github.com/google/uuid"
+	uuid "github.com/satori/go.uuid"
 )
 
 func Create(name string, phone string, email string) (IUser, error) {
 
-	user, err := NewUser(uuid.NewString(), name, phone, email, time.Now(), time.Time{})
+	user, err := NewUser(uuid.NewV4().String(), name, phone, email, time.Now(), time.Time{})
 	if err != nil {
 		return nil, err
 	}

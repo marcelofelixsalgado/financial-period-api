@@ -3,12 +3,12 @@ package auth
 import (
 	"errors"
 	"fmt"
-	"marcelofelixsalgado/financial-period-api/configs"
+	"marcelofelixsalgado/financial-period-api/settings"
 	"net/http"
 	"strings"
 	"time"
 
-	"github.com/golang-jwt/jwt"
+	"github.com/dgrijalva/jwt-go"
 )
 
 func CreateToken(userID string) (string, error) {
@@ -17,7 +17,7 @@ func CreateToken(userID string) (string, error) {
 	permissions["exp"] = time.Now().Add(time.Hour * 6).Unix()
 	permissions["userId"] = userID
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, permissions)
-	jwtToken, err := token.SignedString(configs.SecretKey)
+	jwtToken, err := token.SignedString(settings.Config.SecretKey)
 	if err != nil {
 		return "", err
 	}
@@ -52,7 +52,7 @@ func getVerificationKey(token *jwt.Token) (interface{}, error) {
 	if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 		return nil, fmt.Errorf("unexpected signature method! %v", token.Header["alg"])
 	}
-	return configs.SecretKey, nil
+	return settings.Config.SecretKey, nil
 }
 
 func ExtractUserId(r *http.Request) (string, error) {

@@ -17,10 +17,10 @@ func NewHealthRoutes(healthHandler IHealthHandler) HealthRoutes {
 	}
 }
 
-func (healthRoutes *HealthRoutes) HealthRouteMapping() []controllers.Route {
-	return []controllers.Route{
+func (healthRoutes *HealthRoutes) HealthRouteMapping() (string, []controllers.Route) {
+	return healthBasepath, []controllers.Route{
 		{
-			URI:                    healthBasepath,
+			URI:                    "",
 			Method:                 http.MethodGet,
 			Function:               healthRoutes.healthHandler.Health,
 			RequiresAuthentication: false,

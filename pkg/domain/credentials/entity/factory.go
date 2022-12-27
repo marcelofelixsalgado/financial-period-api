@@ -4,7 +4,7 @@ import (
 	"marcelofelixsalgado/financial-period-api/pkg/domain/user/entity"
 	"time"
 
-	"github.com/google/uuid"
+	uuid "github.com/satori/go.uuid"
 )
 
 func Create(user entity.IUser, password string) (IUserCredentials, error) {
@@ -15,7 +15,7 @@ func Create(user entity.IUser, password string) (IUserCredentials, error) {
 	}
 	password = string(hashedPassword)
 
-	userCredentials, err := NewUserCredentials(uuid.NewString(), user.GetId(), password, time.Now(), time.Time{})
+	userCredentials, err := NewUserCredentials(uuid.NewV4().String(), user.GetId(), password, time.Now(), time.Time{})
 	if err != nil {
 		return nil, err
 	}

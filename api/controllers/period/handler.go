@@ -15,15 +15,15 @@ import (
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/status"
 	"net/http"
 
-	"github.com/gorilla/mux"
+	"github.com/labstack/echo/v4"
 )
 
 type IPeriodHandler interface {
-	CreatePeriod(w http.ResponseWriter, r *http.Request)
-	ListPeriods(w http.ResponseWriter, r *http.Request)
-	GetPeriodById(w http.ResponseWriter, r *http.Request)
-	UpdatePeriod(w http.ResponseWriter, r *http.Request)
-	DeletePeriod(w http.ResponseWriter, r *http.Request)
+	CreatePeriod(ctx echo.Context) error
+	ListPeriods(ctx echo.Context) error
+	GetPeriodById(ctx echo.Context) error
+	UpdatePeriod(ctx echo.Context) error
+	DeletePeriod(ctx echo.Context) error
 }
 
 type PeriodHandler struct {
@@ -49,82 +49,65 @@ func NewPeriodHandler(createUseCase create.ICreateUseCase, deleteUseCase delete.
 	}
 }
 
-func (periodHandler *PeriodHandler) CreatePeriod(w http.ResponseWriter, r *http.Request) {
+func (periodHandler *PeriodHandler) CreatePeriod(ctx echo.Context) error {
 
-	requestBody, err := io.ReadAll(r.Body)
+	requestBody, err := io.ReadAll(ctx.Request().Body)
 	if err != nil {
 		log.Printf("%s%v", requestBodyErrorMessage, err)
-		responses.NewResponseMessage().AddMessageByIssue(faults.MalformedRequest, "body", "", "").Write(w)
-		return
+		responseMessage := responses.NewResponseMessage().AddMessageByIssue(faults.MalformedRequest, "body", "", "")
+		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 
 	var input create.InputCreatePeriodDto
 
 	if erro := json.Unmarshal([]byte(requestBody), &input); erro != nil {
 		log.Printf("%s%v", inputConversionErrorMessage, err)
-		responses.NewResponseMessage().AddMessageByIssue(faults.MalformedRequest, "body", "", "").Write(w)
-		return
+		responseMessage := responses.NewResponseMessage().AddMessageByIssue(faults.MalformedRequest, "body", "", "")
+		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 
 	// Validating input parameters
 	if responseMessage := ValidateCreateRequestBody(input).GetMessage(); responseMessage.ErrorCode != "" {
-		responseMessage.Write(w)
-		return
+		responseMessage.Write(ctx.Response().Writer)
+		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 
 	output, internalStatus, err := periodHandler.createUseCase.Execute(input)
 	if internalStatus != status.Success {
 		log.Printf("Error trying to create the entity: %v", err)
-		responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)
-		return
+		responseMessage := responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
+		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 
-	outputJSON, err := json.Marshal(output)
-	if err != nil {
-		log.Printf("%s%v", outputConversionErrorMessage, err)
-		responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)
-		return
-	}
-
-	w.WriteHeader(http.StatusCreated)
-	w.Write(outputJSON)
+	return ctx.JSON(http.StatusCreated, output)
 }
 
-func (periodHandler *PeriodHandler) ListPeriods(w http.ResponseWriter, r *http.Request) {
+func (periodHandler *PeriodHandler) ListPeriods(ctx echo.Context) error {
 	var input list.InputListPeriodDto
 
-	filterParameters, err := requests.SetupFilters(r)
+	filterParameters, err := requests.SetupFilters(ctx.Request())
 	if err != nil {
 		log.Printf("Error parsing the querystring parameters: %v", err)
-		responses.NewResponseMessage().AddMessageByIssue(faults.MalformedRequest, "query_parameter", "", "").Write(w)
-		return
+		responseMessage := responses.NewResponseMessage().AddMessageByIssue(faults.MalformedRequest, "query_parameter", "", "")
+		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 
 	output, internalStatus, err := periodHandler.listUseCase.Execute(input, filterParameters)
 	if internalStatus == status.InternalServerError {
 		log.Printf("Error listing the entity: %v", err)
-		responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)
-		return
+		responseMessage := responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
+		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 	if internalStatus == status.NoRecordsFound {
-		responses.NewResponseMessage().AddMessageByInternalStatus(internalStatus, "", "", "").Write(w)
-		return
+		responseMessage := responses.NewResponseMessage().AddMessageByInternalStatus(internalStatus, "", "", "")
+		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 
-	outputJSON, err := json.Marshal(output.Periods)
-	if err != nil {
-		log.Printf("%s%v", outputConversionErrorMessage, err)
-		responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)
-		return
-	}
-
-	w.WriteHeader(http.StatusOK)
-	w.Write(outputJSON)
+	return ctx.JSON(http.StatusOK, output.Periods)
 }
 
-func (periodHandler *PeriodHandler) GetPeriodById(w http.ResponseWriter, r *http.Request) {
-	parameters := mux.Vars(r)
-	id := parameters["id"]
+func (periodHandler *PeriodHandler) GetPeriodById(ctx echo.Context) error {
+	id := ctx.Param("id")
 
 	input := find.InputFindPeriodDto{
 		Id: id,
@@ -133,78 +116,60 @@ func (periodHandler *PeriodHandler) GetPeriodById(w http.ResponseWriter, r *http
 	output, internalStatus, err := periodHandler.findUseCase.Execute(input)
 	if internalStatus == status.InternalServerError {
 		log.Printf("Error finding the entity: %v", err)
-		responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)
-		return
+		responseMessage := responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
+		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 	if internalStatus == status.InvalidResourceId {
 		log.Printf("%s", unableFindEntityErrorMessage)
-		responses.NewResponseMessage().AddMessageByInternalStatus(status.InvalidResourceId, responses.PathParameter, "id", id).Write(w)
-		return
+		responseMessage := responses.NewResponseMessage().AddMessageByInternalStatus(status.InvalidResourceId, responses.PathParameter, "id", id)
+		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 
-	outputJSON, err := json.Marshal(output)
-	if err != nil {
-		log.Printf("%s%v", outputConversionErrorMessage, err)
-		responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)
-		return
-	}
-
-	w.WriteHeader(http.StatusOK)
-	w.Write(outputJSON)
+	return ctx.JSON(http.StatusOK, output)
 }
 
-func (periodHandler *PeriodHandler) UpdatePeriod(w http.ResponseWriter, r *http.Request) {
-	parameters := mux.Vars(r)
-	id := parameters["id"]
+func (periodHandler *PeriodHandler) UpdatePeriod(ctx echo.Context) error {
+	id := ctx.Param("id")
 
-	requestBody, err := io.ReadAll(r.Body)
+	requestBody, err := io.ReadAll(ctx.Request().Body)
 	if err != nil {
 		log.Printf("%s%v", requestBodyErrorMessage, err)
-		responses.NewResponseMessage().AddMessageByIssue(faults.MalformedRequest, "body", "", "").Write(w)
-		return
+		responseMessage := responses.NewResponseMessage().AddMessageByIssue(faults.MalformedRequest, "body", "", "")
+		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 
 	var input update.InputUpdatePeriodDto
 
 	if erro := json.Unmarshal([]byte(requestBody), &input); erro != nil {
 		log.Printf("%s%v", inputConversionErrorMessage, err)
-		responses.NewResponseMessage().AddMessageByIssue(faults.MalformedRequest, "body", "", "").Write(w)
-		return
+		responseMessage := responses.NewResponseMessage().AddMessageByIssue(faults.MalformedRequest, "body", "", "")
+		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 	input.Id = id
 
 	// Validating input parameters
 	if responseMessage := ValidateUpdateRequestBody(input).GetMessage(); responseMessage.ErrorCode != "" {
-		responseMessage.Write(w)
-		return
+		responseMessage.Write(ctx.Response().Writer)
+		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 
 	output, internalStatus, err := periodHandler.updateUseCase.Execute(input)
 	if internalStatus == status.InternalServerError {
 		log.Printf("Error updating the entity: %v", err)
-		responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)
-		return
+		responseMessage := responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
+		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 	if internalStatus == status.InvalidResourceId {
 		log.Printf("%s", unableFindEntityErrorMessage)
-		responses.NewResponseMessage().AddMessageByInternalStatus(status.InvalidResourceId, responses.PathParameter, "id", id).Write(w)
-		return
+		responseMessage := responses.NewResponseMessage().AddMessageByInternalStatus(status.InvalidResourceId, responses.PathParameter, "id", id)
+		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 
-	outputJSON, err := json.Marshal(output)
-	if err != nil {
-		log.Printf("%s%v", outputConversionErrorMessage, err)
-		responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)
-		return
-	}
-
-	w.WriteHeader(http.StatusOK)
-	w.Write(outputJSON)
+	return ctx.JSON(http.StatusOK, output)
 }
 
-func (periodHandler *PeriodHandler) DeletePeriod(w http.ResponseWriter, r *http.Request) {
-	parameters := mux.Vars(r)
-	id := parameters["id"]
+func (periodHandler *PeriodHandler) DeletePeriod(ctx echo.Context) error {
+	id := ctx.Param("id")
 
 	var input = delete.InputDeletePeriodDto{
 		Id: id,
@@ -213,14 +178,14 @@ func (periodHandler *PeriodHandler) DeletePeriod(w http.ResponseWriter, r *http.
 	_, internalStatus, err := periodHandler.deleteUseCase.Execute(input)
 	if internalStatus == status.InternalServerError {
 		log.Printf("Error removing the entity: %v", err)
-		responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError).Write(w)
-		return
+		responseMessage := responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
+		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 	if internalStatus == status.InvalidResourceId {
 		log.Printf("%s", unableFindEntityErrorMessage)
-		responses.NewResponseMessage().AddMessageByInternalStatus(status.InvalidResourceId, responses.PathParameter, "id", id).Write(w)
-		return
+		responseMessage := responses.NewResponseMessage().AddMessageByInternalStatus(status.InvalidResourceId, responses.PathParameter, "id", id)
+		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 
-	w.WriteHeader(http.StatusNoContent)
+	return ctx.NoContent(http.StatusNoContent)
 }

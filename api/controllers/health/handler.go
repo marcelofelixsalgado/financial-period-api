@@ -1,12 +1,13 @@
 package health
 
 import (
-	"encoding/json"
 	"net/http"
+
+	"github.com/labstack/echo/v4"
 )
 
 type IHealthHandler interface {
-	Health(w http.ResponseWriter, r *http.Request)
+	Health(ctx echo.Context) error
 }
 
 type message struct {
@@ -20,13 +21,11 @@ func NewHealthHandler() IHealthHandler {
 	return &HealthHandler{}
 }
 
-func (h *HealthHandler) Health(w http.ResponseWriter, r *http.Request) {
+func (h *HealthHandler) Health(ctx echo.Context) error {
 
 	successMessage := message{
 		Status: "Ok",
 	}
 
-	messageJSON, _ := json.Marshal(successMessage)
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(messageJSON))
+	return ctx.JSON(http.StatusOK, successMessage)
 }

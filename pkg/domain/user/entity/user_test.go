@@ -77,19 +77,6 @@ func TestNewUserInvalidName(t *testing.T) {
 	}
 }
 
-func TestNewUserInvalidPassword(t *testing.T) {
-	testCase := testCase{
-		name:     "John",
-		phone:    "123456",
-		email:    email,
-		expected: "password is required",
-	}
-	_, err := entity.Create(testCase.name, testCase.phone, testCase.email)
-	if err == nil || (err.Error() != testCase.expected) {
-		t.Errorf(formatErrorDiff(testCase.expected, err))
-	}
-}
-
 func TestNewUserInvalidPhone(t *testing.T) {
 	testCase := testCase{
 		name:     "John",

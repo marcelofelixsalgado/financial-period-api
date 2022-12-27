@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM golang:1.16-alpine
+FROM golang:1.19.4-alpine
 
 WORKDIR /app
 
@@ -10,9 +10,12 @@ RUN go mod download
 
 COPY *.go ./
 COPY .env ./
+
 COPY api/ ./api/
-COPY configs/ ./configs/
+COPY commons/ ./commons/
 COPY pkg/ ./pkg/
+COPY settings/ ./settings/
+COPY version/ ./version/
 
 ENV DOCKERIZE_VERSION v0.6.1
 RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
@@ -23,4 +26,4 @@ RUN go build -o /financial-period-api
 
 EXPOSE 8081
 
-# CMD [ "/financial-period-api" ]
+ENTRYPOINT ["financial-period-api"]
