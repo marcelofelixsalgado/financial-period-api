@@ -30,8 +30,6 @@ func NewRoutes(loginRoutes login.LoginRoutes, userRoutes user.UserRoutes,
 
 func (routes *Routes) RouteMapping(http *echo.Echo) {
 
-	// router.Use(middlewares.ResponseFormatMiddleware)
-
 	// user credentials routes
 	basePath, loginRoutes := routes.loginRoutes.LoginRouteMapping()
 	setupRoute(http, basePath, loginRoutes)

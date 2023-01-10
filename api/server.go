@@ -87,7 +87,7 @@ func (server *Server) startServer() {
 	periodRoutes := setupPeriodRoutes(databaseClient)
 	healthRoutes := setupHealthRoutes()
 
-	// // Setup all routes
+	// Setup all routes
 	routes := routes.NewRoutes(loginRoutes, userRoutes, periodRoutes, healthRoutes)
 
 	routes.RouteMapping(server.http)

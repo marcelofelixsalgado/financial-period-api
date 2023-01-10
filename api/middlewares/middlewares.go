@@ -9,13 +9,6 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-// func Logger(next http.HandlerFunc) http.HandlerFunc {
-// 	return func(w http.ResponseWriter, r *http.Request) {
-// 		log.Printf("\n %s %s %s", r.Method, r.RequestURI, r.Host)
-// 		next(w, r)
-// 	}
-// }
-
 func Authenticate(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		if err := auth.ValidateToken(c.Request()); err != nil {
@@ -26,10 +19,3 @@ func Authenticate(next echo.HandlerFunc) echo.HandlerFunc {
 		return next(c)
 	}
 }
-
-// func ResponseFormatMiddleware(next http.Handler) http.Handler {
-// 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-// 		w.Header().Add("Content-Type", "application/json")
-// 		next.ServeHTTP(w, r)
-// 	})
-// }

@@ -36,4 +36,5 @@ services:
 
 networks: 
   financial-network:
+    name: financial-network
     driver: bridge
