@@ -11,6 +11,6 @@ type IUserRepository interface {
 	Update(entity.IUser) error
 	FindById(id string) (entity.IUser, error)
 	FindByEmail(email string) (entity.IUser, error)
-	List([]filter.FilterParameter) ([]entity.IUser, error)
+	List(filterParameters []filter.FilterParameter) ([]entity.IUser, error)
 	Delete(id string) error
 }

@@ -161,7 +161,7 @@ func TestNewPeriodEqualDates(t *testing.T) {
 		year:      2022,
 		startDate: sameDate,
 		endDate:   sameDate,
-		expected:  "start date must be greater than the end date",
+		expected:  "end date must be greater than the start date",
 	}
 	_, err := entity.Create(testCase.code, testCase.name, testCase.year, testCase.startDate, testCase.endDate)
 	if err == nil || (err.Error() != testCase.expected) {
@@ -177,7 +177,7 @@ func TestNewPeriodInvalidDates(t *testing.T) {
 		year:      2022,
 		startDate: sameDate.Add(24 * time.Hour),
 		endDate:   sameDate,
-		expected:  "start date must be greater than the end date",
+		expected:  "end date must be greater than the start date",
 	}
 	_, err := entity.Create(testCase.code, testCase.name, testCase.year, testCase.startDate, testCase.endDate)
 	if err == nil || (err.Error() != testCase.expected) {

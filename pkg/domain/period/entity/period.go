@@ -109,7 +109,7 @@ func (period *Period) validate() error {
 	}
 
 	if period.startDate.Equal(period.endDate) || period.startDate.After(period.endDate) {
-		return errors.New("start date must be greater than the end date")
+		return errors.New("end date must be greater than the start date")
 	}
 
 	return nil
