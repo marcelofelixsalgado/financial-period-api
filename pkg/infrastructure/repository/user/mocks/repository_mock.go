@@ -24,6 +24,9 @@ func (m *UserRepositoryMock) Update(user entity.IUser) error {
 
 func (m *UserRepositoryMock) FindById(id string) (entity.IUser, error) {
 	args := m.Called(id)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
 	return args.Get(0).(entity.IUser), args.Error(1)
 }
 

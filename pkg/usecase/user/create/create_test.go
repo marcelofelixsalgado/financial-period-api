@@ -33,6 +33,6 @@ func TestCreateUserUseCase_Execute(t *testing.T) {
 	assert.Equal(t, input.Phone, output.Phone)
 	assert.Equal(t, input.Email, output.Email)
 	assert.Equal(t, internalStatus, useCaseStatus.Success)
-	m.AssertExpectations(t)
 	m.AssertNumberOfCalls(t, "Create", 1)
+	m.AssertExpectations(t)
 }
