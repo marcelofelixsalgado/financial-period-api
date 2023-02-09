@@ -1,0 +1,1098 @@
+{
+    "openapi": "3.0.2",
+    "info": {
+        "title": "Users",
+        "version": "1.0.0",
+        "description": "API contract for system users"
+    },
+    "servers": [
+        {
+            "url": "https://api.financial.com",
+            "description": "Financial - Production environment"
+        },
+        {
+            "url": "https://sandbox.financial.com",
+            "description": "Magalu Entregas - Sandbox environment"
+        }
+    ],
+    "paths": {
+        "/v1/users": {
+            "summary": "Collection of users",
+            "description": "An API resource that represents a collection of users",
+            "get": {
+                "parameters": [
+                    {
+                        "name": "_limit",
+                        "description": "Set the number of records to be returned",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query",
+                        "required": false
+                    },
+                    {
+                        "name": "_offset",
+                        "description": "Position of the reference record, from which the next N records will be returned",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "name": "_sort",
+                        "description": "Provides the possibility to sort the values of the list, in ascending and descending directions",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/Response-200-Ok-User-List"
+                    }
+                },
+                "operationId": "get-user-list",
+                "summary": "List of users",
+                "description": "List of users"
+            },
+            "post": {
+                "requestBody": {
+                    "description": "Request Body of a user creation operation",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserRequest"
+                            },
+                            "examples": {
+                                "User-Creation-Body-Example": {
+                                    "value": {
+                                        "name": "user-example",
+                                        "phone": "123456789",
+                                        "email": "user@example.com"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "parameters": [
+                    {
+                        "examples": {
+                            "Content-Type-Header-Example": {
+                                "value": "application/json"
+                            }
+                        },
+                        "name": "Content-Type-Header",
+                        "description": "Defines the format of the request body",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "$ref": "#/components/responses/Response-201-Created-User"
+                    }
+                },
+                "operationId": "create-user-list",
+                "summary": "User creation",
+                "description": "Operation that creates a new user"
+            }
+        },
+        "/v1/users/{id}": {
+            "summary": "A single User",
+            "description": "Path that points to a specific user in the collection",
+            "get": {
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/Response-200-Ok-User"
+                    }
+                },
+                "operationId": "get-user",
+                "summary": "Get a single user",
+                "description": "Operation that gets a specific user"
+            },
+            "put": {
+                "requestBody": {
+                    "description": "Update user request body",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserRequest"
+                            },
+                            "examples": {
+                                "Update-User-Example": {
+                                    "value": {
+                                        "name": "user-example",
+                                        "phone": "123456789",
+                                        "email": "user@example.com"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "parameters": [
+                    {
+                        "examples": {
+                            "Content-Type-Header-Example": {
+                                "value": "application/json"
+                            }
+                        },
+                        "name": "Content-Type-Header",
+                        "description": "Defines the format of the request body",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/Response-200-Ok-User"
+                    }
+                },
+                "operationId": "update-user",
+                "summary": "User update",
+                "description": "Operation that updates a user"
+            },
+            "delete": {
+                "responses": {
+                    "204": {
+                        "description": "Empty response body"
+                    }
+                },
+                "operationId": "delete-user",
+                "summary": "User exclusion",
+                "description": "Operation that removes a user"
+            },
+            "parameters": [
+                {
+                    "examples": {
+                        "Path-Parameter-Id-Example": {
+                            "value": "465d6122-b9b1-4d07-9eb9-502177d6e3b2"
+                        }
+                    },
+                    "name": "id",
+                    "description": "User unique identifier",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "in": "path",
+                    "required": true
+                }
+            ]
+        },
+        "/v1/users/{id}/credentials": {
+            "summary": "Collection of user credentials",
+            "description": "An API resource that represents a collection of credentials of an existing user",
+            "put": {
+                "requestBody": {
+                    "description": "Update user credentials request body",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserCredentialsRequestPut"
+                            },
+                            "examples": {
+                                "Update-User-Credentials-Example": {
+                                    "value": {
+                                        "current_password": "oldpass",
+                                        "new_password": "newpass"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/Response-200-Ok-UserCredentials"
+                    }
+                },
+                "operationId": "update-user-credentials",
+                "summary": "User credentials update",
+                "description": "Operation that updates the user credentials, more specifically, change his/her password"
+            },
+            "post": {
+                "requestBody": {
+                    "description": "Request Body of a user credentials creation operation",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserCredentialsRequest"
+                            },
+                            "examples": {
+                                "User-Credentials-Creation-Body-Example": {
+                                    "value": {
+                                        "password": "new-password"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "parameters": [
+                    {
+                        "examples": {
+                            "Path-Parameter-Id-Example": {
+                                "value": "465d6122-b9b1-4d07-9eb9-502177d6e3b2"
+                            }
+                        },
+                        "name": "id",
+                        "description": "User unique identifier",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "$ref": "#/components/responses/Response-201-Created-UserCredentials"
+                    }
+                },
+                "operationId": "create-user-credentials",
+                "summary": "Creation of user credentials",
+                "description": "Operation that creates access crendentials for an existing user"
+            },
+            "parameters": [
+                {
+                    "examples": {
+                        "Path-Parameter-Id-Example": {
+                            "value": "465d6122-b9b1-4d07-9eb9-502177d6e3b2"
+                        }
+                    },
+                    "name": "id",
+                    "description": "User unique identifier",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "in": "path",
+                    "required": true
+                }
+            ]
+        },
+        "/v1/login": {
+            "summary": "User login request",
+            "description": "An API resource used to validate user credentials",
+            "post": {
+                "requestBody": {
+                    "description": "User login request",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/LoginRequest"
+                            },
+                            "examples": {
+                                "Login-User-Example": {
+                                    "value": {
+                                        "email": "user@example.com",
+                                        "password": "current-password"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/Response-200-Ok-Login"
+                    }
+                },
+                "operationId": "login-user",
+                "summary": "Login operation",
+                "description": "Operation that validates users credentials"
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "ErrorMessage": {
+                "title": "Root Type for ErrorMessage",
+                "description": "Represents an error message for HTTP status codes 4xx and 5xx",
+                "required": [
+                    "error_code",
+                    "message"
+                ],
+                "type": "object",
+                "properties": {
+                    "error_code": {
+                        "description": "Code that identifies the error",
+                        "type": "string"
+                    },
+                    "message": {
+                        "description": "Short text that gives datails about the error",
+                        "type": "string"
+                    },
+                    "details": {
+                        "description": "List of specific and detailed information about the error",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ErrorMessageDetails"
+                        }
+                    }
+                },
+                "example": {
+                    "error_code": "UNPROCESSABLE_ENTITY",
+                    "message": "The request is semantically incorrect or fails business validation",
+                    "details": [
+                        {
+                            "issue": "INVALID_STRING_MAX_LENGTH",
+                            "description": "Field value exceeded the maximum allowed number of 5 characters",
+                            "location": "body",
+                            "field": "status",
+                            "value": "400000"
+                        }
+                    ]
+                }
+            },
+            "ErrorMessageDetails": {
+                "title": "Root Type for ErrorMessageDetails",
+                "description": "Detailed information about an error",
+                "required": [
+                    "description",
+                    "location",
+                    "issue"
+                ],
+                "type": "object",
+                "properties": {
+                    "issue": {
+                        "description": "Unique code that identifies the issue",
+                        "type": "string"
+                    },
+                    "description": {
+                        "description": "Short text that describes the error",
+                        "type": "string"
+                    },
+                    "location": {
+                        "description": "Part of the request where is the field related to the issue. Posible values are:\n- path_parameter\n- query_parameter\n- header\n- body",
+                        "type": "string"
+                    },
+                    "field": {
+                        "description": "Request field  related to the issue",
+                        "type": "string"
+                    },
+                    "value": {
+                        "description": "Current value of the field related to the issue",
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "issue": "INVALID_STRING_MAX_LENGTH",
+                    "description": "Field value exceeded the maximum allowed number of 5 characters",
+                    "location": "body",
+                    "field": "status",
+                    "value": "400000"
+                }
+            },
+            "UserRequest": {
+                "title": "Root Type for UserRequest",
+                "description": "Represents a User in request body",
+                "required": [
+                    "name",
+                    "phone",
+                    "email"
+                ],
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "description": "User full name",
+                        "type": "string"
+                    },
+                    "phone": {
+                        "description": "Phone number",
+                        "type": "string"
+                    },
+                    "email": {
+                        "description": "Email address",
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "name": "user-example",
+                    "phone": "123456789",
+                    "email": "user@example.com"
+                }
+            },
+            "UserResponse": {
+                "description": "Represents a User in the response body",
+                "required": [
+                    "ENTIDADE_RESPONSE_PROPERTIES",
+                    "campo2",
+                    "id",
+                    "created_at",
+                    "email",
+                    "name",
+                    "phone"
+                ],
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "description": "User full name",
+                        "type": "string"
+                    },
+                    "phone": {
+                        "description": "Phone number",
+                        "type": "string"
+                    },
+                    "email": {
+                        "description": "Email address",
+                        "type": "string"
+                    },
+                    "id": {
+                        "description": "Identifier code",
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "format": "date-time",
+                        "description": "Record creation date/time",
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "id": "a139ffc2-a712-4030-a4dc-985d8818c8d7",
+                    "name": "user-example",
+                    "phone": "123456789",
+                    "email": "user@example.com",
+                    "created_at": "2023-02-08T19:53:44Z"
+                }
+            },
+            "UserResponseList": {
+                "description": "Represents a list of Users in the response body",
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/UserResponse"
+                },
+                "example": [
+                    {
+                        "id": "a139ffc2-a712-4030-a4dc-985d8818c8d7",
+                        "name": "John Doe",
+                        "phone": "123456789",
+                        "email": "john@example.com",
+                        "created_at": "2023-02-10T17:14:00Z"
+                    },
+                    {
+                        "id": "a139ffc2-a712-4030-a4dc-985d8818c8d7",
+                        "name": "Olivia Jackson",
+                        "phone": "116622321",
+                        "email": "olivia@example.com",
+                        "created_at": "2022-12-30T08:41:15Z"
+                    }
+                ]
+            },
+            "UserCredentialsRequest": {
+                "title": "Root Type for UserRequest",
+                "description": "Represents the user credentials in request body",
+                "required": [
+                    "password"
+                ],
+                "type": "object",
+                "properties": {
+                    "password": {
+                        "description": "User password",
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "password": "new-password"
+                }
+            },
+            "UserCredentialsResponse": {
+                "description": "Represents a User in the response body",
+                "required": [
+                    "ENTIDADE_RESPONSE_PROPERTIES",
+                    "campo2",
+                    "created_at"
+                ],
+                "type": "object",
+                "properties": {
+                    "created_at": {
+                        "format": "date-time",
+                        "description": "User credential creation date/time",
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "created_at": "2023-02-08T19:53:45Z"
+                }
+            },
+            "UserCredentialsRequestPut": {
+                "title": "Root Type for UserRequest",
+                "description": "Represents the user credentials in request body",
+                "required": [
+                    "current_password",
+                    "new_password"
+                ],
+                "type": "object",
+                "properties": {
+                    "current_password": {
+                        "description": "Current user password",
+                        "type": "string"
+                    },
+                    "new_password": {
+                        "description": "New user password",
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "current_password": "oldpass",
+                    "new_password": "newpass"
+                }
+            },
+            "UserCredentialsResponsePut": {
+                "description": "Represents the new user credentials in the response body",
+                "required": [
+                    "ENTIDADE_RESPONSE_PROPERTIES",
+                    "campo2",
+                    "created_at",
+                    "id",
+                    "user_id",
+                    "updated_at"
+                ],
+                "type": "object",
+                "properties": {
+                    "created_at": {
+                        "format": "date-time",
+                        "description": "User credential creation date/time",
+                        "type": "string"
+                    },
+                    "id": {
+                        "description": "User credentials identifier code",
+                        "type": "string"
+                    },
+                    "user_id": {
+                        "description": "User identifier code",
+                        "type": "string"
+                    },
+                    "updated_at": {
+                        "format": "date-time",
+                        "description": "User credential update date/time",
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "id": "4216a05e-d65f-4d46-93b2-e49d81952268",
+                    "user_id": "a139ffc2-a712-4030-a4dc-985d8818c8d7",
+                    "created_at": "2023-02-08T21:20:25Z",
+                    "updated_at": "2023-02-09T01:34:14Z"
+                }
+            },
+            "LoginRequest": {
+                "title": "Root Type for UserRequest",
+                "description": "Represents the User credentials in request body",
+                "required": [
+                    "email",
+                    "password"
+                ],
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "description": "User email address",
+                        "type": "string"
+                    },
+                    "password": {
+                        "description": "User current password",
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "email": "user@example.com",
+                    "password": "current-password"
+                }
+            },
+            "LoginResponse": {
+                "description": "Represents the user access credentials in the response body",
+                "required": [
+                    "ENTIDADE_RESPONSE_PROPERTIES",
+                    "campo2",
+                    "access_token",
+                    "user"
+                ],
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "description": "Access token used in authorization flows of the application",
+                        "type": "string"
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/LoginResponseUser",
+                        "description": "User identification code"
+                    }
+                },
+                "example": {
+                    "user": {
+                        "id": "a139ffc2-a712-4030-a4dc-985d8818c8d7"
+                    },
+                    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBdXRob3JpemVkIjp0cnVlLCJleHAiOjE2NzU5MjgwMjAsInVzZXJJZCI6ImExMzlmZmMyLWE3MTItNDAzMC1hNGRjLTk4NWQ4ODE4YzhkNyJ9.NQJc52OK6X2oVGBfOAKTffQDWdGMkde4ox"
+                }
+            },
+            "LoginResponseUser": {
+                "description": "Represents the user identification code",
+                "required": [
+                    "ENTIDADE_RESPONSE_PROPERTIES",
+                    "campo2",
+                    "id"
+                ],
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "description": "User identification code",
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "id": "a139ffc2-a712-4030-a4dc-985d8818c8d7"
+                }
+            }
+        },
+        "responses": {
+            "Response-200-Ok-User": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/UserResponse"
+                        },
+                        "examples": {
+                            "Response-200-Ok-User-Example": {
+                                "value": {
+                                    "name": "user-example",
+                                    "phone": "123456789",
+                                    "email": "user@example.com"
+                                }
+                            }
+                        }
+                    }
+                },
+                "description": "Success message (200 - OK) for a user returned"
+            },
+            "Response-200-Ok-User-List": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/UserResponseList"
+                        },
+                        "examples": {
+                            "Response-200-Ok-User-List-Example": {
+                                "value": [
+                                    {
+                                        "id": "a139ffc2-a712-4030-a4dc-985d8818c8d7",
+                                        "name": "John Doe",
+                                        "phone": "123456789",
+                                        "email": "john@example.com",
+                                        "created_at": "2023-02-10T17:14:00Z"
+                                    },
+                                    {
+                                        "id": "a139ffc2-a712-4030-a4dc-985d8818c8d7",
+                                        "name": "Olivia Jackson",
+                                        "phone": "116622321",
+                                        "email": "olivia@example.com",
+                                        "created_at": "2022-12-30T08:41:15Z"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "description": "Success message (200 - OK) for a list of users"
+            },
+            "Response-400-BadRequest": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/ErrorMessage"
+                            }
+                        },
+                        "examples": {
+                            "Response-400-BadRequest-Example": {
+                                "value": [
+                                    {
+                                        "error_code": "INVALID_REQUEST_SYNTAX",
+                                        "message": "Request is not well-formed, syntactically incorrect, or violates schema",
+                                        "details": [
+                                            {
+                                                "issue": "DECIMALS_NOT_SUPPORTED",
+                                                "description": "Field value does not support decimals",
+                                                "location": "body",
+                                                "field": "customer.age",
+                                                "value": "30.6"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "description": "Error message (400 - Bad Request)"
+            },
+            "Response-401-Unauthorized": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/ErrorMessage"
+                            }
+                        },
+                        "examples": {
+                            "Response-401-Unauthorized-Example": {
+                                "value": [
+                                    {
+                                        "error_code": "INVALID_CLIENT",
+                                        "message": "Client authentication failed",
+                                        "details": [
+                                            {
+                                                "issue": "AUTHENTICATION_FAILURE",
+                                                "description": "Authentication failed due to missing authorization header, or invalid authentication credentials",
+                                                "location": "header",
+                                                "field": "Authorization",
+                                                "value": "abc"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "description": "Error message (401 - Unauthorized)"
+            },
+            "Response-403-Forbidden": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/ErrorMessage"
+                            }
+                        },
+                        "examples": {
+                            "Response-403-Forbidden-Example": {
+                                "value": [
+                                    {
+                                        "error_code": "NOT_AUTHORIZED",
+                                        "message": "Authorization failed due to insufficient permissions",
+                                        "details": [
+                                            {
+                                                "issue": "PERMISSION_DENIED",
+                                                "description": "You do not have permission to access or perform operations on this resource"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "description": "Error message (403 - Forbidden)"
+            },
+            "Response-404-NotFound": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/ErrorMessage"
+                            }
+                        },
+                        "examples": {
+                            "Response-404-NotFound-Example": {
+                                "value": [
+                                    {
+                                        "error_code": "RESOURCE_NOT_FOUND",
+                                        "message": "The specified resource does not found",
+                                        "details": [
+                                            {
+                                                "issue": "NO_RECORDS_FOUND",
+                                                "description": "Records not found. Please check the input parameters and try again",
+                                                "location": "query_parameter",
+                                                "field": "customer.cpf",
+                                                "value": "123"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "description": "Error message (404 - Not Found)"
+            },
+            "Response-405-MethodNotAllowed": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/ErrorMessage"
+                            }
+                        },
+                        "examples": {
+                            "Response-405-MethodNotAllowed-Example": {
+                                "value": [
+                                    {
+                                        "error_code": "METHOD_NOT_ALLOWED",
+                                        "message": "Invalid path and HTTP method combination",
+                                        "details": [
+                                            {
+                                                "issue": "METHOD_NOT_SUPPORTED",
+                                                "description": "The server does not implement the requested path and HTTP method"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "description": "Error message (405 - Method Not Allowed)"
+            },
+            "Response-415-UnsupportedMediaType": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/ErrorMessage"
+                            }
+                        },
+                        "examples": {
+                            "Response-415-UnsupportedMediaType-Example": {
+                                "value": [
+                                    {
+                                        "error_code": "UNSUPPORTED_MEDIA_TYPE",
+                                        "message": "The server does not support the request body media type",
+                                        "details": [
+                                            {
+                                                "issue": "INVALID_CONTENT_TYPE",
+                                                "description": "The specified Content Type header is invalid",
+                                                "location": "header",
+                                                "field": "Content-Type"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "description": "Error message (415 - Unsupported Media Type)"
+            },
+            "Response-422-UnprocessableEntity": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/ErrorMessage"
+                            }
+                        },
+                        "examples": {
+                            "Response-422-UnprocessableEntity-Example": {
+                                "value": [
+                                    {
+                                        "error_code": "UNPROCESSABLE_ENTITY",
+                                        "message": "The request is semantically incorrect or fails business validation",
+                                        "details": [
+                                            {
+                                                "issue": "INVALID_PARAMETER_FORMAT",
+                                                "description": "Field value does not conform to the expected format: 99999-99",
+                                                "location": "body",
+                                                "field": "zipcode",
+                                                "value": "14400-1234"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "description": "Error message (422 - Unprocessable Entity)"
+            },
+            "Response-500-InternalServerError": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/ErrorMessage"
+                            }
+                        },
+                        "examples": {
+                            "Response-500-InternalServerError-Example": {
+                                "value": [
+                                    {
+                                        "error_code": "INTERNAL_SERVER_ERROR",
+                                        "message": "A system or application error occurred"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "description": "Error message (500 - Internal Server Error)"
+            },
+            "Response-502-BadGateway": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/ErrorMessage"
+                            }
+                        },
+                        "examples": {
+                            "Response-502-BadGateway-Example": {
+                                "value": [
+                                    {
+                                        "error_code": "BAD_GATEWAY",
+                                        "message": "The server returned an invalid response"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "description": "Error message (502 - Bad Gateway)"
+            },
+            "Response-503-ServiceUnavailable": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/ErrorMessage"
+                            }
+                        },
+                        "examples": {
+                            "Response-503-ServiceUnavailable-Example": {
+                                "value": [
+                                    {
+                                        "error_code": "SERVICE_UNAVAILABLE",
+                                        "message": "The server cannot handle the request for a service due to temporary maintenance"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "description": "Error message (503 - Service Unavailable)"
+            },
+            "Response-504-GatewayTimeout": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/ErrorMessage"
+                            }
+                        },
+                        "examples": {
+                            "Response-504-GatewayTimeout-Example": {
+                                "value": [
+                                    {
+                                        "error_code": "GATEWAY_TIMEOUT",
+                                        "message": "The server did not send the response in the expected time"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "description": "Error message (504 - Gateway Timeout)"
+            },
+            "Response-201-Created-UserCredentials": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/UserCredentialsResponse"
+                        },
+                        "examples": {
+                            "Response-201-Created-Example": {
+                                "value": {
+                                    "created_at": "2023-02-08T19:53:45Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                "description": "Success message (201 - Created)"
+            },
+            "Response-201-Created-User": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/UserResponse"
+                        },
+                        "examples": {
+                            "Response-201-Created-Example": {
+                                "value": {
+                                    "id": "fc5db760-87b9-43cf-ba05-b0a027857dc0",
+                                    "name": "user-example",
+                                    "phone": "123456789",
+                                    "email": "user@example.com",
+                                    "created_at": "2023-02-01T06:44:00Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                "description": "Success message (201 - Created)"
+            },
+            "Response-200-Ok-UserCredentials": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/UserCredentialsResponsePut"
+                        },
+                        "examples": {
+                            "Response-200-Ok-User-Example": {
+                                "value": {
+                                    "id": "4216a05e-d65f-4d46-93b2-e49d81952268",
+                                    "user_id": "a139ffc2-a712-4030-a4dc-985d8818c8d7",
+                                    "created_at": "2023-02-08T21:20:25Z",
+                                    "updated_at": "2023-02-09T01:34:14Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                "description": "Success message (200 - OK) for a user returned"
+            },
+            "Response-200-Ok-Login": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/LoginResponse"
+                        },
+                        "examples": {
+                            "Response-200-Ok-Login-Example": {
+                                "value": {
+                                    "user": {
+                                        "id": "a139ffc2-a712-4030-a4dc-985d8818c8d7"
+                                    },
+                                    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBdXRob3JpemVkIjp0cnVlLCJleHAiOjE2NzU5MjgwMjAsInVzZXJJZCI6ImExMzlmZmMyLWE3MTItNDAzMC1hNGRjLTk4NWQ4ODE4YzhkNyJ9.NQJc52OK6X2oVGBfOAKTffQDWdGMkde4ox"
+                                }
+                            }
+                        }
+                    }
+                },
+                "description": "Success message (200 - OK) for a user login"
+            }
+        }
+    }
+}

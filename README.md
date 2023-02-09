@@ -25,3 +25,10 @@ List of environment variables
 | DATABASE_PASSWORD                 | Database connection password                  | String        | Yes           |                       |
 | API_PORT                          | Port exposed for this API                     | Integer       | Yes           |                       |
 | SERVER_CLOSEWAIT                  | Time waiting to server shutdown               | Integer       | Yes           | 10                    |
+
+### Running
+
+To run locally:
+```
+docker compose up
+```

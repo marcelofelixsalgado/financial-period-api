@@ -1,0 +1,793 @@
+{
+    "openapi": "3.0.2",
+    "info": {
+        "title": "Periods",
+        "version": "1.0.0",
+        "description": "Monthy periods for financial controls"
+    },
+    "servers": [
+        {
+            "url": "https://api.financial.com",
+            "description": "Financial - Production environment"
+        },
+        {
+            "url": "https://sandbox.financial.com",
+            "description": "Magalu Entregas - Sandbox environment"
+        }
+    ],
+    "paths": {
+        "/v1/periods": {
+            "summary": "Collection of periods",
+            "description": "An API resource that represents a collection of periods",
+            "get": {
+                "parameters": [
+                    {
+                        "name": "_limit",
+                        "description": "Set the number of records to be returned",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query",
+                        "required": false
+                    },
+                    {
+                        "name": "_offset",
+                        "description": "Position of the reference record, from which the next N records will be returned",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "name": "_sort",
+                        "description": "Provides the possibility to sort the values of the list, in ascending and descending directions",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/Response-200-Ok-Period-List"
+                    }
+                },
+                "operationId": "get-period-list",
+                "summary": "List of periods",
+                "description": "List of periods"
+            },
+            "post": {
+                "requestBody": {
+                    "description": "Request Body of a period creation operation",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PeriodRequest"
+                            },
+                            "examples": {
+                                "Period-Creation-Body-Example": {
+                                    "value": {
+                                        "code": "2023-03",
+                                        "name": "March - 2023",
+                                        "year": 2023,
+                                        "start_date": "2023-03-07T00:00:00Z",
+                                        "end_date": "2023-04-06T23:59:59Z"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "parameters": [
+                    {
+                        "examples": {
+                            "Content-Type-Header-Example": {
+                                "value": "application/json"
+                            }
+                        },
+                        "name": "Content-Type-Header",
+                        "description": "Defines the format of the request body",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "$ref": "#/components/responses/Response-201-Created"
+                    }
+                },
+                "operationId": "create-period-list",
+                "summary": "Period creation",
+                "description": "Operation that creates a new period"
+            }
+        },
+        "/v1/periods/{id}": {
+            "summary": "Period item",
+            "description": "Path that points to a specific period in the collection",
+            "get": {
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/Response-200-Ok-Period"
+                    }
+                },
+                "operationId": "get-period",
+                "summary": "Get a period item",
+                "description": "Operation that gets a specific period"
+            },
+            "put": {
+                "requestBody": {
+                    "description": "Update period request body",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PeriodRequest"
+                            },
+                            "examples": {
+                                "Update-Period-Example": {
+                                    "value": {
+                                        "code": "2023-03",
+                                        "name": "March - 2023",
+                                        "year": 2023,
+                                        "start_date": "2023-03-07T00:00:00Z",
+                                        "end_date": "2023-04-06T23:59:59Z"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "parameters": [
+                    {
+                        "examples": {
+                            "Content-Type-Header-Example": {
+                                "value": "application/json"
+                            }
+                        },
+                        "name": "Content-Type-Header",
+                        "description": "Defines the format of the request body",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/Response-200-Ok-Period"
+                    }
+                },
+                "operationId": "update-period",
+                "summary": "Period update",
+                "description": "Operation that updates a period"
+            },
+            "delete": {
+                "responses": {
+                    "204": {
+                        "description": "Empty response body"
+                    }
+                },
+                "operationId": "delete-period",
+                "summary": "Period exclusion",
+                "description": "Operation that removes a period"
+            },
+            "parameters": [
+                {
+                    "examples": {
+                        "Path-Parameter-Id-Example": {
+                            "value": "465d6122-b9b1-4d07-9eb9-502177d6e3b2"
+                        }
+                    },
+                    "name": "id",
+                    "description": "Period unique identifier",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "in": "path",
+                    "required": true
+                }
+            ]
+        }
+    },
+    "components": {
+        "schemas": {
+            "ErrorMessage": {
+                "title": "Root Type for ErrorMessage",
+                "description": "Represents an error message for HTTP status codes 4xx and 5xx",
+                "required": [
+                    "error_code",
+                    "message"
+                ],
+                "type": "object",
+                "properties": {
+                    "error_code": {
+                        "description": "Code that identifies the error",
+                        "type": "string"
+                    },
+                    "message": {
+                        "description": "Short text that gives datails about the error",
+                        "type": "string"
+                    },
+                    "details": {
+                        "description": "List of specific and detailed information about the error",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ErrorMessageDetails"
+                        }
+                    }
+                },
+                "example": {
+                    "error_code": "UNPROCESSABLE_ENTITY",
+                    "message": "The request is semantically incorrect or fails business validation",
+                    "details": [
+                        {
+                            "issue": "INVALID_STRING_MAX_LENGTH",
+                            "description": "Field value exceeded the maximum allowed number of 5 characters",
+                            "location": "body",
+                            "field": "status",
+                            "value": "400000"
+                        }
+                    ]
+                }
+            },
+            "ErrorMessageDetails": {
+                "title": "Root Type for ErrorMessageDetails",
+                "description": "Detailed information about an error",
+                "required": [
+                    "description",
+                    "location",
+                    "issue"
+                ],
+                "type": "object",
+                "properties": {
+                    "issue": {
+                        "description": "Unique code that identifies the issue",
+                        "type": "string"
+                    },
+                    "description": {
+                        "description": "Short text that describes the error",
+                        "type": "string"
+                    },
+                    "location": {
+                        "description": "Part of the request where is the field related to the issue. Posible values are:\n- path_parameter\n- query_parameter\n- header\n- body",
+                        "type": "string"
+                    },
+                    "field": {
+                        "description": "Request field  related to the issue",
+                        "type": "string"
+                    },
+                    "value": {
+                        "description": "Current value of the field related to the issue",
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "issue": "INVALID_STRING_MAX_LENGTH",
+                    "description": "Field value exceeded the maximum allowed number of 5 characters",
+                    "location": "body",
+                    "field": "status",
+                    "value": "400000"
+                }
+            },
+            "PeriodRequest": {
+                "title": "Root Type for PeriodRequest",
+                "description": "Represents a Period in request body",
+                "required": [
+                    "code",
+                    "name",
+                    "year",
+                    "start_date",
+                    "end_date",
+                    "created_at"
+                ],
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "description": "Short code used to identify a period",
+                        "type": "string"
+                    },
+                    "name": {
+                        "description": "Name that describes a period",
+                        "type": "string"
+                    },
+                    "year": {
+                        "description": "Period's year",
+                        "type": "integer"
+                    },
+                    "start_date": {
+                        "format": "date-time",
+                        "description": "Initial date/time of the period",
+                        "type": "string"
+                    },
+                    "end_date": {
+                        "format": "date-time",
+                        "description": "Ending date/time of the period",
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "code": "2023-02",
+                    "name": "February - 2023",
+                    "year": 2023,
+                    "start_date": "2023-02-07T00:00:00Z",
+                    "end_date": "2023-03-06T23:59:59Z"
+                }
+            },
+            "PeriodResponse": {
+                "description": "Represents a Period in the response body",
+                "required": [
+                    "ENTIDADE_RESPONSE_PROPERTIES",
+                    "campo2",
+                    "code",
+                    "created_at",
+                    "end_date",
+                    "id",
+                    "name",
+                    "start_date",
+                    "year"
+                ],
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "description": "Identifier code",
+                        "type": "string"
+                    },
+                    "code": {
+                        "description": "Short code used to identify a period",
+                        "type": "string"
+                    },
+                    "name": {
+                        "description": "Name that describes a period",
+                        "type": "string"
+                    },
+                    "year": {
+                        "description": "Period's year",
+                        "type": "integer"
+                    },
+                    "start_date": {
+                        "format": "date-time",
+                        "description": "Initial date/time of the period",
+                        "type": "string"
+                    },
+                    "end_date": {
+                        "format": "date-time",
+                        "description": "Ending date/time of the period",
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "format": "date-time",
+                        "description": "Record creation date/time",
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "id": "b5598f8f-f645-4bc4-9e9c-62307662e5e5",
+                    "code": "2023-02",
+                    "name": "February - 2023",
+                    "year": 2023,
+                    "start_date": "2023-02-07T00:00:00Z",
+                    "end_date": "2023-03-06T23:59:59Z",
+                    "created_at": "2023-02-09T02:28:32Z"
+                }
+            },
+            "PeriodResponseList": {
+                "description": "Represents a list of Periods in the response body",
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/PeriodResponse"
+                },
+                "example": [
+                    {
+                        "id": "b5598f8f-f645-4bc4-9e9c-62307662e5e5",
+                        "code": "2023-02",
+                        "name": "February - 2023",
+                        "year": 2023,
+                        "start_date": "2023-02-07T00:00:00Z",
+                        "end_date": "2023-03-06T23:59:59Z"
+                    },
+                    {
+                        "id": "ec83cc7f-76cf-4dd5-be32-bb7afc4ea44b",
+                        "code": "2023-03",
+                        "name": "March - 2023",
+                        "year": 2023,
+                        "start_date": "2023-03-07T00:00:00Z",
+                        "end_date": "2023-04-06T23:59:59Z"
+                    }
+                ]
+            }
+        },
+        "responses": {
+            "Response-200-Ok-Period": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/PeriodResponse"
+                        },
+                        "examples": {
+                            "Response-200-Ok-Period-Example": {
+                                "value": {
+                                    "id": "b5598f8f-f645-4bc4-9e9c-62307662e5e5",
+                                    "code": "2023-02",
+                                    "name": "February - 2023",
+                                    "year": 2023,
+                                    "start_date": "2023-02-07T00:00:00Z",
+                                    "end_date": "2023-03-06T23:59:59Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                "description": "Success message (200 - OK) for a period returned"
+            },
+            "Response-200-Ok-Period-List": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/PeriodResponseList"
+                        },
+                        "examples": {
+                            "Response-200-Ok-Period-List-Example": {
+                                "value": [
+                                    {
+                                        "id": "b5598f8f-f645-4bc4-9e9c-62307662e5e5",
+                                        "code": "2023-02",
+                                        "name": "February - 2023",
+                                        "year": 2023,
+                                        "start_date": "2023-02-07T00:00:00Z",
+                                        "end_date": "2023-03-06T23:59:59Z"
+                                    },
+                                    {
+                                        "id": "ec83cc7f-76cf-4dd5-be32-bb7afc4ea44b",
+                                        "code": "2023-03",
+                                        "name": "March - 2023",
+                                        "year": 2023,
+                                        "start_date": "2023-03-07T00:00:00Z",
+                                        "end_date": "2023-04-06T23:59:59Z"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "description": "Success message (200 - OK) for a list of periods"
+            },
+            "Response-201-Created": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/PeriodResponse"
+                        },
+                        "examples": {
+                            "Response-201-Created-Example": {
+                                "value": {
+                                    "id": "ec83cc7f-76cf-4dd5-be32-bb7afc4ea44b",
+                                    "code": "2023-03",
+                                    "name": "March - 2023",
+                                    "year": 2023,
+                                    "start_date": "2023-03-07T00:00:00Z",
+                                    "end_date": "2023-04-06T23:59:59Z",
+                                    "created_at": "2023-02-09T02:45:41Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                "description": "Success message (201 - Created)"
+            },
+            "Response-400-BadRequest": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/ErrorMessage"
+                            }
+                        },
+                        "examples": {
+                            "Response-400-BadRequest-Example": {
+                                "value": [
+                                    {
+                                        "error_code": "INVALID_REQUEST_SYNTAX",
+                                        "message": "Request is not well-formed, syntactically incorrect, or violates schema",
+                                        "details": [
+                                            {
+                                                "issue": "DECIMALS_NOT_SUPPORTED",
+                                                "description": "Field value does not support decimals",
+                                                "location": "body",
+                                                "field": "customer.age",
+                                                "value": "30.6"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "description": "Error message (400 - Bad Request)"
+            },
+            "Response-401-Unauthorized": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/ErrorMessage"
+                            }
+                        },
+                        "examples": {
+                            "Response-401-Unauthorized-Example": {
+                                "value": [
+                                    {
+                                        "error_code": "INVALID_CLIENT",
+                                        "message": "Client authentication failed",
+                                        "details": [
+                                            {
+                                                "issue": "AUTHENTICATION_FAILURE",
+                                                "description": "Authentication failed due to missing authorization header, or invalid authentication credentials",
+                                                "location": "header",
+                                                "field": "Authorization",
+                                                "value": "abc"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "description": "Error message (401 - Unauthorized)"
+            },
+            "Response-403-Forbidden": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/ErrorMessage"
+                            }
+                        },
+                        "examples": {
+                            "Response-403-Forbidden-Example": {
+                                "value": [
+                                    {
+                                        "error_code": "NOT_AUTHORIZED",
+                                        "message": "Authorization failed due to insufficient permissions",
+                                        "details": [
+                                            {
+                                                "issue": "PERMISSION_DENIED",
+                                                "description": "You do not have permission to access or perform operations on this resource"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "description": "Error message (403 - Forbidden)"
+            },
+            "Response-404-NotFound": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/ErrorMessage"
+                            }
+                        },
+                        "examples": {
+                            "Response-404-NotFound-Example": {
+                                "value": [
+                                    {
+                                        "error_code": "RESOURCE_NOT_FOUND",
+                                        "message": "The specified resource does not found",
+                                        "details": [
+                                            {
+                                                "issue": "NO_RECORDS_FOUND",
+                                                "description": "Records not found. Please check the input parameters and try again",
+                                                "location": "query_parameter",
+                                                "field": "customer.cpf",
+                                                "value": "123"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "description": "Error message (404 - Not Found)"
+            },
+            "Response-405-MethodNotAllowed": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/ErrorMessage"
+                            }
+                        },
+                        "examples": {
+                            "Response-405-MethodNotAllowed-Example": {
+                                "value": [
+                                    {
+                                        "error_code": "METHOD_NOT_ALLOWED",
+                                        "message": "Invalid path and HTTP method combination",
+                                        "details": [
+                                            {
+                                                "issue": "METHOD_NOT_SUPPORTED",
+                                                "description": "The server does not implement the requested path and HTTP method"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "description": "Error message (405 - Method Not Allowed)"
+            },
+            "Response-415-UnsupportedMediaType": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/ErrorMessage"
+                            }
+                        },
+                        "examples": {
+                            "Response-415-UnsupportedMediaType-Example": {
+                                "value": [
+                                    {
+                                        "error_code": "UNSUPPORTED_MEDIA_TYPE",
+                                        "message": "The server does not support the request body media type",
+                                        "details": [
+                                            {
+                                                "issue": "INVALID_CONTENT_TYPE",
+                                                "description": "The specified Content Type header is invalid",
+                                                "location": "header",
+                                                "field": "Content-Type"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "description": "Error message (415 - Unsupported Media Type)"
+            },
+            "Response-422-UnprocessableEntity": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/ErrorMessage"
+                            }
+                        },
+                        "examples": {
+                            "Response-422-UnprocessableEntity-Example": {
+                                "value": [
+                                    {
+                                        "error_code": "UNPROCESSABLE_ENTITY",
+                                        "message": "The request is semantically incorrect or fails business validation",
+                                        "details": [
+                                            {
+                                                "issue": "INVALID_PARAMETER_FORMAT",
+                                                "description": "Field value does not conform to the expected format: 99999-99",
+                                                "location": "body",
+                                                "field": "zipcode",
+                                                "value": "14400-1234"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "description": "Error message (422 - Unprocessable Entity)"
+            },
+            "Response-500-InternalServerError": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/ErrorMessage"
+                            }
+                        },
+                        "examples": {
+                            "Response-500-InternalServerError-Example": {
+                                "value": [
+                                    {
+                                        "error_code": "INTERNAL_SERVER_ERROR",
+                                        "message": "A system or application error occurred"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "description": "Error message (500 - Internal Server Error)"
+            },
+            "Response-502-BadGateway": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/ErrorMessage"
+                            }
+                        },
+                        "examples": {
+                            "Response-502-BadGateway-Example": {
+                                "value": [
+                                    {
+                                        "error_code": "BAD_GATEWAY",
+                                        "message": "The server returned an invalid response"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "description": "Error message (502 - Bad Gateway)"
+            },
+            "Response-503-ServiceUnavailable": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/ErrorMessage"
+                            }
+                        },
+                        "examples": {
+                            "Response-503-ServiceUnavailable-Example": {
+                                "value": [
+                                    {
+                                        "error_code": "SERVICE_UNAVAILABLE",
+                                        "message": "The server cannot handle the request for a service due to temporary maintenance"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "description": "Error message (503 - Service Unavailable)"
+            },
+            "Response-504-GatewayTimeout": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/ErrorMessage"
+                            }
+                        },
+                        "examples": {
+                            "Response-504-GatewayTimeout-Example": {
+                                "value": [
+                                    {
+                                        "error_code": "GATEWAY_TIMEOUT",
+                                        "message": "The server did not send the response in the expected time"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "description": "Error message (504 - Gateway Timeout)"
+            }
+        }
+    }
+}
