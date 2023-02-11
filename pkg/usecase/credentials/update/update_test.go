@@ -19,7 +19,7 @@ func TestUpdateSucess(t *testing.T) {
 
 	password := "pass"
 
-	userEntity, _ := userEntity.NewUser("123", "user1", "111-1111", "user1@test.com", time.Time{}, time.Time{})
+	userEntity, _ := userEntity.NewUser("123", "456", "user1", "111-1111", "user1@test.com", time.Time{}, time.Time{})
 	userCredentials, _ := userCredentialsEntity.Create(userEntity, password)
 
 	userCredentialsRepositoryMock.On("FindByUserId", userEntity.GetId()).Return(userCredentials, nil)

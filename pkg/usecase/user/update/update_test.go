@@ -15,7 +15,7 @@ import (
 func TestUpdateUserUseCase_Execute(t *testing.T) {
 	m := &mocks.UserRepositoryMock{}
 
-	user, _ := entity.NewUser("1234", "test", "1111-2222", "test@test.com", time.Time{}, time.Time{})
+	user, _ := entity.NewUser("1234", "5678", "test", "1111-2222", "test@test.com", time.Time{}, time.Time{})
 
 	m.On("FindById", user.GetId()).Return(user, nil)
 	m.On("Update", mock.Anything).Return(nil)
@@ -23,10 +23,11 @@ func TestUpdateUserUseCase_Execute(t *testing.T) {
 	useCase := update.NewUpdateUseCase(m)
 
 	input := update.InputUpdateUserDto{
-		Id:    user.GetId(),
-		Name:  user.GetName(),
-		Phone: user.GetPhone(),
-		Email: user.GetEmail(),
+		Id:       user.GetId(),
+		TenantId: user.GetTenantId(),
+		Name:     user.GetName(),
+		Phone:    user.GetPhone(),
+		Email:    user.GetEmail(),
 	}
 
 	output, internalStatus, err := useCase.Execute(input)
@@ -34,6 +35,7 @@ func TestUpdateUserUseCase_Execute(t *testing.T) {
 	assert.Nil(t, err)
 	assert.NotNil(t, output)
 	assert.NotEmpty(t, output.Id)
+	assert.NotEmpty(t, output.Tenant.Id)
 	assert.NotEmpty(t, output.CreatedAt)
 	assert.Equal(t, user.GetName(), output.Name)
 	assert.Equal(t, user.GetPhone(), output.Phone)

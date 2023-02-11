@@ -29,6 +29,8 @@ import (
 	userCredentialsLogin "marcelofelixsalgado/financial-period-api/pkg/usecase/credentials/login"
 	userCredentialsUpdate "marcelofelixsalgado/financial-period-api/pkg/usecase/credentials/update"
 
+	tenantRepository "marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/tenant"
+
 	userRepository "marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/user"
 	userCreate "marcelofelixsalgado/financial-period-api/pkg/usecase/user/create"
 	userDelete "marcelofelixsalgado/financial-period-api/pkg/usecase/user/delete"
@@ -124,11 +126,12 @@ func (s *Server) stopServer() {
 
 func setupUserRoutes(databaseClient *sql.DB) user.UserRoutes {
 	// setup respositories
+	tenantRepository := tenantRepository.NewTenantRepository(databaseClient)
 	userRepository := userRepository.NewUserRepository(databaseClient)
 	credentialsRepository := userCredentialsRepository.NewUserCredentialsRepository(databaseClient)
 
 	// setup Use Cases (services)
-	userCreateUseCase := userCreate.NewCreateUseCase(userRepository)
+	userCreateUseCase := userCreate.NewCreateUseCase(userRepository, tenantRepository)
 	userDeleteUseCase := userDelete.NewDeleteUseCase(userRepository)
 	userFindUseCase := userFind.NewFindUseCase(userRepository)
 	userListUseCase := userList.NewListUseCase(userRepository)

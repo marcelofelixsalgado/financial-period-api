@@ -35,7 +35,10 @@ func (findUseCase *FindUseCase) Execute(input InputFindUserDto) (OutputFindUserD
 	}
 
 	outputFindUserDto := OutputFindUserDto{
-		Id:        user.GetId(),
+		Id: user.GetId(),
+		Tenant: tenantDto{
+			Id: user.GetTenantId(),
+		},
 		Name:      user.GetName(),
 		Phone:     user.GetPhone(),
 		Email:     user.GetEmail(),

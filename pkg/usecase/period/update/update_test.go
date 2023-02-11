@@ -15,7 +15,7 @@ import (
 func TestUpdatePeriodUseCase_Execute(t *testing.T) {
 	m := &mocks.PeriodRepositoryMock{}
 
-	period, _ := entity.NewPeriod("1", "Period 1", "Period 1", 2023, time.Now(), time.Now().AddDate(0, 1, 0), time.Time{}, time.Time{})
+	period, _ := entity.NewPeriod("1", "11", "Period 1", "Period 1", 2023, time.Now(), time.Now().AddDate(0, 1, 0), time.Time{}, time.Time{})
 
 	m.On("FindById", period.GetId()).Return(period, nil)
 	m.On("Update", mock.Anything).Return(nil)

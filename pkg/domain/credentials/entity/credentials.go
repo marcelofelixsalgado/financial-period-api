@@ -10,6 +10,7 @@ import (
 type IUserCredentials interface {
 	GetId() string
 	GetUserId() string
+	GetTenantId() string
 	GetPassword() string
 	GetCreatedAt() time.Time
 	GetUpdatedAt() time.Time
@@ -17,15 +18,17 @@ type IUserCredentials interface {
 
 type UserCredentials struct {
 	id        string
+	tenantId  string
 	userId    string
 	password  string
 	createdAt time.Time
 	updatedAt time.Time
 }
 
-func NewUserCredentials(id string, userId string, password string, createdAt time.Time, updatedAt time.Time) (IUserCredentials, error) {
+func NewUserCredentials(id string, userId string, tenantId string, password string, createdAt time.Time, updatedAt time.Time) (IUserCredentials, error) {
 	userCredentials := UserCredentials{
 		id:        id,
+		tenantId:  tenantId,
 		userId:    userId,
 		password:  password,
 		createdAt: createdAt,
@@ -40,6 +43,10 @@ func NewUserCredentials(id string, userId string, password string, createdAt tim
 
 func (userCredentials UserCredentials) GetId() string {
 	return userCredentials.id
+}
+
+func (userCredentials UserCredentials) GetTenantId() string {
+	return userCredentials.tenantId
 }
 
 func (userCredentials UserCredentials) GetUserId() string {
@@ -64,6 +71,10 @@ func (userCredentials *UserCredentials) SetUpdatedAt(updatedAt time.Time) {
 
 func (userCredentials *UserCredentials) validate() error {
 	if userCredentials.id == "" {
+		return errors.New("id is required")
+	}
+
+	if userCredentials.tenantId == "" {
 		return errors.New("id is required")
 	}
 

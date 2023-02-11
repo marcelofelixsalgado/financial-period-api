@@ -32,7 +32,7 @@ func (updateUseCase *UpdateUseCase) Execute(input InputUpdateUserDto) (OutputUpd
 		return OutputUpdateUserDto{}, status.InvalidResourceId, err
 	}
 
-	entity, err := entity.NewUser(input.Id, input.Name, input.Phone, input.Email, currentEntity.GetCreatedAt(), time.Now())
+	entity, err := entity.NewUser(input.Id, input.TenantId, input.Name, input.Phone, input.Email, currentEntity.GetCreatedAt(), time.Now())
 	if err != nil {
 		return OutputUpdateUserDto{}, status.InternalServerError, err
 	}
@@ -44,7 +44,10 @@ func (updateUseCase *UpdateUseCase) Execute(input InputUpdateUserDto) (OutputUpd
 	}
 
 	outputUpdateUserDto := OutputUpdateUserDto{
-		Id:        entity.GetId(),
+		Id: entity.GetId(),
+		Tenant: tenantDto{
+			Id: entity.GetTenantId(),
+		},
 		Name:      entity.GetName(),
 		Phone:     entity.GetPhone(),
 		Email:     entity.GetEmail(),

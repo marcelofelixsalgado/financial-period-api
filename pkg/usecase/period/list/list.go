@@ -23,7 +23,7 @@ func NewListUseCase(repository period.IPeriodRepository) IListUseCase {
 
 func (listUseCase *ListUseCase) Execute(input InputListPeriodDto, filterParameters []filter.FilterParameter) (OutputListPeriodDto, status.InternalStatus, error) {
 
-	periods, err := listUseCase.repository.List(filterParameters)
+	periods, err := listUseCase.repository.List(filterParameters, input.TenantId)
 	if err != nil {
 		return OutputListPeriodDto{}, status.InternalServerError, err
 	}

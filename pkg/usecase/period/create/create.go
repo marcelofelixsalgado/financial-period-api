@@ -36,7 +36,7 @@ func (createUseCase *CreateUseCase) Execute(input InputCreatePeriodDto) (OutputC
 	}
 
 	// Creates an entity
-	entity, err := entity.Create(input.Code, input.Name, input.Year, startDate, endDate)
+	entity, err := entity.Create(input.TenantId, input.Code, input.Name, input.Year, startDate, endDate)
 	if err != nil {
 		return OutputCreatePeriodDto{}, status.InternalServerError, err
 	}

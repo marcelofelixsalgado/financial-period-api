@@ -50,7 +50,7 @@ func (createUseCase *CreateUseCase) Execute(input InputCreateUserCredentialsDto)
 		return OutputCreateUserCredentialsDto{}, status.InternalServerError, err
 	}
 
-	// Persists the user
+	// Persists the user credentials
 	err = createUseCase.userCredentialsRepository.Create(userCredentials)
 	if err != nil {
 		return OutputCreateUserCredentialsDto{}, status.InternalServerError, err

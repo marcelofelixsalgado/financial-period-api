@@ -15,7 +15,7 @@ func Create(user entity.IUser, password string) (IUserCredentials, error) {
 	}
 	password = string(hashedPassword)
 
-	userCredentials, err := NewUserCredentials(uuid.NewV4().String(), user.GetId(), password, time.Now(), time.Time{})
+	userCredentials, err := NewUserCredentials(uuid.NewV4().String(), user.GetId(), user.GetTenantId(), password, time.Now(), time.Time{})
 	if err != nil {
 		return nil, err
 	}

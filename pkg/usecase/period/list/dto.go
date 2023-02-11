@@ -1,6 +1,7 @@
 package list
 
 type InputListPeriodDto struct {
+	TenantId string
 }
 
 type Period struct {

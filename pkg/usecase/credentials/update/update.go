@@ -44,7 +44,7 @@ func (updateUseCase *UpdateUseCase) Execute(input InputUpdateUserCredentialsDto)
 	}
 	input.NewPassword = string(hashedPassword)
 
-	entity, err := entity.NewUserCredentials(currentEntity.GetId(), input.UserId, input.NewPassword, currentEntity.GetCreatedAt(), time.Now())
+	entity, err := entity.NewUserCredentials(currentEntity.GetId(), input.UserId, currentEntity.GetTenantId(), input.NewPassword, currentEntity.GetCreatedAt(), time.Now())
 	if err != nil {
 		return OutputUpdateUserCredentialsDto{}, status.InternalServerError, err
 	}

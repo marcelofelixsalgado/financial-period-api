@@ -8,6 +8,7 @@ import (
 
 type IUser interface {
 	GetId() string
+	GetTenantId() string
 	GetName() string
 	GetPhone() string
 	GetEmail() string
@@ -17,6 +18,7 @@ type IUser interface {
 
 type User struct {
 	id        string
+	tenantId  string
 	name      string
 	phone     string
 	email     string
@@ -24,9 +26,10 @@ type User struct {
 	updatedAt time.Time
 }
 
-func NewUser(id string, name string, phone string, email string, createdAt time.Time, updatedAt time.Time) (IUser, error) {
+func NewUser(id string, tenantId string, name string, phone string, email string, createdAt time.Time, updatedAt time.Time) (IUser, error) {
 	user := User{
 		id:        id,
+		tenantId:  tenantId,
 		name:      name,
 		phone:     phone,
 		email:     email,
@@ -44,6 +47,10 @@ func NewUser(id string, name string, phone string, email string, createdAt time.
 
 func (user User) GetId() string {
 	return user.id
+}
+
+func (user User) GetTenantId() string {
+	return user.tenantId
 }
 
 func (user User) GetName() string {
@@ -77,6 +84,10 @@ func (user *User) format() {
 func (user *User) validate() error {
 	if user.id == "" {
 		return errors.New("id is required")
+	}
+
+	if user.tenantId == "" {
+		return errors.New("tenant_id is required")
 	}
 
 	if user.name == "" {

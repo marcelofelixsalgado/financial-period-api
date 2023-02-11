@@ -39,7 +39,7 @@ func (loginUseCase *LoginUseCase) Execute(input InputUserLoginDto) (OutputUserLo
 		return OutputUserLoginDto{}, status.LoginFailed, err
 	}
 
-	accessToken, err := auth.CreateToken(userCredentials.GetUserId())
+	accessToken, err := auth.CreateToken(userCredentials.GetUserId(), userCredentials.GetTenantId())
 	if err != nil {
 		return OutputUserLoginDto{}, status.InternalServerError, err
 	}
@@ -47,6 +47,9 @@ func (loginUseCase *LoginUseCase) Execute(input InputUserLoginDto) (OutputUserLo
 	outputUserLoginDto := OutputUserLoginDto{
 		User: userDto{
 			Id: userCredentials.GetUserId(),
+			Tenant: tenantDto{
+				Id: userCredentials.GetTenantId(),
+			},
 		},
 		AccessToken: accessToken,
 	}

@@ -8,6 +8,7 @@ import (
 
 type IPeriod interface {
 	GetId() string
+	GetTenantId() string
 	GetCode() string
 	GetName() string
 	GetYear() int
@@ -19,6 +20,7 @@ type IPeriod interface {
 
 type Period struct {
 	id        string
+	tenantId  string
 	code      string
 	name      string
 	year      int
@@ -30,6 +32,10 @@ type Period struct {
 
 func (period Period) GetId() string {
 	return period.id
+}
+
+func (period Period) GetTenantId() string {
+	return period.tenantId
 }
 
 func (period Period) GetCode() string {
@@ -65,9 +71,10 @@ func (period *Period) SetUpdatedAt(updatedAt time.Time) {
 	period.validate()
 }
 
-func NewPeriod(id string, code string, name string, year int, startDate time.Time, endDate time.Time, createdAt time.Time, updatedAt time.Time) (IPeriod, error) {
+func NewPeriod(id string, tenantId string, code string, name string, year int, startDate time.Time, endDate time.Time, createdAt time.Time, updatedAt time.Time) (IPeriod, error) {
 	period := Period{
 		id:        id,
+		tenantId:  tenantId,
 		code:      code,
 		name:      name,
 		year:      year,
@@ -86,6 +93,10 @@ func NewPeriod(id string, code string, name string, year int, startDate time.Tim
 func (period *Period) validate() error {
 	if period.id == "" {
 		return errors.New("id is required")
+	}
+
+	if period.tenantId == "" {
+		return errors.New("tenant id is required")
 	}
 
 	if period.code == "" {

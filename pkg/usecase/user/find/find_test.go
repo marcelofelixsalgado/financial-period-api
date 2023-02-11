@@ -14,7 +14,7 @@ import (
 func TestFindUserUseCase_Execute(t *testing.T) {
 	m := &mocks.UserRepositoryMock{}
 
-	user, _ := entity.NewUser("1234", "test", "1111-2222", "test@test.com", time.Time{}, time.Time{})
+	user, _ := entity.NewUser("1234", "5678", "test", "1111-2222", "test@test.com", time.Time{}, time.Time{})
 
 	m.On("FindById", user.GetId()).Return(user, nil)
 
@@ -29,6 +29,7 @@ func TestFindUserUseCase_Execute(t *testing.T) {
 	assert.Nil(t, err)
 	assert.NotNil(t, output)
 	assert.NotEmpty(t, output.Id)
+	assert.NotEmpty(t, output.Tenant.Id)
 	assert.NotEmpty(t, output.CreatedAt)
 	assert.Equal(t, user.GetName(), output.Name)
 	assert.Equal(t, user.GetPhone(), output.Phone)

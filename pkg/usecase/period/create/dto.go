@@ -1,6 +1,7 @@
 package create
 
 type InputCreatePeriodDto struct {
+	TenantId  string
 	Code      string `json:"code"`
 	Name      string `json:"name"`
 	Year      int    `json:"year"`

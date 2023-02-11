@@ -19,7 +19,7 @@ func TestLoginSucess(t *testing.T) {
 
 	password := "pass"
 
-	userEntity, _ := userEntity.Create("user1", "111-1111", "user1@test.com")
+	userEntity, _ := userEntity.Create("user1", "11", "111-1111", "user1@test.com")
 	userCredentials, _ := userCredentialsEntity.Create(userEntity, password)
 
 	userCredentialsRepositoryMock.On("FindByUserEmail", mock.Anything).Return(userCredentials, nil)
@@ -35,6 +35,8 @@ func TestLoginSucess(t *testing.T) {
 
 	assert.Nil(t, err)
 	assert.NotNil(t, output)
+	assert.NotNil(t, output.User.Id)
+	assert.NotNil(t, output.User.Tenant.Id)
 	assert.Equal(t, internalStatus, useCaseStatus.Success)
 	userCredentialsRepositoryMock.AssertNumberOfCalls(t, "FindByUserEmail", 1)
 	userCredentialsRepositoryMock.AssertExpectations(t)

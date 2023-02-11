@@ -15,16 +15,20 @@ import (
 func TestListPeriodUseCase_Execute(t *testing.T) {
 	m := &mocks.PeriodRepositoryMock{}
 
-	period1, _ := entity.NewPeriod("1", "Period 1", "Period 1", 2023, time.Now(), time.Now(), time.Time{}, time.Time{})
-	period2, _ := entity.NewPeriod("2", "Period 2", "Period 2", 2024, time.Now(), time.Now(), time.Time{}, time.Time{})
+	tenantId := "11"
+
+	period1, _ := entity.NewPeriod("1", tenantId, "Period 1", "Period 1", 2023, time.Now(), time.Now(), time.Time{}, time.Time{})
+	period2, _ := entity.NewPeriod("2", tenantId, "Period 2", "Period 2", 2024, time.Now(), time.Now(), time.Time{}, time.Time{})
 
 	periods := []entity.IPeriod{period1, period2}
 
-	m.On("List", []filter.FilterParameter{}).Return(periods, nil)
+	m.On("List", []filter.FilterParameter{}, tenantId).Return(periods, nil)
 
 	useCase := list.NewListUseCase(m)
 
-	input := list.InputListPeriodDto{}
+	input := list.InputListPeriodDto{
+		TenantId: tenantId,
+	}
 
 	output, internalStatus, err := useCase.Execute(input, []filter.FilterParameter{})
 

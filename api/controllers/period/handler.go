@@ -7,6 +7,7 @@ import (
 	"marcelofelixsalgado/financial-period-api/api/requests"
 	"marcelofelixsalgado/financial-period-api/api/responses"
 	"marcelofelixsalgado/financial-period-api/api/responses/faults"
+	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/auth"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/period/create"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/period/delete"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/period/find"
@@ -51,6 +52,13 @@ func NewPeriodHandler(createUseCase create.ICreateUseCase, deleteUseCase delete.
 
 func (periodHandler *PeriodHandler) CreatePeriod(ctx echo.Context) error {
 
+	tenantId, err := auth.ExtractUserId(ctx.Request())
+	if err != nil {
+		log.Printf("Error extracting tenantId from access token: %v", err)
+		responseMessage := responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
+		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
+	}
+
 	requestBody, err := io.ReadAll(ctx.Request().Body)
 	if err != nil {
 		log.Printf("%s%v", requestBodyErrorMessage, err)
@@ -72,6 +80,8 @@ func (periodHandler *PeriodHandler) CreatePeriod(ctx echo.Context) error {
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 
+	input.TenantId = tenantId
+
 	output, internalStatus, err := periodHandler.createUseCase.Execute(input)
 	if internalStatus != status.Success {
 		log.Printf("Error trying to create the entity: %v", err)
@@ -83,7 +93,17 @@ func (periodHandler *PeriodHandler) CreatePeriod(ctx echo.Context) error {
 }
 
 func (periodHandler *PeriodHandler) ListPeriods(ctx echo.Context) error {
-	var input list.InputListPeriodDto
+
+	tenantId, err := auth.ExtractUserId(ctx.Request())
+	if err != nil {
+		log.Printf("Error extracting tenantId from access token: %v", err)
+		responseMessage := responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
+		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
+	}
+
+	input := list.InputListPeriodDto{
+		TenantId: tenantId,
+	}
 
 	filterParameters, err := requests.SetupFilters(ctx.Request())
 	if err != nil {

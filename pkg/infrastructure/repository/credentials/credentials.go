@@ -13,6 +13,7 @@ type UserCredentialsRepository struct {
 type UserCredentialsModel struct {
 	id        string
 	userId    string
+	tenantId  string
 	password  string
 	createdAt time.Time
 	updatedAt time.Time
@@ -68,32 +69,32 @@ func (repository *UserCredentialsRepository) Update(entity entity.IUserCredentia
 	return nil
 }
 
-func (repository *UserCredentialsRepository) FindById(id string) (entity.IUserCredentials, error) {
+// func (repository *UserCredentialsRepository) FindById(id string) (entity.IUserCredentials, error) {
 
-	row, err := repository.client.Query("select id, user_id, password, created_at, updated_at from user_credentials where id = ?", id)
-	if err != nil {
-		return entity.UserCredentials{}, err
-	}
-	defer row.Close()
+// 	row, err := repository.client.Query("select user_credentials.id, user_credentials.user_id, users.tenant_id, user_credentials.password, user_credentials.created_at, user_credentials.updated_at from user_credentials inner join users on user_credentials.user_id = users.id where user_credentials.id = ?", id)
+// 	if err != nil {
+// 		return entity.UserCredentials{}, err
+// 	}
+// 	defer row.Close()
 
-	var userCredentialsModel UserCredentialsModel
-	if row.Next() {
-		if err := row.Scan(&userCredentialsModel.id, &userCredentialsModel.userId, &userCredentialsModel.password, &userCredentialsModel.createdAt, &userCredentialsModel.updatedAt); err != nil {
-			return entity.UserCredentials{}, err
-		}
+// 	var userCredentialsModel UserCredentialsModel
+// 	if row.Next() {
+// 		if err := row.Scan(&userCredentialsModel.id, &userCredentialsModel.userId, &userCredentialsModel.tenantId, &userCredentialsModel.password, &userCredentialsModel.createdAt, &userCredentialsModel.updatedAt); err != nil {
+// 			return entity.UserCredentials{}, err
+// 		}
 
-		user, err := entity.NewUserCredentials(userCredentialsModel.id, userCredentialsModel.userId, userCredentialsModel.password, userCredentialsModel.createdAt, userCredentialsModel.updatedAt)
-		if err != nil {
-			return entity.UserCredentials{}, err
-		}
-		return user, nil
-	}
-	return nil, nil
-}
+// 		user, err := entity.NewUserCredentials(userCredentialsModel.id, userCredentialsModel.userId, userCredentialsModel.tenantId, userCredentialsModel.password, userCredentialsModel.createdAt, userCredentialsModel.updatedAt)
+// 		if err != nil {
+// 			return entity.UserCredentials{}, err
+// 		}
+// 		return user, nil
+// 	}
+// 	return nil, nil
+// }
 
 func (repository *UserCredentialsRepository) FindByUserId(userId string) (entity.IUserCredentials, error) {
 
-	row, err := repository.client.Query("select id, user_id, password, created_at, updated_at from user_credentials where user_id = ?", userId)
+	row, err := repository.client.Query("select user_credentials.id, user_credentials.user_id, users.tenant_id, user_credentials.password, user_credentials.created_at, user_credentials.updated_at from user_credentials inner join users on user_credentials.user_id = users.id where user_credentials.user_id = ?", userId)
 	if err != nil {
 		return entity.UserCredentials{}, err
 	}
@@ -101,11 +102,11 @@ func (repository *UserCredentialsRepository) FindByUserId(userId string) (entity
 
 	var userCredentialsModel UserCredentialsModel
 	if row.Next() {
-		if err := row.Scan(&userCredentialsModel.id, &userCredentialsModel.userId, &userCredentialsModel.password, &userCredentialsModel.createdAt, &userCredentialsModel.updatedAt); err != nil {
+		if err := row.Scan(&userCredentialsModel.id, &userCredentialsModel.userId, &userCredentialsModel.tenantId, &userCredentialsModel.password, &userCredentialsModel.createdAt, &userCredentialsModel.updatedAt); err != nil {
 			return entity.UserCredentials{}, err
 		}
 
-		user, err := entity.NewUserCredentials(userCredentialsModel.id, userCredentialsModel.userId, userCredentialsModel.password, userCredentialsModel.createdAt, userCredentialsModel.updatedAt)
+		user, err := entity.NewUserCredentials(userCredentialsModel.id, userCredentialsModel.userId, userCredentialsModel.tenantId, userCredentialsModel.password, userCredentialsModel.createdAt, userCredentialsModel.updatedAt)
 		if err != nil {
 			return entity.UserCredentials{}, err
 		}
@@ -115,7 +116,7 @@ func (repository *UserCredentialsRepository) FindByUserId(userId string) (entity
 }
 
 func (repository *UserCredentialsRepository) FindByUserEmail(userEmail string) (entity.IUserCredentials, error) {
-	row, err := repository.client.Query("select user_credentials.id, user_credentials.user_id, user_credentials.password, user_credentials.created_at, user_credentials.updated_at from user_credentials inner join users on user_credentials.user_id = users.id where users.email = ?", userEmail)
+	row, err := repository.client.Query("select user_credentials.id, user_credentials.user_id, users.tenant_id, user_credentials.password, user_credentials.created_at, user_credentials.updated_at from user_credentials inner join users on user_credentials.user_id = users.id where users.email = ?", userEmail)
 	if err != nil {
 		return entity.UserCredentials{}, err
 	}
@@ -123,11 +124,11 @@ func (repository *UserCredentialsRepository) FindByUserEmail(userEmail string) (
 
 	var userCredentialsModel UserCredentialsModel
 	if row.Next() {
-		if err := row.Scan(&userCredentialsModel.id, &userCredentialsModel.userId, &userCredentialsModel.password, &userCredentialsModel.createdAt, &userCredentialsModel.updatedAt); err != nil {
+		if err := row.Scan(&userCredentialsModel.id, &userCredentialsModel.userId, &userCredentialsModel.tenantId, &userCredentialsModel.password, &userCredentialsModel.createdAt, &userCredentialsModel.updatedAt); err != nil {
 			return entity.UserCredentials{}, err
 		}
 
-		userCredentials, err := entity.NewUserCredentials(userCredentialsModel.id, userCredentialsModel.userId, userCredentialsModel.password, userCredentialsModel.createdAt, userCredentialsModel.updatedAt)
+		userCredentials, err := entity.NewUserCredentials(userCredentialsModel.id, userCredentialsModel.tenantId, userCredentialsModel.userId, userCredentialsModel.password, userCredentialsModel.createdAt, userCredentialsModel.updatedAt)
 		if err != nil {
 			return entity.UserCredentials{}, err
 		}

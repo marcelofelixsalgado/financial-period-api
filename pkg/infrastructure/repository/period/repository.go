@@ -9,6 +9,6 @@ type IPeriodRepository interface {
 	Create(entity.IPeriod) error
 	Update(entity.IPeriod) error
 	FindById(id string) (entity.IPeriod, error)
-	List([]filter.FilterParameter) ([]entity.IPeriod, error)
+	List(filterParameter []filter.FilterParameter, tenantId string) ([]entity.IPeriod, error)
 	Delete(id string) error
 }

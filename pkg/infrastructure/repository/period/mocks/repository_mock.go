@@ -26,8 +26,8 @@ func (m *PeriodRepositoryMock) FindById(id string) (entity.IPeriod, error) {
 	return args.Get(0).(entity.IPeriod), args.Error(1)
 }
 
-func (m *PeriodRepositoryMock) List(filterParameters []filter.FilterParameter) ([]entity.IPeriod, error) {
-	args := m.Called(filterParameters)
+func (m *PeriodRepositoryMock) List(filterParameters []filter.FilterParameter, tenantId string) ([]entity.IPeriod, error) {
+	args := m.Called(filterParameters, tenantId)
 	return args.Get(0).([]entity.IPeriod), args.Error(1)
 }
 

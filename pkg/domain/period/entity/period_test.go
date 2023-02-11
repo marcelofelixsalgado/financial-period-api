@@ -9,6 +9,7 @@ import (
 )
 
 type testCase struct {
+	tenantId  string
 	code      string
 	name      string
 	year      int
@@ -21,6 +22,7 @@ func TestNewPeriodSuccess(t *testing.T) {
 
 	testCases := []testCase{
 		{
+			tenantId:  "1234",
 			code:      "11",
 			name:      "November",
 			year:      2022,
@@ -30,7 +32,7 @@ func TestNewPeriodSuccess(t *testing.T) {
 	}
 
 	for _, testCase := range testCases {
-		received, err := entity.Create(testCase.code, testCase.name, testCase.year, testCase.startDate, testCase.endDate)
+		received, err := entity.Create(testCase.tenantId, testCase.code, testCase.name, testCase.year, testCase.startDate, testCase.endDate)
 		if err != nil {
 			t.Errorf("Should not return an error: %s", err)
 		}
@@ -57,6 +59,7 @@ func TestNewPeriodSuccess(t *testing.T) {
 
 func TestNewPeriodTrimSpaces(t *testing.T) {
 	testCase := testCase{
+		tenantId:  "1234",
 		code:      "      11           ",
 		name:      "     	November      ",
 		year:      2022,
@@ -66,7 +69,7 @@ func TestNewPeriodTrimSpaces(t *testing.T) {
 	expectedCode := "11"
 	expectedName := "November"
 
-	received, err := entity.Create(testCase.code, testCase.name, testCase.year, testCase.startDate, testCase.endDate)
+	received, err := entity.Create(testCase.tenantId, testCase.code, testCase.name, testCase.year, testCase.startDate, testCase.endDate)
 	if err != nil {
 		t.Errorf("Should not return an error: %s", err)
 	}
@@ -81,6 +84,7 @@ func TestNewPeriodTrimSpaces(t *testing.T) {
 
 func TestNewPeriodInvalidCode(t *testing.T) {
 	testCase := testCase{
+		tenantId:  "1234",
 		code:      "",
 		name:      "November",
 		year:      2022,
@@ -88,7 +92,7 @@ func TestNewPeriodInvalidCode(t *testing.T) {
 		endDate:   time.Now(),
 		expected:  "code is required",
 	}
-	_, err := entity.Create(testCase.code, testCase.name, testCase.year, testCase.startDate, testCase.endDate)
+	_, err := entity.Create(testCase.tenantId, testCase.code, testCase.name, testCase.year, testCase.startDate, testCase.endDate)
 	if err == nil || (err.Error() != testCase.expected) {
 		t.Errorf(formatErrorDiff(testCase.expected, err))
 	}
@@ -96,6 +100,7 @@ func TestNewPeriodInvalidCode(t *testing.T) {
 
 func TestNewPeriodInvalidName(t *testing.T) {
 	testCase := testCase{
+		tenantId:  "1234",
 		code:      "11",
 		name:      "",
 		year:      2022,
@@ -103,7 +108,7 @@ func TestNewPeriodInvalidName(t *testing.T) {
 		endDate:   time.Now(),
 		expected:  "name is required",
 	}
-	_, err := entity.Create(testCase.code, testCase.name, testCase.year, testCase.startDate, testCase.endDate)
+	_, err := entity.Create(testCase.tenantId, testCase.code, testCase.name, testCase.year, testCase.startDate, testCase.endDate)
 
 	if err == nil || (err.Error() != testCase.expected) {
 		t.Errorf(formatErrorDiff(testCase.expected, err))
@@ -112,6 +117,7 @@ func TestNewPeriodInvalidName(t *testing.T) {
 
 func TestNewPeriodInvalidYear(t *testing.T) {
 	testCase := testCase{
+		tenantId:  "1234",
 		code:      "11",
 		name:      "Novembro",
 		year:      0,
@@ -119,7 +125,7 @@ func TestNewPeriodInvalidYear(t *testing.T) {
 		endDate:   time.Now(),
 		expected:  "year is required",
 	}
-	_, err := entity.Create(testCase.code, testCase.name, testCase.year, testCase.startDate, testCase.endDate)
+	_, err := entity.Create(testCase.tenantId, testCase.code, testCase.name, testCase.year, testCase.startDate, testCase.endDate)
 	if err == nil || (err.Error() != testCase.expected) {
 		t.Errorf(formatErrorDiff(testCase.expected, err))
 	}
@@ -127,13 +133,14 @@ func TestNewPeriodInvalidYear(t *testing.T) {
 
 func TestNewPeriodInvalidStartDate(t *testing.T) {
 	testCase := testCase{
+		tenantId: "1234",
 		code:     "11",
 		name:     "November",
 		year:     2022,
 		endDate:  time.Now(),
 		expected: "start date is required",
 	}
-	_, err := entity.Create(testCase.code, testCase.name, testCase.year, testCase.startDate, testCase.endDate)
+	_, err := entity.Create(testCase.tenantId, testCase.code, testCase.name, testCase.year, testCase.startDate, testCase.endDate)
 	if err == nil || (err.Error() != testCase.expected) {
 		t.Errorf(formatErrorDiff(testCase.expected, err))
 	}
@@ -141,13 +148,14 @@ func TestNewPeriodInvalidStartDate(t *testing.T) {
 
 func TestNewPeriodInvalidEndDate(t *testing.T) {
 	testCase := testCase{
+		tenantId:  "1234",
 		code:      "11",
 		name:      "November",
 		year:      2022,
 		startDate: time.Now(),
 		expected:  "end date is required",
 	}
-	_, err := entity.Create(testCase.code, testCase.name, testCase.year, testCase.startDate, testCase.endDate)
+	_, err := entity.Create(testCase.tenantId, testCase.code, testCase.name, testCase.year, testCase.startDate, testCase.endDate)
 	if err == nil || (err.Error() != testCase.expected) {
 		t.Errorf(formatErrorDiff(testCase.expected, err))
 	}
@@ -156,6 +164,7 @@ func TestNewPeriodInvalidEndDate(t *testing.T) {
 func TestNewPeriodEqualDates(t *testing.T) {
 	sameDate := time.Now()
 	testCase := testCase{
+		tenantId:  "1234",
 		code:      "11",
 		name:      "November",
 		year:      2022,
@@ -163,7 +172,7 @@ func TestNewPeriodEqualDates(t *testing.T) {
 		endDate:   sameDate,
 		expected:  "end date must be greater than the start date",
 	}
-	_, err := entity.Create(testCase.code, testCase.name, testCase.year, testCase.startDate, testCase.endDate)
+	_, err := entity.Create(testCase.tenantId, testCase.code, testCase.name, testCase.year, testCase.startDate, testCase.endDate)
 	if err == nil || (err.Error() != testCase.expected) {
 		t.Errorf(formatErrorDiff(testCase.expected, err))
 	}
@@ -172,6 +181,7 @@ func TestNewPeriodEqualDates(t *testing.T) {
 func TestNewPeriodInvalidDates(t *testing.T) {
 	sameDate := time.Now()
 	testCase := testCase{
+		tenantId:  "1234",
 		code:      "11",
 		name:      "November",
 		year:      2022,
@@ -179,7 +189,7 @@ func TestNewPeriodInvalidDates(t *testing.T) {
 		endDate:   sameDate,
 		expected:  "end date must be greater than the start date",
 	}
-	_, err := entity.Create(testCase.code, testCase.name, testCase.year, testCase.startDate, testCase.endDate)
+	_, err := entity.Create(testCase.tenantId, testCase.code, testCase.name, testCase.year, testCase.startDate, testCase.endDate)
 	if err == nil || (err.Error() != testCase.expected) {
 		t.Errorf(formatErrorDiff(testCase.expected, err))
 	}

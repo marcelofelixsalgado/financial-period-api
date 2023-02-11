@@ -17,6 +17,7 @@ func TestCreatePeriodUseCase_Execute(t *testing.T) {
 	useCase := create.NewCreateUseCase(m)
 
 	input := create.InputCreatePeriodDto{
+		TenantId:  "123",
 		Code:      "1",
 		Name:      "Period 1",
 		Year:      2023,

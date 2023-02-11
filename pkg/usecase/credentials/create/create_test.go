@@ -20,7 +20,7 @@ func TestCreateUserCredentialsSucess(t *testing.T) {
 	userCredentialsRepositoryMock := &userCredentialsRepositoryMock.UserCredentialsMock{}
 	userRepositoryMock := &userRepositoryMock.UserRepositoryMock{}
 
-	userEntity, _ := userEntity.NewUser("123", "user1", "111-1111", "user1@test.com", time.Time{}, time.Time{})
+	userEntity, _ := userEntity.NewUser("123", "456", "user1", "111-1111", "user1@test.com", time.Time{}, time.Time{})
 
 	userRepositoryMock.On("FindById", userEntity.GetId()).Return(userEntity, nil)
 	userCredentialsRepositoryMock.On("FindByUserId", userEntity.GetId()).Return(nil, nil)
@@ -48,7 +48,7 @@ func TestFindByIdError(t *testing.T) {
 	userCredentialsRepositoryMock := &userCredentialsRepositoryMock.UserCredentialsMock{}
 	userRepositoryMock := &userRepositoryMock.UserRepositoryMock{}
 
-	userEntity, _ := userEntity.NewUser("123", "user1", "111-1111", "user1@test.com", time.Time{}, time.Time{})
+	userEntity, _ := userEntity.NewUser("123", "456", "user1", "111-1111", "user1@test.com", time.Time{}, time.Time{})
 
 	userRepositoryMock.On("FindById", userEntity.GetId()).Return(nil, errors.New(""))
 
@@ -73,7 +73,7 @@ func TestFindByUserIdError(t *testing.T) {
 	userCredentialsRepositoryMock := &userCredentialsRepositoryMock.UserCredentialsMock{}
 	userRepositoryMock := &userRepositoryMock.UserRepositoryMock{}
 
-	userEntity, _ := userEntity.NewUser("123", "user1", "111-1111", "user1@test.com", time.Time{}, time.Time{})
+	userEntity, _ := userEntity.NewUser("123", "456", "user1", "111-1111", "user1@test.com", time.Time{}, time.Time{})
 
 	userRepositoryMock.On("FindById", userEntity.GetId()).Return(userEntity, nil)
 	userCredentialsRepositoryMock.On("FindByUserId", userEntity.GetId()).Return(nil, errors.New(""))
@@ -99,7 +99,7 @@ func TestCreateError(t *testing.T) {
 	userCredentialsRepositoryMock := &userCredentialsRepositoryMock.UserCredentialsMock{}
 	userRepositoryMock := &userRepositoryMock.UserRepositoryMock{}
 
-	userEntity, _ := userEntity.NewUser("123", "user1", "111-1111", "user1@test.com", time.Time{}, time.Time{})
+	userEntity, _ := userEntity.NewUser("123", "456", "user1", "111-1111", "user1@test.com", time.Time{}, time.Time{})
 
 	userRepositoryMock.On("FindById", userEntity.GetId()).Return(userEntity, nil)
 	userCredentialsRepositoryMock.On("FindByUserId", userEntity.GetId()).Return(nil, nil)
@@ -126,7 +126,7 @@ func TestUserCredentialsAreadyExists(t *testing.T) {
 	userCredentialsRepositoryMock := &userCredentialsRepositoryMock.UserCredentialsMock{}
 	userRepositoryMock := &userRepositoryMock.UserRepositoryMock{}
 
-	userEntity, _ := userEntity.NewUser("123", "user1", "111-1111", "user1@test.com", time.Time{}, time.Time{})
+	userEntity, _ := userEntity.NewUser("123", "456", "user1", "111-1111", "user1@test.com", time.Time{}, time.Time{})
 	userCredentials, _ := userCredentialsEntity.Create(userEntity, "pass")
 
 	userRepositoryMock.On("FindById", userEntity.GetId()).Return(userEntity, nil)

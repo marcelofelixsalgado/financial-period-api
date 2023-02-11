@@ -1,8 +1,10 @@
 package create
 
 import (
-	"marcelofelixsalgado/financial-period-api/pkg/domain/user/entity"
+	tenantEntity "marcelofelixsalgado/financial-period-api/pkg/domain/tenant/entity"
+	userEntity "marcelofelixsalgado/financial-period-api/pkg/domain/user/entity"
 	repositoryStatus "marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/status"
+	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/tenant"
 	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/user"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/status"
 
@@ -14,25 +16,39 @@ type ICreateUseCase interface {
 }
 
 type CreateUseCase struct {
-	userRepository user.IUserRepository
+	tenantRepository tenant.ITenantRepository
+	userRepository   user.IUserRepository
 }
 
-func NewCreateUseCase(userRepository user.IUserRepository) ICreateUseCase {
+func NewCreateUseCase(userRepository user.IUserRepository, tenantRepository tenant.ITenantRepository) ICreateUseCase {
 	return &CreateUseCase{
-		userRepository: userRepository,
+		userRepository:   userRepository,
+		tenantRepository: tenantRepository,
 	}
 }
 
 func (createUseCase *CreateUseCase) Execute(input InputCreateUserDto) (OutputCreateUserDto, status.InternalStatus, error) {
 
-	// Creates an entity
-	user, err := entity.Create(input.Name, input.Phone, input.Email)
+	// Creates a tenant entity
+	tenant, err := tenantEntity.Create()
+	if err != nil {
+		return OutputCreateUserDto{}, status.InternalServerError, err
+	}
+
+	// Persists the tenant
+	repositoryInternalStatus, err := createUseCase.tenantRepository.Create(tenant)
+	if err != nil || repositoryInternalStatus == repositoryStatus.InternalServerError {
+		return OutputCreateUserDto{}, status.InternalServerError, err
+	}
+
+	// Creates a user entity
+	user, err := userEntity.Create(tenant.GetId(), input.Name, input.Phone, input.Email)
 	if err != nil {
 		return OutputCreateUserDto{}, status.InternalServerError, err
 	}
 
 	// Persists the user
-	repositoryInternalStatus, err := createUseCase.userRepository.Create(user)
+	repositoryInternalStatus, err = createUseCase.userRepository.Create(user)
 	if repositoryInternalStatus == repositoryStatus.EntityWithSameKeyAlreadyExists {
 		return OutputCreateUserDto{}, status.EntityWithSameKeyAlreadyExists, err
 	}
@@ -41,7 +57,10 @@ func (createUseCase *CreateUseCase) Execute(input InputCreateUserDto) (OutputCre
 	}
 
 	outputCreateUserDto := OutputCreateUserDto{
-		Id:        user.GetId(),
+		Id: user.GetId(),
+		Tenant: tenantDto{
+			Id: user.GetTenantId(),
+		},
 		Name:      user.GetName(),
 		Phone:     user.GetPhone(),
 		Email:     user.GetEmail(),

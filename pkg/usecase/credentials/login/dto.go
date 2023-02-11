@@ -11,5 +11,10 @@ type OutputUserLoginDto struct {
 }
 
 type userDto struct {
+	Id     string    `json:"id"`
+	Tenant tenantDto `json:"tenant"`
+}
+
+type tenantDto struct {
 	Id string `json:"id"`
 }

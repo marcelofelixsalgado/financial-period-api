@@ -8,6 +8,7 @@ import (
 )
 
 type testCase struct {
+	tenantId string
 	name     string
 	phone    string
 	email    string
@@ -20,16 +21,20 @@ func TestNewUserSuccess(t *testing.T) {
 
 	testCases := []testCase{
 		{
-			name:  "John",
-			phone: "123456",
-			email: email,
+			tenantId: "111",
+			name:     "John",
+			phone:    "123456",
+			email:    email,
 		},
 	}
 
 	for _, testCase := range testCases {
-		received, err := entity.Create(testCase.name, testCase.phone, testCase.email)
+		received, err := entity.Create(testCase.tenantId, testCase.name, testCase.phone, testCase.email)
 		if err != nil {
 			t.Errorf("Should not return an error: %s", err)
+		}
+		if testCase.tenantId != received.GetTenantId() {
+			t.Errorf("TenantId expected: %s - received: %s", testCase.tenantId, received.GetTenantId())
 		}
 		if testCase.name != received.GetName() {
 			t.Errorf("Name expected: %s - received: %s", testCase.name, received.GetName())
@@ -48,13 +53,14 @@ func TestNewUserSuccess(t *testing.T) {
 
 func TestNewUserTrimSpaces(t *testing.T) {
 	testCase := testCase{
-		name:  "     	John      ",
-		phone: "123456",
-		email: email,
+		tenantId: "111",
+		name:     "     	John      ",
+		phone:    "123456",
+		email:    email,
 	}
 	expectedName := "John"
 
-	received, err := entity.Create(testCase.name, testCase.phone, testCase.email)
+	received, err := entity.Create(testCase.tenantId, testCase.name, testCase.phone, testCase.email)
 	if err != nil {
 		t.Errorf("Should not return an error: %s", err)
 	}
@@ -66,12 +72,13 @@ func TestNewUserTrimSpaces(t *testing.T) {
 
 func TestNewUserInvalidName(t *testing.T) {
 	testCase := testCase{
+		tenantId: "111",
 		name:     "",
 		phone:    "123456",
 		email:    email,
 		expected: "name is required",
 	}
-	_, err := entity.Create(testCase.name, testCase.phone, testCase.email)
+	_, err := entity.Create(testCase.tenantId, testCase.name, testCase.phone, testCase.email)
 	if err == nil || (err.Error() != testCase.expected) {
 		t.Errorf(formatErrorDiff(testCase.expected, err))
 	}
@@ -79,12 +86,13 @@ func TestNewUserInvalidName(t *testing.T) {
 
 func TestNewUserInvalidPhone(t *testing.T) {
 	testCase := testCase{
+		tenantId: "111",
 		name:     "John",
 		phone:    "",
 		email:    email,
 		expected: "phone is required",
 	}
-	_, err := entity.Create(testCase.name, testCase.phone, testCase.email)
+	_, err := entity.Create(testCase.tenantId, testCase.name, testCase.phone, testCase.email)
 	if err == nil || (err.Error() != testCase.expected) {
 		t.Errorf(formatErrorDiff(testCase.expected, err))
 	}
@@ -92,12 +100,13 @@ func TestNewUserInvalidPhone(t *testing.T) {
 
 func TestNewUserInvalidEmail(t *testing.T) {
 	testCase := testCase{
+		tenantId: "111",
 		name:     "John",
 		phone:    "123456",
 		email:    "",
 		expected: "email is required",
 	}
-	_, err := entity.Create(testCase.name, testCase.phone, testCase.email)
+	_, err := entity.Create(testCase.tenantId, testCase.name, testCase.phone, testCase.email)
 	if err == nil || (err.Error() != testCase.expected) {
 		t.Errorf(formatErrorDiff(testCase.expected, err))
 	}

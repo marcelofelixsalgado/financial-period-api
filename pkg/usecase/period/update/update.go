@@ -42,7 +42,7 @@ func (updateUseCase *UpdateUseCase) Execute(input InputUpdatePeriodDto) (OutputU
 		return OutputUpdatePeriodDto{}, status.InvalidResourceId, err
 	}
 
-	entity, err := entity.NewPeriod(input.Id, input.Code, input.Name, input.Year, startDate, endDate, currentEntity.GetCreatedAt(), time.Now())
+	entity, err := entity.NewPeriod(input.Id, currentEntity.GetTenantId(), input.Code, input.Name, input.Year, startDate, endDate, currentEntity.GetCreatedAt(), time.Now())
 	if err != nil {
 		return OutputUpdatePeriodDto{}, status.InternalServerError, err
 	}

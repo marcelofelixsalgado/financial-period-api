@@ -14,7 +14,7 @@ import (
 func TestFindPeriodUseCase_Execute(t *testing.T) {
 	m := &mocks.PeriodRepositoryMock{}
 
-	period, _ := entity.NewPeriod("1", "Period 1", "Period 1", 2023, time.Now(), time.Now(), time.Time{}, time.Time{})
+	period, _ := entity.NewPeriod("1", "11", "Period 1", "Period 1", 2023, time.Now(), time.Now(), time.Time{}, time.Time{})
 
 	m.On("FindById", period.GetId()).Return(period, nil)
 

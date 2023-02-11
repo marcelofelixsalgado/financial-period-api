@@ -13,6 +13,7 @@ type PeriodRepository struct {
 
 type PeriodModel struct {
 	id        string
+	tenantId  string
 	code      string
 	name      string
 	year      int
@@ -32,6 +33,7 @@ func (repository *PeriodRepository) Create(entity entity.IPeriod) error {
 
 	model := PeriodModel{
 		id:        entity.GetId(),
+		tenantId:  entity.GetTenantId(),
 		code:      entity.GetCode(),
 		name:      entity.GetName(),
 		year:      entity.GetYear(),
@@ -40,13 +42,13 @@ func (repository *PeriodRepository) Create(entity entity.IPeriod) error {
 		createdAt: entity.GetCreatedAt(),
 	}
 
-	statement, err := repository.client.Prepare("insert into periods (id, code, name, year, start_date, end_date, created_at) values (?, ?, ?, ?, ?, ?, ?)")
+	statement, err := repository.client.Prepare("insert into periods (id, tenant_id, code, name, year, start_date, end_date, created_at) values (?, ?, ?, ?, ?, ?, ?, ?)")
 	if err != nil {
 		return err
 	}
 	defer statement.Close()
 
-	_, err = statement.Exec(model.id, model.code, model.name, model.year, model.startDate, model.endDate, model.createdAt)
+	_, err = statement.Exec(model.id, model.tenantId, model.code, model.name, model.year, model.startDate, model.endDate, model.createdAt)
 	if err != nil {
 		return err
 	}
@@ -56,7 +58,7 @@ func (repository *PeriodRepository) Create(entity entity.IPeriod) error {
 
 func (repository *PeriodRepository) FindById(id string) (entity.IPeriod, error) {
 
-	row, err := repository.client.Query("select id, code, name, year, start_date, end_date, created_at, updated_at from periods where id = ?", id)
+	row, err := repository.client.Query("select id, tenant_id, code, name, year, start_date, end_date, created_at, updated_at from periods where id = ?", id)
 	if err != nil {
 		return entity.Period{}, err
 	}
@@ -64,11 +66,11 @@ func (repository *PeriodRepository) FindById(id string) (entity.IPeriod, error) 
 
 	var periodModel PeriodModel
 	if row.Next() {
-		if err := row.Scan(&periodModel.id, &periodModel.code, &periodModel.name, &periodModel.year, &periodModel.startDate, &periodModel.endDate, &periodModel.createdAt, &periodModel.updatedAt); err != nil {
+		if err := row.Scan(&periodModel.id, &periodModel.tenantId, &periodModel.code, &periodModel.name, &periodModel.year, &periodModel.startDate, &periodModel.endDate, &periodModel.createdAt, &periodModel.updatedAt); err != nil {
 			return entity.Period{}, err
 		}
 
-		period, err := entity.NewPeriod(periodModel.id, periodModel.code, periodModel.name, periodModel.year, periodModel.startDate, periodModel.endDate, periodModel.createdAt, periodModel.updatedAt)
+		period, err := entity.NewPeriod(periodModel.id, periodModel.tenantId, periodModel.code, periodModel.name, periodModel.year, periodModel.startDate, periodModel.endDate, periodModel.createdAt, periodModel.updatedAt)
 		if err != nil {
 			return entity.Period{}, err
 		}
@@ -77,7 +79,7 @@ func (repository *PeriodRepository) FindById(id string) (entity.IPeriod, error) 
 	return nil, nil
 }
 
-func (repository *PeriodRepository) List(filterParameters []filter.FilterParameter) ([]entity.IPeriod, error) {
+func (repository *PeriodRepository) List(filterParameters []filter.FilterParameter, tenantId string) ([]entity.IPeriod, error) {
 
 	codeFilter := ""
 	nameFilter := ""
@@ -93,16 +95,16 @@ func (repository *PeriodRepository) List(filterParameters []filter.FilterParamet
 	var rows *sql.Rows
 	var err error
 	if len(filterParameters) == 0 {
-		rows, err = repository.client.Query("select id, code, name, year, start_date, end_date, created_at, updated_at from periods")
+		rows, err = repository.client.Query("select id, tenant_id, code, name, year, start_date, end_date, created_at, updated_at from periods where tenant_id = ?", tenantId)
 	} else {
 		if len(codeFilter) > 0 && len(nameFilter) == 0 {
-			rows, err = repository.client.Query("select id, code, name, year, start_date, end_date, created_at, updated_at from periods where code = ?", codeFilter)
+			rows, err = repository.client.Query("select id, tenant_id, code, name, year, start_date, end_date, created_at, updated_at from periods where tenantId = ? and code = ?", tenantId, codeFilter)
 		}
 		if len(codeFilter) == 0 && len(nameFilter) > 0 {
-			rows, err = repository.client.Query("select id, code, name, year, start_date, end_date, created_at, updated_at from periods where name = ?", nameFilter)
+			rows, err = repository.client.Query("select id, tenant_id, code, name, year, start_date, end_date, created_at, updated_at from periods where tenantId = ? and name = ?", tenantId, nameFilter)
 		}
 		if len(codeFilter) > 0 && len(nameFilter) > 0 {
-			rows, err = repository.client.Query("select id, code, name, year, start_date, end_date, created_at, updated_at from periods where code = ? and name = ?", codeFilter, nameFilter)
+			rows, err = repository.client.Query("select id, tenant_id, code, name, year, start_date, end_date, created_at, updated_at from periods where tenantId = ? and code = ? and name = ?", tenantId, codeFilter, nameFilter)
 		}
 	}
 
@@ -115,11 +117,11 @@ func (repository *PeriodRepository) List(filterParameters []filter.FilterParamet
 	for rows.Next() {
 		var periodModel PeriodModel
 
-		if err := rows.Scan(&periodModel.id, &periodModel.code, &periodModel.name, &periodModel.year, &periodModel.startDate, &periodModel.endDate, &periodModel.createdAt, &periodModel.updatedAt); err != nil {
+		if err := rows.Scan(&periodModel.id, &periodModel.tenantId, &periodModel.code, &periodModel.name, &periodModel.year, &periodModel.startDate, &periodModel.endDate, &periodModel.createdAt, &periodModel.updatedAt); err != nil {
 			return []entity.IPeriod{}, err
 		}
 
-		period, err := entity.NewPeriod(periodModel.id, periodModel.code, periodModel.name, periodModel.year, periodModel.startDate, periodModel.endDate, periodModel.createdAt, periodModel.updatedAt)
+		period, err := entity.NewPeriod(periodModel.id, periodModel.tenantId, periodModel.code, periodModel.name, periodModel.year, periodModel.startDate, periodModel.endDate, periodModel.createdAt, periodModel.updatedAt)
 		if err != nil {
 			return []entity.IPeriod{}, err
 		}
@@ -134,6 +136,7 @@ func (repository *PeriodRepository) Update(entity entity.IPeriod) error {
 
 	model := PeriodModel{
 		id:        entity.GetId(),
+		tenantId:  entity.GetTenantId(),
 		code:      entity.GetCode(),
 		name:      entity.GetName(),
 		year:      entity.GetYear(),

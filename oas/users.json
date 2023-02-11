@@ -434,7 +434,8 @@
                     "created_at",
                     "email",
                     "name",
-                    "phone"
+                    "phone",
+                    "tenant"
                 ],
                 "type": "object",
                 "properties": {
@@ -458,10 +459,17 @@
                         "format": "date-time",
                         "description": "Record creation date/time",
                         "type": "string"
+                    },
+                    "tenant": {
+                        "$ref": "#/components/schemas/Tenant",
+                        "description": "Identification code of the tenant owned by the user"
                     }
                 },
                 "example": {
                     "id": "a139ffc2-a712-4030-a4dc-985d8818c8d7",
+                    "tenant": {
+                        "id": "8413dc69-d14e-4170-a03c-49a84473a313"
+                    },
                     "name": "user-example",
                     "phone": "123456789",
                     "email": "user@example.com",
@@ -632,7 +640,10 @@
                 },
                 "example": {
                     "user": {
-                        "id": "a139ffc2-a712-4030-a4dc-985d8818c8d7"
+                        "id": "a139ffc2-a712-4030-a4dc-985d8818c8d7",
+                        "tenant": {
+                            "id": "8413dc69-d14e-4170-a03c-49a84473a313"
+                        }
                     },
                     "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBdXRob3JpemVkIjp0cnVlLCJleHAiOjE2NzU5MjgwMjAsInVzZXJJZCI6ImExMzlmZmMyLWE3MTItNDAzMC1hNGRjLTk4NWQ4ODE4YzhkNyJ9.NQJc52OK6X2oVGBfOAKTffQDWdGMkde4ox"
                 }
@@ -652,7 +663,27 @@
                     }
                 },
                 "example": {
-                    "id": "a139ffc2-a712-4030-a4dc-985d8818c8d7"
+                    "id": "a139ffc2-a712-4030-a4dc-985d8818c8d7",
+                    "tenant": {
+                        "id": "8413dc69-d14e-4170-a03c-49a84473a313"
+                    }
+                }
+            },
+            "Tenant": {
+                "title": "Root Type for Tenant",
+                "description": "A group of users who share a common access with specific privileges to the software instance",
+                "required": [
+                    "id"
+                ],
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "description": "Identification code of the tenant",
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "id": "8413dc69-d14e-4170-a03c-49a84473a313"
                 }
             }
         },

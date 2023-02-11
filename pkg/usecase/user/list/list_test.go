@@ -15,8 +15,8 @@ import (
 func TestListUserUseCase_Execute(t *testing.T) {
 	m := &mocks.UserRepositoryMock{}
 
-	users1, _ := entity.NewUser("1", "user1", "1111-1111", "user1@test.com", time.Time{}, time.Time{})
-	users2, _ := entity.NewUser("2", "user2", "2222-2222", "user2@test.com", time.Time{}, time.Time{})
+	users1, _ := entity.NewUser("1", "11", "user1", "1111-1111", "user1@test.com", time.Time{}, time.Time{})
+	users2, _ := entity.NewUser("2", "22", "user2", "2222-2222", "user2@test.com", time.Time{}, time.Time{})
 
 	users := []entity.IUser{users1, users2}
 

@@ -15,7 +15,7 @@ import (
 func TestDeleteUserUseCase_Execute(t *testing.T) {
 	m := &mocks.UserRepositoryMock{}
 
-	user, _ := entity.NewUser("1234", "test", "1111-2222", "test@test.com", time.Time{}, time.Time{})
+	user, _ := entity.NewUser("1234", "5678", "test", "1111-2222", "test@test.com", time.Time{}, time.Time{})
 
 	m.On("FindById", user.GetId()).Return(user, nil)
 	m.On("Delete", mock.Anything).Return(nil)

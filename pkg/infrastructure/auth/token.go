@@ -11,11 +11,12 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
-func CreateToken(userID string) (string, error) {
+func CreateToken(userId string, tenantId string) (string, error) {
 	permissions := jwt.MapClaims{}
 	permissions["Authorized"] = true
 	permissions["exp"] = time.Now().Add(time.Hour * 6).Unix()
-	permissions["userId"] = userID
+	permissions["userId"] = userId
+	permissions["tenantId"] = tenantId
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, permissions)
 	jwtToken, err := token.SignedString(settings.Config.SecretKey)
 	if err != nil {
@@ -55,15 +56,22 @@ func getVerificationKey(token *jwt.Token) (interface{}, error) {
 	return settings.Config.SecretKey, nil
 }
 
-func ExtractUserId(r *http.Request) (string, error) {
+func extractClaims(claim string, r *http.Request) (string, error) {
 	tokenString := extractToken(r)
 	token, err := jwt.Parse(tokenString, getVerificationKey)
 	if err != nil {
 		return "", err
 	}
 	if permissions, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		//userID, err := strconv.ParseUint(fmt.Sprintf("%.f", permissions["userId"]), 10, 64)
-		return permissions["userId"].(string), nil
+		return permissions[claim].(string), nil
 	}
 	return "", errors.New("ivalid token")
+}
+
+func ExtractUserId(r *http.Request) (string, error) {
+	return extractClaims("userId", r)
+}
+
+func ExtractTenantId(r *http.Request) (string, error) {
+	return extractClaims("tenantId", r)
 }

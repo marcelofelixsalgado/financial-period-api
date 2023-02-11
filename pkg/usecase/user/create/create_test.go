@@ -1,7 +1,8 @@
 package create_test
 
 import (
-	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/user/mocks"
+	tenantRepositoryMock "marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/tenant/mocks"
+	userRepositoryMock "marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/user/mocks"
 	useCaseStatus "marcelofelixsalgado/financial-period-api/pkg/usecase/status"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/user/create"
 
@@ -12,10 +13,13 @@ import (
 )
 
 func TestCreateUserUseCase_Execute(t *testing.T) {
-	m := &mocks.UserRepositoryMock{}
-	m.On("Create", mock.Anything).Return(nil)
+	userRepositoryMock := &userRepositoryMock.UserRepositoryMock{}
+	tenantRepositoryMock := &tenantRepositoryMock.TenantRepositoryMock{}
 
-	useCase := create.NewCreateUseCase(m)
+	userRepositoryMock.On("Create", mock.Anything).Return(nil)
+	tenantRepositoryMock.On("Create", mock.Anything).Return(nil)
+
+	useCase := create.NewCreateUseCase(userRepositoryMock, tenantRepositoryMock)
 
 	input := create.InputCreateUserDto{
 		Name:  "user test",
@@ -28,11 +32,13 @@ func TestCreateUserUseCase_Execute(t *testing.T) {
 	assert.Nil(t, err)
 	assert.NotNil(t, output)
 	assert.NotEmpty(t, output.Id)
+	assert.NotEmpty(t, output.Tenant.Id)
 	assert.NotEmpty(t, output.CreatedAt)
 	assert.Equal(t, input.Name, output.Name)
 	assert.Equal(t, input.Phone, output.Phone)
 	assert.Equal(t, input.Email, output.Email)
 	assert.Equal(t, internalStatus, useCaseStatus.Success)
-	m.AssertNumberOfCalls(t, "Create", 1)
-	m.AssertExpectations(t)
+	userRepositoryMock.AssertNumberOfCalls(t, "Create", 1)
+	tenantRepositoryMock.AssertNumberOfCalls(t, "Create", 1)
+	userRepositoryMock.AssertExpectations(t)
 }
