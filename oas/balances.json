@@ -1,9 +1,9 @@
 {
     "openapi": "3.0.2",
     "info": {
-        "title": "Periods",
+        "title": "Balances",
         "version": "1.0.0",
-        "description": "Monthy periods for financial controls"
+        "description": "Represents the summary of financial movements, grouped by accounts and categories"
     },
     "servers": [
         {
@@ -16,9 +16,9 @@
         }
     ],
     "paths": {
-        "/v1/periods": {
-            "summary": "Collection of periods",
-            "description": "An API resource that represents a collection of periods",
+        "/v1/balances": {
+            "summary": "Collection of balances",
+            "description": "An API resource that represents a collection of balances",
             "get": {
                 "parameters": [
                     {
@@ -45,33 +45,40 @@
                             "type": "integer"
                         },
                         "in": "query"
+                    },
+                    {
+                        "name": "period_id",
+                        "description": "Period unique identifier",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "$ref": "#/components/responses/Response-200-Ok-Period-List"
+                        "$ref": "#/components/responses/Response-200-Ok-Balance-List"
                     }
                 },
-                "operationId": "get-period-list",
-                "summary": "List of periods",
-                "description": "List of periods"
+                "operationId": "get-balance-list",
+                "summary": "List of balances",
+                "description": "List of balances"
             },
             "post": {
                 "requestBody": {
-                    "description": "Request Body of a period creation operation",
+                    "description": "Request Body of a balance creation operation",
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/PeriodRequest"
+                                "$ref": "#/components/schemas/BalanceRequest"
                             },
                             "examples": {
-                                "Period-Creation-Body-Example": {
+                                "Balance-Creation-Body-Example": {
                                     "value": {
-                                        "code": "2023-03",
-                                        "name": "March - 2023",
-                                        "year": 2023,
-                                        "start_date": "2023-03-07T00:00:00Z",
-                                        "end_date": "2023-04-06T23:59:59Z"
+                                        "period_id": "f81b0091-1c8c-4fbe-b76b-99ca4392950a",
+                                        "category_id": "6c92f45a-18f4-43ab-9d97-967be5634ac0",
+                                        "actual_amount": 150.35,
+                                        "limit_amount": 300
                                     }
                                 }
                             }
@@ -100,40 +107,39 @@
                         "$ref": "#/components/responses/Response-201-Created"
                     }
                 },
-                "operationId": "create-period-list",
-                "summary": "Period creation",
-                "description": "Operation that creates a new period"
+                "operationId": "create-balance-list",
+                "summary": "Balance creation",
+                "description": "Operation that creates a new balance"
             }
         },
-        "/v1/periods/{id}": {
-            "summary": "Period item",
-            "description": "Path that points to a specific period in the collection",
+        "/v1/balances/{id}": {
+            "summary": "Balance item",
+            "description": "Path that points to a specific balance in the collection",
             "get": {
                 "responses": {
                     "200": {
-                        "$ref": "#/components/responses/Response-200-Ok-Period"
+                        "$ref": "#/components/responses/Response-200-Ok-Balance"
                     }
                 },
-                "operationId": "get-period",
-                "summary": "Get a period item",
-                "description": "Operation that gets a specific period"
+                "operationId": "get-balance",
+                "summary": "Get a balance item",
+                "description": "Operation that gets a specific balance"
             },
             "put": {
                 "requestBody": {
-                    "description": "Update period request body",
+                    "description": "Update balance request body",
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/PeriodRequest"
+                                "$ref": "#/components/schemas/BalanceRequest"
                             },
                             "examples": {
-                                "Update-Period-Example": {
+                                "Update-Balance-Example": {
                                     "value": {
-                                        "code": "2023-03",
-                                        "name": "March - 2023",
-                                        "year": 2023,
-                                        "start_date": "2023-03-07T00:00:00Z",
-                                        "end_date": "2023-04-06T23:59:59Z"
+                                        "period_id": "f81b0091-1c8c-4fbe-b76b-99ca4392950a",
+                                        "category_id": "6c92f45a-18f4-43ab-9d97-967be5634ac0",
+                                        "actual_amount": 150.35,
+                                        "limit_amount": 300
                                     }
                                 }
                             }
@@ -159,12 +165,12 @@
                 ],
                 "responses": {
                     "200": {
-                        "$ref": "#/components/responses/Response-200-Ok-Period"
+                        "$ref": "#/components/responses/Response-200-Ok-Balance"
                     }
                 },
-                "operationId": "update-period",
-                "summary": "Period update",
-                "description": "Operation that updates a period"
+                "operationId": "update-balance",
+                "summary": "Balance update",
+                "description": "Operation that updates a balance"
             },
             "delete": {
                 "responses": {
@@ -172,9 +178,53 @@
                         "description": "Empty response body"
                     }
                 },
-                "operationId": "delete-period",
-                "summary": "Period exclusion",
-                "description": "Operation that removes a period"
+                "operationId": "delete-balance",
+                "summary": "Balance exclusion",
+                "description": "Operation that removes a balance"
+            },
+            "patch": {
+                "requestBody": {
+                    "description": "Patch update request body",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BalanceRequestPatch"
+                            },
+                            "examples": {
+                                "Patch-Update-Balance-Example": {
+                                    "value": {
+                                        "actual_amount": 150.35
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "parameters": [
+                    {
+                        "examples": {
+                            "Content-Type-Header-Example": {
+                                "value": "application/json"
+                            }
+                        },
+                        "name": "Content-Type-Header",
+                        "description": "Defines the format of the request body",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/Response-200-Ok-Balance"
+                    }
+                },
+                "operationId": "patch-balance",
+                "summary": "Balance partial update",
+                "description": "Operation that updates a balance"
             },
             "parameters": [
                 {
@@ -184,7 +234,7 @@
                         }
                     },
                     "name": "id",
-                    "description": "Period unique identifier",
+                    "description": "Balance unique identifier",
                     "schema": {
                         "type": "string"
                     },
@@ -274,204 +324,233 @@
                     "value": "400000"
                 }
             },
-            "PeriodRequest": {
-                "title": "Root Type for PeriodRequest",
-                "description": "Represents a Period in request body",
+            "BalanceRequest": {
+                "title": "Root Type for BalanceRequest",
+                "description": "Represents a Balance in request body",
                 "required": [
-                    "code",
-                    "name",
-                    "year",
-                    "start_date",
-                    "end_date",
-                    "created_at"
+                    "period_id",
+                    "category_id",
+                    "actual_amount",
+                    "limit_amount"
                 ],
                 "type": "object",
                 "properties": {
-                    "code": {
-                        "description": "Short code used to identify a period",
+                    "period_id": {
+                        "description": "Period unique identifier",
                         "type": "string"
                     },
-                    "name": {
-                        "description": "Name that describes a period",
+                    "category_id": {
+                        "description": "Category unique identifier - Group of movements for the same purpose",
                         "type": "string"
                     },
-                    "year": {
-                        "description": "Period's year",
-                        "type": "integer"
+                    "actual_amount": {
+                        "description": "Current balance amount",
+                        "type": "number"
                     },
-                    "start_date": {
-                        "format": "date-time",
-                        "description": "Initial date/time of the period",
-                        "type": "string"
-                    },
-                    "end_date": {
-                        "format": "date-time",
-                        "description": "Ending date/time of the period",
-                        "type": "string"
+                    "limit_amount": {
+                        "description": "Predefined limit of the balance amount",
+                        "type": "number"
                     }
                 },
                 "example": {
-                    "code": "2023-02",
-                    "name": "February - 2023",
-                    "year": 2023,
-                    "start_date": "2023-02-07T00:00:00Z",
-                    "end_date": "2023-03-06T23:59:59Z"
+                    "period_id": "f81b0091-1c8c-4fbe-b76b-99ca4392950a",
+                    "category_id": "6c92f45a-18f4-43ab-9d97-967be5634ac0",
+                    "actual_amount": 150.35,
+                    "limit_amount": 300
                 }
             },
-            "PeriodResponse": {
-                "description": "Represents a Period in the response body",
+            "BalanceResponse": {
+                "description": "Represents a Balance in the response body",
                 "required": [
                     "ENTIDADE_RESPONSE_PROPERTIES",
                     "campo2",
-                    "code",
-                    "created_at",
-                    "end_date",
+                    "actual_amount",
+                    "category_id",
                     "id",
-                    "name",
-                    "start_date",
-                    "year"
+                    "limit_amount",
+                    "period_id",
+                    "tenant_id"
                 ],
                 "type": "object",
                 "properties": {
                     "id": {
-                        "description": "Period identifier code",
+                        "description": "Balance identifier code",
                         "type": "string"
                     },
-                    "code": {
-                        "description": "Short code used to identify a period",
+                    "tenant_id": {
+                        "description": "Identification code of the tenant owned by the user",
                         "type": "string"
                     },
-                    "name": {
-                        "description": "Name that describes a period",
+                    "period_id": {
+                        "description": "Period unique identifier",
                         "type": "string"
                     },
-                    "year": {
-                        "description": "Period's year",
-                        "type": "integer"
-                    },
-                    "start_date": {
-                        "format": "date-time",
-                        "description": "Initial date/time of the period",
+                    "category_id": {
+                        "description": "Category unique identifier - Group of movements for the same purpose",
                         "type": "string"
                     },
-                    "end_date": {
-                        "format": "date-time",
-                        "description": "Ending date/time of the period",
-                        "type": "string"
+                    "actual_amount": {
+                        "description": "Current balance amount",
+                        "type": "number"
+                    },
+                    "limit_amount": {
+                        "description": "Predefined limit of the balance amount",
+                        "type": "number"
                     },
                     "created_at": {
                         "format": "date-time",
-                        "description": "Record creation date/time",
+                        "description": "Balance creation date/time",
+                        "type": "string"
+                    },
+                    "updated_at": {
+                        "format": "date-time",
+                        "description": "Balance update date/time",
                         "type": "string"
                     }
                 },
                 "example": {
-                    "id": "b5598f8f-f645-4bc4-9e9c-62307662e5e5",
-                    "code": "2023-02",
-                    "name": "February - 2023",
-                    "year": 2023,
-                    "start_date": "2023-02-07T00:00:00Z",
-                    "end_date": "2023-03-06T23:59:59Z",
-                    "created_at": "2023-02-09T02:28:32Z"
+                    "id": "89c5cb19-14d9-490c-99b4-6b001ccb5f4b",
+                    "tenant_id": "2cefe3fa-5411-4c0d-960f-56f66924aa20",
+                    "period_id": "f81b0091-1c8c-4fbe-b76b-99ca4392950a",
+                    "category_id": "6c92f45a-18f4-43ab-9d97-967be5634ac0",
+                    "actual_amount": 150.35,
+                    "limit_amount": 300,
+                    "created_at": "2023-01-04T20:06:15Z",
+                    "updated_at": "2023-01-06T07:26:07Z"
                 }
             },
-            "PeriodResponseList": {
-                "description": "Represents a list of Periods in the response body",
+            "BalanceResponseList": {
+                "description": "Represents a list of Balance in the response body",
                 "type": "array",
                 "items": {
-                    "$ref": "#/components/schemas/PeriodResponse"
+                    "$ref": "#/components/schemas/BalanceResponse"
                 },
                 "example": [
                     {
-                        "id": "b5598f8f-f645-4bc4-9e9c-62307662e5e5",
-                        "code": "2023-02",
-                        "name": "February - 2023",
-                        "year": 2023,
-                        "start_date": "2023-02-07T00:00:00Z",
-                        "end_date": "2023-03-06T23:59:59Z"
+                        "id": "89c5cb19-14d9-490c-99b4-6b001ccb5f4b",
+                        "tenant_id": "2cefe3fa-5411-4c0d-960f-56f66924aa20",
+                        "period_id": "f81b0091-1c8c-4fbe-b76b-99ca4392950a",
+                        "category_id": "6c92f45a-18f4-43ab-9d97-967be5634ac0",
+                        "actual_amount": 150.35,
+                        "limit_amount": 300
                     },
                     {
-                        "id": "ec83cc7f-76cf-4dd5-be32-bb7afc4ea44b",
-                        "code": "2023-03",
-                        "name": "March - 2023",
-                        "year": 2023,
-                        "start_date": "2023-03-07T00:00:00Z",
-                        "end_date": "2023-04-06T23:59:59Z"
+                        "id": "b129fb82-7ea9-498d-82b4-248ebcc75a19",
+                        "tenant_id": "06697378-a5d9-4a1f-a24f-6552a6aa92b1",
+                        "period_id": "1a294f80-e3c8-4609-a36a-4b1f5e204a30",
+                        "category_id": "c2fe0271-afce-4e7c-8ec2-d4b59a767a4e",
+                        "actual_amount": 83.27,
+                        "limit_amount": 200
+                    },
+                    {
+                        "id": "342e8fb2-86e7-4adc-85f3-67f349eae836",
+                        "tenant_id": "6dfd81fd-9382-4917-be0f-8b00502f4f71",
+                        "period_id": "9d5628c9-42df-448c-9ddf-f704e80184cf",
+                        "category_id": "f55a9d78-6961-4638-86c7-594cb8fb89dc",
+                        "actual_amount": 377.19,
+                        "limit_amount": 450
                     }
                 ]
+            },
+            "BalanceRequestPatch": {
+                "title": "Root Type for BalanceRequest",
+                "description": "Represents a Balance in the request body",
+                "required": [
+                    "actual_amount"
+                ],
+                "type": "object",
+                "properties": {
+                    "actual_amount": {
+                        "description": "Current balance amount",
+                        "type": "number"
+                    }
+                },
+                "example": {
+                    "actual_amount": 150.35
+                }
             }
         },
         "responses": {
-            "Response-200-Ok-Period": {
+            "Response-200-Ok-Balance": {
                 "content": {
                     "application/json": {
                         "schema": {
-                            "$ref": "#/components/schemas/PeriodResponse"
+                            "$ref": "#/components/schemas/BalanceResponse"
                         },
                         "examples": {
-                            "Response-200-Ok-Period-Example": {
+                            "Response-200-Ok-Balance-Example": {
                                 "value": {
-                                    "id": "b5598f8f-f645-4bc4-9e9c-62307662e5e5",
-                                    "code": "2023-02",
-                                    "name": "February - 2023",
-                                    "year": 2023,
-                                    "start_date": "2023-02-07T00:00:00Z",
-                                    "end_date": "2023-03-06T23:59:59Z"
+                                    "id": "89c5cb19-14d9-490c-99b4-6b001ccb5f4b",
+                                    "tenant_id": "2cefe3fa-5411-4c0d-960f-56f66924aa20",
+                                    "period_id": "f81b0091-1c8c-4fbe-b76b-99ca4392950a",
+                                    "category_id": "6c92f45a-18f4-43ab-9d97-967be5634ac0",
+                                    "actual_amount": 150.35,
+                                    "limit_amount": 300,
+                                    "created_at": "2023-01-04T20:06:15Z",
+                                    "updated_at": "2023-01-06T07:26:07Z"
                                 }
                             }
                         }
                     }
                 },
-                "description": "Success message (200 - OK) for a period returned"
+                "description": "Success message (200 - OK) for a balance item returned"
             },
-            "Response-200-Ok-Period-List": {
+            "Response-200-Ok-Balance-List": {
                 "content": {
                     "application/json": {
                         "schema": {
-                            "$ref": "#/components/schemas/PeriodResponseList"
+                            "$ref": "#/components/schemas/BalanceResponseList"
                         },
                         "examples": {
-                            "Response-200-Ok-Period-List-Example": {
+                            "Response-200-Ok-Balance-List-Example": {
                                 "value": [
                                     {
-                                        "id": "b5598f8f-f645-4bc4-9e9c-62307662e5e5",
-                                        "code": "2023-02",
-                                        "name": "February - 2023",
-                                        "year": 2023,
-                                        "start_date": "2023-02-07T00:00:00Z",
-                                        "end_date": "2023-03-06T23:59:59Z"
+                                        "id": "89c5cb19-14d9-490c-99b4-6b001ccb5f4b",
+                                        "tenant_id": "2cefe3fa-5411-4c0d-960f-56f66924aa20",
+                                        "period_id": "f81b0091-1c8c-4fbe-b76b-99ca4392950a",
+                                        "category_id": "6c92f45a-18f4-43ab-9d97-967be5634ac0",
+                                        "actual_amount": 150.35,
+                                        "limit_amount": 300
                                     },
                                     {
-                                        "id": "ec83cc7f-76cf-4dd5-be32-bb7afc4ea44b",
-                                        "code": "2023-03",
-                                        "name": "March - 2023",
-                                        "year": 2023,
-                                        "start_date": "2023-03-07T00:00:00Z",
-                                        "end_date": "2023-04-06T23:59:59Z"
+                                        "id": "b129fb82-7ea9-498d-82b4-248ebcc75a19",
+                                        "tenant_id": "06697378-a5d9-4a1f-a24f-6552a6aa92b1",
+                                        "period_id": "1a294f80-e3c8-4609-a36a-4b1f5e204a30",
+                                        "category_id": "c2fe0271-afce-4e7c-8ec2-d4b59a767a4e",
+                                        "actual_amount": 83.27,
+                                        "limit_amount": 200
+                                    },
+                                    {
+                                        "id": "342e8fb2-86e7-4adc-85f3-67f349eae836",
+                                        "tenant_id": "6dfd81fd-9382-4917-be0f-8b00502f4f71",
+                                        "period_id": "9d5628c9-42df-448c-9ddf-f704e80184cf",
+                                        "category_id": "f55a9d78-6961-4638-86c7-594cb8fb89dc",
+                                        "actual_amount": 377.19,
+                                        "limit_amount": 450
                                     }
                                 ]
                             }
                         }
                     }
                 },
-                "description": "Success message (200 - OK) for a list of periods"
+                "description": "Success message (200 - OK) for a list of balances"
             },
             "Response-201-Created": {
                 "content": {
                     "application/json": {
                         "schema": {
-                            "$ref": "#/components/schemas/PeriodResponse"
+                            "$ref": "#/components/schemas/BalanceResponse"
                         },
                         "examples": {
                             "Response-201-Created-Example": {
                                 "value": {
-                                    "id": "ec83cc7f-76cf-4dd5-be32-bb7afc4ea44b",
-                                    "code": "2023-03",
-                                    "name": "March - 2023",
-                                    "year": 2023,
-                                    "start_date": "2023-03-07T00:00:00Z",
-                                    "end_date": "2023-04-06T23:59:59Z",
-                                    "created_at": "2023-02-09T02:45:41Z"
+                                    "id": "89c5cb19-14d9-490c-99b4-6b001ccb5f4b",
+                                    "tenant_id": "2cefe3fa-5411-4c0d-960f-56f66924aa20",
+                                    "period_id": "f81b0091-1c8c-4fbe-b76b-99ca4392950a",
+                                    "category_id": "6c92f45a-18f4-43ab-9d97-967be5634ac0",
+                                    "actual_amount": 150.35,
+                                    "limit_amount": 300,
+                                    "created_at": "2023-01-04T20:06:15Z"
                                 }
                             }
                         }

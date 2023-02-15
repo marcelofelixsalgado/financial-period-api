@@ -12,7 +12,7 @@
         },
         {
             "url": "https://sandbox.financial.com",
-            "description": "Magalu Entregas - Sandbox environment"
+            "description": "Financial - Sandbox environment"
         }
     ],
     "paths": {
@@ -452,7 +452,7 @@
                         "type": "string"
                     },
                     "id": {
-                        "description": "Identifier code",
+                        "description": "User identifier code",
                         "type": "string"
                     },
                     "created_at": {

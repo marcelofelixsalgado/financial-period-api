@@ -27,7 +27,7 @@ func (deleteUseCase *DeleteUseCase) Execute(input InputDeletePeriodDto) (OutputD
 		return OutputDeletePeriodDto{}, status.InternalServerError, err
 	}
 	if entity == nil {
-		return OutputDeletePeriodDto{}, status.InvalidResourceId, err
+		return OutputDeletePeriodDto{}, status.InvalidResourceId, nil
 	}
 
 	// Apply in dabatase

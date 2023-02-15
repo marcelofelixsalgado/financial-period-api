@@ -2,6 +2,7 @@ package routes
 
 import (
 	"marcelofelixsalgado/financial-period-api/api/controllers"
+	"marcelofelixsalgado/financial-period-api/api/controllers/balance"
 	"marcelofelixsalgado/financial-period-api/api/controllers/health"
 	"marcelofelixsalgado/financial-period-api/api/controllers/login"
 	"marcelofelixsalgado/financial-period-api/api/controllers/period"
@@ -12,19 +13,22 @@ import (
 )
 
 type Routes struct {
-	loginRoutes  login.LoginRoutes
-	userRoutes   user.UserRoutes
-	periodRoutes period.PeriodRoutes
-	healthRoutes health.HealthRoutes
+	loginRoutes   login.LoginRoutes
+	userRoutes    user.UserRoutes
+	periodRoutes  period.PeriodRoutes
+	balanceRoutes balance.BalanceRoutes
+	healthRoutes  health.HealthRoutes
 }
 
 func NewRoutes(loginRoutes login.LoginRoutes, userRoutes user.UserRoutes,
-	periodRoutes period.PeriodRoutes, healthRoutes health.HealthRoutes) *Routes {
+	periodRoutes period.PeriodRoutes, balanceRoutes balance.BalanceRoutes,
+	healthRoutes health.HealthRoutes) *Routes {
 	return &Routes{
-		loginRoutes:  loginRoutes,
-		userRoutes:   userRoutes,
-		periodRoutes: periodRoutes,
-		healthRoutes: healthRoutes,
+		loginRoutes:   loginRoutes,
+		userRoutes:    userRoutes,
+		periodRoutes:  periodRoutes,
+		balanceRoutes: balanceRoutes,
+		healthRoutes:  healthRoutes,
 	}
 }
 
@@ -41,6 +45,10 @@ func (routes *Routes) RouteMapping(http *echo.Echo) {
 	// period routes
 	basePath, periodRoutes := routes.periodRoutes.PeriodRouteMapping()
 	setupRoute(http, basePath, periodRoutes)
+
+	// balance routes
+	basePath, balanceRoutes := routes.balanceRoutes.BalanceRouteMapping()
+	setupRoute(http, basePath, balanceRoutes)
 
 	// health routes
 	basePath, healthRoutes := routes.healthRoutes.HealthRouteMapping()

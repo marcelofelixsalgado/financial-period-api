@@ -50,4 +50,15 @@ CREATE TABLE periods(
     updated_at datetime default '0001-01-01 00:00:00'
 );
 
+CREATE TABLE balance(
+	id              varchar(255) primary key,
+	tenant_id       varchar(255) not null,
+	period_id       varchar(255) not null,
+	category_id     varchar(255) not null,
+	actual_amount   float,
+	limit_amount    float,
+    created_at      datetime not null,
+    updated_at      datetime default '0001-01-01 00:00:00',
 
+    CONSTRAINT UC_Balance UNIQUE (tenant_id, period_id, category_id)
+);

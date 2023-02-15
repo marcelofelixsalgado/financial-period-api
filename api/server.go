@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"marcelofelixsalgado/financial-period-api/api/controllers/balance"
 	"marcelofelixsalgado/financial-period-api/api/controllers/health"
 	"marcelofelixsalgado/financial-period-api/api/controllers/login"
 	"marcelofelixsalgado/financial-period-api/api/controllers/period"
@@ -37,6 +38,13 @@ import (
 	userFind "marcelofelixsalgado/financial-period-api/pkg/usecase/user/find"
 	userList "marcelofelixsalgado/financial-period-api/pkg/usecase/user/list"
 	userUpdate "marcelofelixsalgado/financial-period-api/pkg/usecase/user/update"
+
+	balanceRepository "marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/balance"
+	balanceCreate "marcelofelixsalgado/financial-period-api/pkg/usecase/balance/create"
+	balanceDelete "marcelofelixsalgado/financial-period-api/pkg/usecase/balance/delete"
+	balanceFind "marcelofelixsalgado/financial-period-api/pkg/usecase/balance/find"
+	balanceList "marcelofelixsalgado/financial-period-api/pkg/usecase/balance/list"
+	balanceUpdate "marcelofelixsalgado/financial-period-api/pkg/usecase/balance/update"
 
 	userCredentialsRepository "marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/credentials"
 
@@ -87,10 +95,11 @@ func (server *Server) startServer() {
 	userRoutes := setupUserRoutes(databaseClient)
 	loginRoutes := setupLoginRoutes(databaseClient)
 	periodRoutes := setupPeriodRoutes(databaseClient)
+	balanceRoutes := setupBalanceRoutes(databaseClient)
 	healthRoutes := setupHealthRoutes()
 
 	// Setup all routes
-	routes := routes.NewRoutes(loginRoutes, userRoutes, periodRoutes, healthRoutes)
+	routes := routes.NewRoutes(loginRoutes, userRoutes, periodRoutes, balanceRoutes, healthRoutes)
 
 	routes.RouteMapping(server.http)
 	server.routes = routes
@@ -184,6 +193,26 @@ func setupPeriodRoutes(databaseClient *sql.DB) period.PeriodRoutes {
 	periodRoutes := period.NewPeriodRoutes(periodHandler)
 
 	return periodRoutes
+}
+
+func setupBalanceRoutes(databaseClient *sql.DB) balance.BalanceRoutes {
+	// setup repository
+	repository := balanceRepository.NewBalanceRepository(databaseClient)
+
+	// setup Use Cases (services)
+	createUseCase := balanceCreate.NewCreateUseCase(repository)
+	deleteUseCase := balanceDelete.NewDeleteUseCase(repository)
+	findUseCase := balanceFind.NewFindUseCase(repository)
+	listUseCase := balanceList.NewListUseCase(repository)
+	updateUseCase := balanceUpdate.NewUpdateUseCase(repository)
+
+	// setup router handlers
+	balanceHandler := balance.NewBalanceHandler(createUseCase, listUseCase, findUseCase, updateUseCase, deleteUseCase)
+
+	// setup routes
+	balanceRoutes := balance.NewBalanceRoutes(balanceHandler)
+
+	return balanceRoutes
 }
 
 func setupHealthRoutes() health.HealthRoutes {
