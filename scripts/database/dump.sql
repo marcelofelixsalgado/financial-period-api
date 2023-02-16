@@ -47,7 +47,9 @@ CREATE TABLE periods(
     start_date datetime not null,
     end_date datetime not null,
     created_at datetime not null,
-    updated_at datetime default '0001-01-01 00:00:00'
+    updated_at datetime default '0001-01-01 00:00:00',
+
+    CONSTRAINT UC_Period UNIQUE (tenant_id, code)
 );
 
 CREATE TABLE balance(

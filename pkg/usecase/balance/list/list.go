@@ -35,7 +35,6 @@ func (listUseCase *ListUseCase) Execute(input InputListBalanceDto) (OutputListBa
 	for _, item := range balances {
 		balance := Balance{
 			Id:           item.GetId(),
-			TenantId:     item.GetTenantId(),
 			PeriodId:     item.GetPeriodId(),
 			CategoryId:   item.GetCategoryId(),
 			ActualAmount: item.GetActualAmount(),

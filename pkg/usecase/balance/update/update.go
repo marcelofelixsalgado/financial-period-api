@@ -32,7 +32,7 @@ func (updateUseCase *UpdateUseCase) Execute(input InputUpdateBalanceDto) (Output
 		return OutputUpdateBalanceDto{}, status.InvalidResourceId, nil
 	}
 
-	entity, err := entity.NewBalance(input.Id, input.TenantId, input.PeriodId, input.CategoryId, input.ActualAmount, input.LimitAmount, currentEntity.GetCreatedAt(), time.Now())
+	entity, err := entity.NewBalance(input.Id, input.TenantId, currentEntity.GetPeriodId(), currentEntity.GetCategoryId(), input.ActualAmount, currentEntity.GetLimitAmount(), currentEntity.GetCreatedAt(), time.Now())
 	if err != nil {
 		return OutputUpdateBalanceDto{}, status.InternalServerError, err
 	}
@@ -45,7 +45,6 @@ func (updateUseCase *UpdateUseCase) Execute(input InputUpdateBalanceDto) (Output
 
 	outputUpdateBalanceDto := OutputUpdateBalanceDto{
 		Id:           entity.GetId(),
-		TenantId:     entity.GetTenantId(),
 		PeriodId:     entity.GetPeriodId(),
 		CategoryId:   entity.GetCategoryId(),
 		ActualAmount: entity.GetActualAmount(),

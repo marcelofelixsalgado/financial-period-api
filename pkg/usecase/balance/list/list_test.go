@@ -38,13 +38,11 @@ func TestListBalanceUseCase_Execute(t *testing.T) {
 	assert.Len(t, output.Balances, 2)
 
 	assert.NotEmpty(t, output.Balances[0].Id)
-	assert.Equal(t, balances[0].GetTenantId(), output.Balances[0].TenantId)
 	assert.Equal(t, balances[0].GetPeriodId(), output.Balances[0].PeriodId)
 	assert.Equal(t, balances[0].GetCategoryId(), output.Balances[0].CategoryId)
 	assert.Equal(t, balances[0].GetActualAmount(), output.Balances[0].ActualAmount)
 	assert.Equal(t, balances[0].GetLimitAmount(), output.Balances[0].LimitAmount)
 
-	assert.Equal(t, balances[1].GetTenantId(), output.Balances[1].TenantId)
 	assert.Equal(t, balances[1].GetPeriodId(), output.Balances[1].PeriodId)
 	assert.Equal(t, balances[1].GetCategoryId(), output.Balances[1].CategoryId)
 	assert.Equal(t, balances[1].GetActualAmount(), output.Balances[1].ActualAmount)

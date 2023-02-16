@@ -40,7 +40,7 @@ func (balanceRoutes *BalanceRoutes) BalanceRouteMapping() (string, []controllers
 		},
 		{
 			URI:                    "/:id",
-			Method:                 http.MethodPut,
+			Method:                 http.MethodPatch,
 			Function:               balanceRoutes.balanceHandler.UpdateBalance,
 			RequiresAuthentication: true,
 		},

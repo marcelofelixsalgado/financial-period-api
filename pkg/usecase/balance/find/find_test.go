@@ -31,7 +31,6 @@ func TestFindBalanceUseCase_Execute(t *testing.T) {
 	assert.NotNil(t, output)
 	assert.NotEmpty(t, output.Id)
 	assert.NotEmpty(t, output.CreatedAt)
-	assert.Equal(t, balance.GetTenantId(), output.TenantId)
 	assert.Equal(t, balance.GetPeriodId(), output.PeriodId)
 	assert.Equal(t, balance.GetCategoryId(), output.CategoryId)
 	assert.Equal(t, balance.GetActualAmount(), output.ActualAmount)

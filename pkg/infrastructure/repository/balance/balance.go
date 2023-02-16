@@ -2,8 +2,12 @@ package balance
 
 import (
 	"database/sql"
+	"errors"
 	"marcelofelixsalgado/financial-period-api/pkg/domain/balance/entity"
+	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/status"
 	"time"
+
+	"github.com/go-sql-driver/mysql"
 )
 
 type BalanceRepository struct {
@@ -27,7 +31,8 @@ func NewBalanceRepository(client *sql.DB) IBalanceRepository {
 	}
 }
 
-func (repository *BalanceRepository) Create(entity entity.IBalance) error {
+func (repository *BalanceRepository) Create(entity entity.IBalance) (status.RepositoryInternalStatus, error) {
+	var mysqlErr *mysql.MySQLError
 
 	model := BalanceModel{
 		id:           entity.GetId(),
@@ -42,16 +47,20 @@ func (repository *BalanceRepository) Create(entity entity.IBalance) error {
 
 	statement, err := repository.client.Prepare("insert into balance (id, tenant_id, period_id, category_id, actual_amount, limit_amount, created_at) values (?, ?, ?, ?, ?, ?, ?)")
 	if err != nil {
-		return err
+		return status.InternalServerError, err
 	}
 	defer statement.Close()
 
 	_, err = statement.Exec(model.id, model.tenantId, model.periodId, model.categoryId, model.actualAmount, model.limitAmount, model.createdAt)
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1062 {
+		// Unique key violated
+		return status.EntityWithSameKeyAlreadyExists, err
+	}
 	if err != nil {
-		return err
+		return status.InternalServerError, err
 	}
 
-	return nil
+	return status.Success, nil
 }
 
 func (repository *BalanceRepository) Update(entity entity.IBalance) error {

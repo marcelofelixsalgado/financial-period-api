@@ -110,7 +110,7 @@ var catalog = Catalog{
 				},
 				{
 					Issue:            InvalidParameter,
-					Description:      "Request is not well-formed, syntactically incorrect, or violates schema",
+					Description:      "Cannot be specified as part of the request",
 					DescriptionArgs:  0,
 					LocationRequired: true,
 					FieldRequired:    true,

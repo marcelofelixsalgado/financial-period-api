@@ -49,7 +49,6 @@ func (userCredentialsHandler *LoginHandler) Login(ctx echo.Context) error {
 
 	// Validating input parameters
 	if responseMessage := ValidateLoginRequestBody(input).GetMessage(); responseMessage.ErrorCode != "" {
-		responseMessage.Write(ctx.Response().Writer)
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 

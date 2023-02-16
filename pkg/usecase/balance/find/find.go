@@ -35,7 +35,6 @@ func (findUseCase *FindUseCase) Execute(input InputFindBalanceDto) (OutputFindBa
 
 	outputFindBalanceDto := OutputFindBalanceDto{
 		Id:           balance.GetId(),
-		TenantId:     balance.GetTenantId(),
 		PeriodId:     balance.GetPeriodId(),
 		CategoryId:   balance.GetCategoryId(),
 		ActualAmount: balance.GetActualAmount(),

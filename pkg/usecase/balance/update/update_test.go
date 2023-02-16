@@ -26,10 +26,7 @@ func TestUpdateBalanceUseCase_Execute(t *testing.T) {
 	input := update.InputUpdateBalanceDto{
 		Id:           balance.GetId(),
 		TenantId:     balance.GetTenantId(),
-		PeriodId:     balance.GetPeriodId(),
-		CategoryId:   balance.GetCategoryId(),
 		ActualAmount: balance.GetActualAmount(),
-		LimitAmount:  balance.GetLimitAmount(),
 	}
 
 	output, internalStatus, err := useCase.Execute(input)
@@ -38,11 +35,7 @@ func TestUpdateBalanceUseCase_Execute(t *testing.T) {
 	assert.NotNil(t, output)
 	assert.NotEmpty(t, output.Id)
 	assert.NotEmpty(t, output.CreatedAt)
-	assert.Equal(t, balance.GetTenantId(), output.TenantId)
-	assert.Equal(t, balance.GetPeriodId(), output.PeriodId)
-	assert.Equal(t, balance.GetCategoryId(), output.CategoryId)
 	assert.Equal(t, balance.GetActualAmount(), output.ActualAmount)
-	assert.Equal(t, balance.GetLimitAmount(), output.LimitAmount)
 	assert.Equal(t, internalStatus, useCaseStatus.Success)
 	m.AssertExpectations(t)
 	m.AssertNumberOfCalls(t, "FindById", 1)

@@ -87,7 +87,6 @@ func (userHandler *UserHandler) CreateUser(ctx echo.Context) error {
 
 	// Validating input parameters
 	if responseMessage := ValidateCreateRequestBody(input).GetMessage(); responseMessage.ErrorCode != "" {
-		// responseMessage.Write(ctx.Response().Writer)
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 
@@ -197,7 +196,6 @@ func (userHandler *UserHandler) UpdateUser(ctx echo.Context) error {
 
 	// Validating input parameters
 	if responseMessage := ValidateUpdateRequestBody(input).GetMessage(); responseMessage.ErrorCode != "" {
-		responseMessage.Write(ctx.Response().Writer)
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 
@@ -282,7 +280,6 @@ func (userHandler *UserHandler) CreateUserCredentials(ctx echo.Context) error {
 
 	// Validating input parameters
 	if responseMessage := ValidateUserCredentialsCreateRequestBody(input).GetMessage(); responseMessage.ErrorCode != "" {
-		responseMessage.Write(ctx.Response().Writer)
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 
@@ -322,7 +319,6 @@ func (userHandler *UserHandler) UpdateUserCredentials(ctx echo.Context) error {
 
 	// Validating input parameters
 	if responseMessage := ValidateUserCredentialsUpdateRequestBody(input).GetMessage(); responseMessage.ErrorCode != "" {
-		responseMessage.Write(ctx.Response().Writer)
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 

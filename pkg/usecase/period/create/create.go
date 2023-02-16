@@ -4,6 +4,8 @@ import (
 	"marcelofelixsalgado/financial-period-api/pkg/domain/period/entity"
 	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/period"
 
+	repositoryStatus "marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/status"
+
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/status"
 
 	"time"
@@ -42,7 +44,10 @@ func (createUseCase *CreateUseCase) Execute(input InputCreatePeriodDto) (OutputC
 	}
 
 	// Persists in dabatase
-	err = createUseCase.repository.Create(entity)
+	repositoryInternalStatus, err := createUseCase.repository.Create(entity)
+	if repositoryInternalStatus == repositoryStatus.EntityWithSameKeyAlreadyExists {
+		return OutputCreatePeriodDto{}, status.EntityWithSameKeyAlreadyExists, err
+	}
 	if err != nil {
 		return OutputCreatePeriodDto{}, status.InternalServerError, err
 	}

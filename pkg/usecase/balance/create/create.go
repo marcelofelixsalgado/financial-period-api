@@ -4,6 +4,8 @@ import (
 	"marcelofelixsalgado/financial-period-api/pkg/domain/balance/entity"
 	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/balance"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/status"
+
+	repositoryStatus "marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/status"
 )
 
 type ICreateUseCase interface {
@@ -29,14 +31,16 @@ func (createUseCase *CreateUseCase) Execute(input InputCreateBalanceDto) (Output
 	}
 
 	// Persists in database
-	err = createUseCase.repository.Create(entity)
+	repositoryInternalStatus, err := createUseCase.repository.Create(entity)
+	if repositoryInternalStatus == repositoryStatus.EntityWithSameKeyAlreadyExists {
+		return OutputCreateBalanceDto{}, status.EntityWithSameKeyAlreadyExists, err
+	}
 	if err != nil {
 		return OutputCreateBalanceDto{}, status.InternalServerError, err
 	}
 
 	outputCreateBalanceDto := OutputCreateBalanceDto{
 		Id:           entity.GetId(),
-		TenantId:     entity.GetTenantId(),
 		PeriodId:     entity.GetPeriodId(),
 		CategoryId:   entity.GetCategoryId(),
 		ActualAmount: entity.GetActualAmount(),

@@ -5,6 +5,8 @@ import (
 	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/period"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/status"
 	"time"
+
+	repositoryStatus "marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/status"
 )
 
 type IUpdateUseCase interface {
@@ -48,7 +50,10 @@ func (updateUseCase *UpdateUseCase) Execute(input InputUpdatePeriodDto) (OutputU
 	}
 
 	// Persists in dabatase
-	err = updateUseCase.repository.Update(entity)
+	repositoryInternalStatus, err := updateUseCase.repository.Update(entity)
+	if repositoryInternalStatus == repositoryStatus.EntityWithSameKeyAlreadyExists {
+		return OutputUpdatePeriodDto{}, status.EntityWithSameKeyAlreadyExists, err
+	}
 	if err != nil {
 		return OutputUpdatePeriodDto{}, status.InternalServerError, err
 	}

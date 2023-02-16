@@ -2,6 +2,9 @@ package mocks
 
 import (
 	"marcelofelixsalgado/financial-period-api/pkg/domain/balance/entity"
+	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/status"
+
+	repositoryInternalStatus "marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/status"
 
 	"github.com/stretchr/testify/mock"
 )
@@ -10,9 +13,9 @@ type BalanceRepositoryMock struct {
 	mock.Mock
 }
 
-func (m *BalanceRepositoryMock) Create(balance entity.IBalance) error {
+func (m *BalanceRepositoryMock) Create(balance entity.IBalance) (status.RepositoryInternalStatus, error) {
 	args := m.Called(balance)
-	return args.Error(0)
+	return repositoryInternalStatus.Success, args.Error(0)
 }
 
 func (m *BalanceRepositoryMock) Update(balance entity.IBalance) error {

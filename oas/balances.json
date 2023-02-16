@@ -368,17 +368,12 @@
                     "category_id",
                     "id",
                     "limit_amount",
-                    "period_id",
-                    "tenant_id"
+                    "period_id"
                 ],
                 "type": "object",
                 "properties": {
                     "id": {
                         "description": "Balance identifier code",
-                        "type": "string"
-                    },
-                    "tenant_id": {
-                        "description": "Identification code of the tenant owned by the user",
                         "type": "string"
                     },
                     "period_id": {
@@ -410,7 +405,6 @@
                 },
                 "example": {
                     "id": "89c5cb19-14d9-490c-99b4-6b001ccb5f4b",
-                    "tenant_id": "2cefe3fa-5411-4c0d-960f-56f66924aa20",
                     "period_id": "f81b0091-1c8c-4fbe-b76b-99ca4392950a",
                     "category_id": "6c92f45a-18f4-43ab-9d97-967be5634ac0",
                     "actual_amount": 150.35,
@@ -428,7 +422,6 @@
                 "example": [
                     {
                         "id": "89c5cb19-14d9-490c-99b4-6b001ccb5f4b",
-                        "tenant_id": "2cefe3fa-5411-4c0d-960f-56f66924aa20",
                         "period_id": "f81b0091-1c8c-4fbe-b76b-99ca4392950a",
                         "category_id": "6c92f45a-18f4-43ab-9d97-967be5634ac0",
                         "actual_amount": 150.35,
@@ -436,7 +429,6 @@
                     },
                     {
                         "id": "b129fb82-7ea9-498d-82b4-248ebcc75a19",
-                        "tenant_id": "06697378-a5d9-4a1f-a24f-6552a6aa92b1",
                         "period_id": "1a294f80-e3c8-4609-a36a-4b1f5e204a30",
                         "category_id": "c2fe0271-afce-4e7c-8ec2-d4b59a767a4e",
                         "actual_amount": 83.27,
@@ -444,7 +436,6 @@
                     },
                     {
                         "id": "342e8fb2-86e7-4adc-85f3-67f349eae836",
-                        "tenant_id": "6dfd81fd-9382-4917-be0f-8b00502f4f71",
                         "period_id": "9d5628c9-42df-448c-9ddf-f704e80184cf",
                         "category_id": "f55a9d78-6961-4638-86c7-594cb8fb89dc",
                         "actual_amount": 377.19,
@@ -481,7 +472,6 @@
                             "Response-200-Ok-Balance-Example": {
                                 "value": {
                                     "id": "89c5cb19-14d9-490c-99b4-6b001ccb5f4b",
-                                    "tenant_id": "2cefe3fa-5411-4c0d-960f-56f66924aa20",
                                     "period_id": "f81b0091-1c8c-4fbe-b76b-99ca4392950a",
                                     "category_id": "6c92f45a-18f4-43ab-9d97-967be5634ac0",
                                     "actual_amount": 150.35,
@@ -506,7 +496,6 @@
                                 "value": [
                                     {
                                         "id": "89c5cb19-14d9-490c-99b4-6b001ccb5f4b",
-                                        "tenant_id": "2cefe3fa-5411-4c0d-960f-56f66924aa20",
                                         "period_id": "f81b0091-1c8c-4fbe-b76b-99ca4392950a",
                                         "category_id": "6c92f45a-18f4-43ab-9d97-967be5634ac0",
                                         "actual_amount": 150.35,
@@ -514,7 +503,6 @@
                                     },
                                     {
                                         "id": "b129fb82-7ea9-498d-82b4-248ebcc75a19",
-                                        "tenant_id": "06697378-a5d9-4a1f-a24f-6552a6aa92b1",
                                         "period_id": "1a294f80-e3c8-4609-a36a-4b1f5e204a30",
                                         "category_id": "c2fe0271-afce-4e7c-8ec2-d4b59a767a4e",
                                         "actual_amount": 83.27,
@@ -522,7 +510,6 @@
                                     },
                                     {
                                         "id": "342e8fb2-86e7-4adc-85f3-67f349eae836",
-                                        "tenant_id": "6dfd81fd-9382-4917-be0f-8b00502f4f71",
                                         "period_id": "9d5628c9-42df-448c-9ddf-f704e80184cf",
                                         "category_id": "f55a9d78-6961-4638-86c7-594cb8fb89dc",
                                         "actual_amount": 377.19,
@@ -545,7 +532,6 @@
                             "Response-201-Created-Example": {
                                 "value": {
                                     "id": "89c5cb19-14d9-490c-99b4-6b001ccb5f4b",
-                                    "tenant_id": "2cefe3fa-5411-4c0d-960f-56f66924aa20",
                                     "period_id": "f81b0091-1c8c-4fbe-b76b-99ca4392950a",
                                     "category_id": "6c92f45a-18f4-43ab-9d97-967be5634ac0",
                                     "actual_amount": 150.35,

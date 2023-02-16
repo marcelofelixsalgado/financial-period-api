@@ -2,9 +2,13 @@ package period
 
 import (
 	"database/sql"
+	"errors"
 	"marcelofelixsalgado/financial-period-api/pkg/domain/period/entity"
 	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/filter"
+	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/status"
 	"time"
+
+	"github.com/go-sql-driver/mysql"
 )
 
 type PeriodRepository struct {
@@ -29,7 +33,8 @@ func NewPeriodRepository(client *sql.DB) IPeriodRepository {
 	}
 }
 
-func (repository *PeriodRepository) Create(entity entity.IPeriod) error {
+func (repository *PeriodRepository) Create(entity entity.IPeriod) (status.RepositoryInternalStatus, error) {
+	var mysqlErr *mysql.MySQLError
 
 	model := PeriodModel{
 		id:        entity.GetId(),
@@ -44,16 +49,20 @@ func (repository *PeriodRepository) Create(entity entity.IPeriod) error {
 
 	statement, err := repository.client.Prepare("insert into periods (id, tenant_id, code, name, year, start_date, end_date, created_at) values (?, ?, ?, ?, ?, ?, ?, ?)")
 	if err != nil {
-		return err
+		return status.InternalServerError, err
 	}
 	defer statement.Close()
 
 	_, err = statement.Exec(model.id, model.tenantId, model.code, model.name, model.year, model.startDate, model.endDate, model.createdAt)
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1062 {
+		// Unique key violated
+		return status.EntityWithSameKeyAlreadyExists, err
+	}
 	if err != nil {
-		return err
+		return status.InternalServerError, err
 	}
 
-	return nil
+	return status.Success, nil
 }
 
 func (repository *PeriodRepository) FindById(id string) (entity.IPeriod, error) {
@@ -132,7 +141,8 @@ func (repository *PeriodRepository) List(filterParameters []filter.FilterParamet
 	return periods, nil
 }
 
-func (repository *PeriodRepository) Update(entity entity.IPeriod) error {
+func (repository *PeriodRepository) Update(entity entity.IPeriod) (status.RepositoryInternalStatus, error) {
+	var mysqlErr *mysql.MySQLError
 
 	model := PeriodModel{
 		id:        entity.GetId(),
@@ -147,16 +157,20 @@ func (repository *PeriodRepository) Update(entity entity.IPeriod) error {
 
 	statement, err := repository.client.Prepare("update periods set code = ?, name = ?, year = ?, start_date = ?, end_date = ?, updated_at = ? where id = ?")
 	if err != nil {
-		return err
+		return status.InternalServerError, err
 	}
 	defer statement.Close()
 
 	_, err = statement.Exec(model.code, model.name, model.year, model.startDate, model.endDate, model.updatedAt, model.id)
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1062 {
+		// Unique key violated
+		return status.EntityWithSameKeyAlreadyExists, err
+	}
 	if err != nil {
-		return err
+		return status.InternalServerError, err
 	}
 
-	return nil
+	return status.Success, nil
 }
 
 func (repository *PeriodRepository) Delete(id string) error {

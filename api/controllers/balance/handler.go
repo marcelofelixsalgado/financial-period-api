@@ -78,13 +78,17 @@ func (balanceHandler *BalanceHandler) CreateBalance(ctx echo.Context) error {
 
 	// Validating input parameters
 	if responseMessage := ValidateCreateRequestBody(input).GetMessage(); responseMessage.ErrorCode != "" {
-		responseMessage.Write(ctx.Response().Writer)
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 
 	input.TenantId = tenantId
 
 	output, internalStatus, err := balanceHandler.createUseCase.Execute(input)
+	if internalStatus == status.EntityWithSameKeyAlreadyExists {
+		log.Printf("Error trying to create the entity - duplicate key: %v", err)
+		responseMessage := responses.NewResponseMessage().AddMessageByIssue(faults.EntityWithSameKeyAlreadyExists, "body", "period_id", input.PeriodId).AddMessageByIssue(faults.EntityWithSameKeyAlreadyExists, "body", "category_id", input.CategoryId)
+		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
+	}
 	if internalStatus != status.Success {
 		log.Printf("Error trying to create the entity: %v", err)
 		responseMessage := responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
@@ -168,12 +172,6 @@ func (balanceHandler *BalanceHandler) UpdateBalance(ctx echo.Context) error {
 	}
 	input.Id = id
 	input.TenantId = tenantId
-
-	// Validating input parameters
-	if responseMessage := ValidateUpdateRequestBody(input).GetMessage(); responseMessage.ErrorCode != "" {
-		responseMessage.Write(ctx.Response().Writer)
-		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
-	}
 
 	output, internalStatus, err := balanceHandler.updateUseCase.Execute(input)
 	if internalStatus == status.InternalServerError {

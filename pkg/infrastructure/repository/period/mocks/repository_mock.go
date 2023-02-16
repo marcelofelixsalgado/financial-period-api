@@ -3,6 +3,7 @@ package mocks
 import (
 	"marcelofelixsalgado/financial-period-api/pkg/domain/period/entity"
 	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/filter"
+	repositoryInternalStatus "marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/status"
 
 	"github.com/stretchr/testify/mock"
 )
@@ -11,14 +12,14 @@ type PeriodRepositoryMock struct {
 	mock.Mock
 }
 
-func (m *PeriodRepositoryMock) Create(period entity.IPeriod) error {
+func (m *PeriodRepositoryMock) Create(period entity.IPeriod) (repositoryInternalStatus.RepositoryInternalStatus, error) {
 	args := m.Called(period)
-	return args.Error(0)
+	return repositoryInternalStatus.Success, args.Error(0)
 }
 
-func (m *PeriodRepositoryMock) Update(period entity.IPeriod) error {
+func (m *PeriodRepositoryMock) Update(period entity.IPeriod) (repositoryInternalStatus.RepositoryInternalStatus, error) {
 	args := m.Called(period)
-	return args.Error(0)
+	return repositoryInternalStatus.Success, args.Error(0)
 }
 
 func (m *PeriodRepositoryMock) FindById(id string) (entity.IPeriod, error) {
