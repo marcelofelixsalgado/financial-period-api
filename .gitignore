@@ -19,3 +19,6 @@ mysql/
 
 # sonar-scanner directory
 .scannerwork/
+
+# Local environment variables
+.env
