@@ -5,6 +5,7 @@ import (
 
 	"github.com/codingconcepts/env"
 	"github.com/joho/godotenv"
+	"github.com/sirupsen/logrus"
 )
 
 // ConfigType struct to resolve env vars
@@ -26,6 +27,10 @@ type ConfigType struct {
 	SecretKey []byte `env:"SECRET_KEY"`
 
 	ServerCloseWait int `env:"SERVER_CLOSEWAIT" default:"10"`
+
+	LogAccessFile string `env:"LOG_ACCESS_FILE" default:"./access.log"`
+	LogAppFile    string `env:"LOG_APP_FILE" default:"./app.log"`
+	LogLevel      string `env:"LOG_LEVEL" default:"INFO"`
 }
 
 var Config ConfigType
@@ -41,6 +46,10 @@ func Load() {
 
 	// bind env vars
 	if err := env.Set(&Config); err != nil {
+		log.Fatal(err)
+	}
+
+	if _, err := logrus.ParseLevel(Config.LogLevel); err != nil {
 		log.Fatal(err)
 	}
 }

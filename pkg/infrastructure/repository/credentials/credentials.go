@@ -69,29 +69,6 @@ func (repository *UserCredentialsRepository) Update(entity entity.IUserCredentia
 	return nil
 }
 
-// func (repository *UserCredentialsRepository) FindById(id string) (entity.IUserCredentials, error) {
-
-// 	row, err := repository.client.Query("select user_credentials.id, user_credentials.user_id, users.tenant_id, user_credentials.password, user_credentials.created_at, user_credentials.updated_at from user_credentials inner join users on user_credentials.user_id = users.id where user_credentials.id = ?", id)
-// 	if err != nil {
-// 		return entity.UserCredentials{}, err
-// 	}
-// 	defer row.Close()
-
-// 	var userCredentialsModel UserCredentialsModel
-// 	if row.Next() {
-// 		if err := row.Scan(&userCredentialsModel.id, &userCredentialsModel.userId, &userCredentialsModel.tenantId, &userCredentialsModel.password, &userCredentialsModel.createdAt, &userCredentialsModel.updatedAt); err != nil {
-// 			return entity.UserCredentials{}, err
-// 		}
-
-// 		user, err := entity.NewUserCredentials(userCredentialsModel.id, userCredentialsModel.userId, userCredentialsModel.tenantId, userCredentialsModel.password, userCredentialsModel.createdAt, userCredentialsModel.updatedAt)
-// 		if err != nil {
-// 			return entity.UserCredentials{}, err
-// 		}
-// 		return user, nil
-// 	}
-// 	return nil, nil
-// }
-
 func (repository *UserCredentialsRepository) FindByUserId(userId string) (entity.IUserCredentials, error) {
 
 	row, err := repository.client.Query("select user_credentials.id, user_credentials.user_id, users.tenant_id, user_credentials.password, user_credentials.created_at, user_credentials.updated_at from user_credentials inner join users on user_credentials.user_id = users.id where user_credentials.user_id = ?", userId)

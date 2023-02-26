@@ -3,9 +3,9 @@ package login
 import (
 	"encoding/json"
 	"io"
-	"log"
 	"marcelofelixsalgado/financial-period-api/api/responses"
 	"marcelofelixsalgado/financial-period-api/api/responses/faults"
+	"marcelofelixsalgado/financial-period-api/commons/logger"
 	loginUsecase "marcelofelixsalgado/financial-period-api/pkg/usecase/credentials/login"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/status"
 	"net/http"
@@ -23,7 +23,6 @@ type LoginHandler struct {
 
 const requestBodyErrorMessage = "Error trying to read the request body: "
 const inputConversionErrorMessage = "Error trying to convert the input data: "
-const outputConversionErrorMessage = "Error trying to convert the output to response body: "
 
 func NewLoginHandler(loginUseCase loginUsecase.ILoginUseCase) ILoginHandler {
 	return &LoginHandler{
@@ -34,7 +33,7 @@ func NewLoginHandler(loginUseCase loginUsecase.ILoginUseCase) ILoginHandler {
 func (userCredentialsHandler *LoginHandler) Login(ctx echo.Context) error {
 	requestBody, err := io.ReadAll(ctx.Request().Body)
 	if err != nil {
-		log.Printf("%s%v", requestBodyErrorMessage, err)
+		logger.GetLogger().Warnf("%s%v", requestBodyErrorMessage, err)
 		responseMessage := responses.NewResponseMessage().AddMessageByIssue(faults.MalformedRequest, "body", "", "")
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
@@ -42,7 +41,7 @@ func (userCredentialsHandler *LoginHandler) Login(ctx echo.Context) error {
 	var input loginUsecase.InputUserLoginDto
 
 	if erro := json.Unmarshal([]byte(requestBody), &input); erro != nil {
-		log.Printf("%s%v", inputConversionErrorMessage, err)
+		logger.GetLogger().Warnf("%s%v", inputConversionErrorMessage, err)
 		responseMessage := responses.NewResponseMessage().AddMessageByIssue(faults.MalformedRequest, "body", "", "")
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
@@ -54,17 +53,17 @@ func (userCredentialsHandler *LoginHandler) Login(ctx echo.Context) error {
 
 	output, internalStatus, err := userCredentialsHandler.loginUseCase.Execute(input)
 	if internalStatus == status.InternalServerError {
-		log.Printf("Error finding the entity: %v", err)
+		logger.GetLogger().Errorf("Error finding the entity: %v", err)
 		responseMessage := responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 	if internalStatus == status.InvalidResourceId {
-		log.Printf("Unable finding the entity: %v", err)
+		logger.GetLogger().Infof("Unable finding the entity: %v", err)
 		responseMessage := responses.NewResponseMessage().AddMessageByInternalStatus(status.InvalidResourceId, responses.Body, "email", input.Email)
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 	if internalStatus == status.LoginFailed {
-		log.Printf("Login failed: %v", err)
+		logger.GetLogger().Infof("Login failed: %v", err)
 		responseMessage := responses.NewResponseMessage().AddMessageByInternalStatus(status.LoginFailed, responses.Body, "password", input.Password)
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}

@@ -1,14 +1,14 @@
 package logger
 
 import (
-	"context"
+	"fmt"
+	"log"
 	"marcelofelixsalgado/financial-period-api/settings"
 	"marcelofelixsalgado/financial-period-api/version"
 	"os"
 
-	custom_context "marcelofelixsalgado/financial-period-api/api/context"
-
 	"github.com/labstack/echo/v4"
+
 	"github.com/sirupsen/logrus"
 )
 
@@ -24,25 +24,6 @@ var (
 	hostname string
 )
 
-// GetLoggerTemplate - Returns a log template
-func (l LogParameters) GetLoggerTemplate(ctx context.Context) *logrus.Entry {
-	var operation = map[string]interface{}{
-		"module": l.Module,
-		"name":   l.Action,
-	}
-	entry := GetLogger().WithFields(logrus.Fields{
-		"service.name": settings.Config.AppName,
-		"operation":    operation,
-		"trace.id":     ctx.Value("messageIDKey"),
-	})
-
-	if l.EchoContext != nil {
-		entry.Data["http"] = custom_context.ContextRequestHTTP(l.EchoContext)
-	}
-
-	return entry
-}
-
 // GetLogger - Returns an instance of logger
 func GetLogger() *logrus.Entry {
 	if entry == nil {
@@ -53,11 +34,30 @@ func GetLogger() *logrus.Entry {
 		"environment": settings.Config.Environment,
 		"app.host":    hostname,
 		"app.version": version.Version,
-		"type":        "json",
 	})
 }
 
 func initLogger() {
 	entry = logrus.New()
 	hostname, _ = os.Hostname()
+
+	logLevel, err := logrus.ParseLevel(settings.Config.LogLevel)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	entry.SetFormatter(&logrus.JSONFormatter{})
+	entry.SetOutput(getLogFile())
+	entry.SetLevel(logLevel)
+}
+
+func getLogFile() *os.File {
+
+	file, err := os.OpenFile(settings.Config.LogAppFile, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0666)
+	if err != nil {
+		fmt.Printf("error opening file: %v", err)
+		os.Exit(1)
+	}
+
+	return file
 }

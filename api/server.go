@@ -10,6 +10,7 @@ import (
 	"marcelofelixsalgado/financial-period-api/api/controllers/login"
 	"marcelofelixsalgado/financial-period-api/api/controllers/period"
 	"marcelofelixsalgado/financial-period-api/api/controllers/user"
+	"marcelofelixsalgado/financial-period-api/api/middlewares"
 	"marcelofelixsalgado/financial-period-api/api/routes"
 	"marcelofelixsalgado/financial-period-api/commons/logger"
 	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/database"
@@ -48,10 +49,7 @@ import (
 
 	userCredentialsRepository "marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/credentials"
 
-	logs "marcelofelixsalgado/financial-period-api/commons/logger"
-
 	"github.com/labstack/echo/v4"
-	echoMiddleware "github.com/labstack/echo/v4/middleware"
 )
 
 // Server this is responsible for running an http server
@@ -83,11 +81,13 @@ func (server *Server) startServer() {
 	go server.watchStop()
 
 	server.http = echo.New()
-	logger := logs.GetLogger()
+	logger := logger.GetLogger()
+
 	logger.Infof("Server is starting now in %s.", settings.Config.Environment)
 
 	// Middlewares
-	server.http.Use(echoMiddleware.Logger())
+	// server.http.Use(echoMiddleware.Logger())
+	server.http.Use(middlewares.Logger())
 
 	// Connects to database
 	databaseClient := database.NewConnection()
@@ -109,7 +109,7 @@ func (server *Server) startServer() {
 	addr := fmt.Sprintf(":%v", settings.Config.ApiHttpPort)
 	go func() {
 		if err := server.http.Start(addr); err != nil {
-			log.Printf("Shutting down the server now")
+			logger.Info("Shutting down the server now")
 		}
 	}()
 }
@@ -127,7 +127,7 @@ func (s *Server) stopServer() {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(settings.Config.ServerCloseWait))
 	defer cancel()
 
-	logger := logs.GetLogger()
+	logger := logger.GetLogger()
 	logger.Info("Server is stoping...")
 	s.http.Shutdown(ctx)
 	close(s.stop)
@@ -231,9 +231,7 @@ func showRoutes(e *echo.Echo) {
 
 	if len(routes) > 0 {
 		for _, route := range routes {
-			// if strings.Contains(route.Name, "forklift-api") {
 			logger.Infof("%6s: %s \n", route.Method, route.Path)
-			// }
 		}
 	}
 }

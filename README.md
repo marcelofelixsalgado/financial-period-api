@@ -24,7 +24,10 @@ List of environment variables
 | DATABASE_USER                     | Database connection user                      | String        | Yes           |                       |
 | DATABASE_PASSWORD                 | Database connection password                  | String        | Yes           |                       |
 | API_PORT                          | Port exposed for this API                     | Integer       | Yes           |                       |
-| SERVER_CLOSEWAIT                  | Time waiting to server shutdown               | Integer       | Yes           | 10                    |
+| SERVER_CLOSEWAIT                  | Time waiting to server shutdown               | Integer       | No            | 10                    |
+| LOG_ACCESS_FILE                   | Path to access log file (API requests)        | String        | No            | ./access.log          |
+| LOG_APP_FILE                      | Path to application log file                  | String        | No            | ./app.log             |
+| LOG_LEVEL                         | Log level (ex: INFO, DEBUG, ERROR, etc)       | String        | No            | INFO                  |
 
 ### Running
 

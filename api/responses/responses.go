@@ -3,8 +3,8 @@ package responses
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"marcelofelixsalgado/financial-period-api/api/responses/faults"
+	"marcelofelixsalgado/financial-period-api/commons/logger"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/status"
 	"net/http"
 )
@@ -65,7 +65,7 @@ func (responseMessage *ResponseMessage) GetMessage() ResponseMessage {
 func (responseMessage *ResponseMessage) AddMessageByErrorCode(errorCode faults.ErrorCode) *ResponseMessage {
 	referenceMessage, err := faults.FindByErrorCode(errorCode)
 	if err != nil {
-		log.Printf("Error trying to find the error by code: [%v]: - %v", errorCode, err)
+		logger.GetLogger().Errorf("Error trying to find the error by code: [%v]: - %v", errorCode, err)
 		return NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
 	}
 
@@ -80,24 +80,24 @@ func (responseMessage *ResponseMessage) AddMessageByIssue(issue faults.Issue, lo
 
 	referenceResponse, referenceResponseDetail, err := faults.FindByIssue(issue)
 	if err != nil {
-		log.Printf("Error trying to find the error by issue: [%v] - %v", issue, err)
+		logger.GetLogger().Errorf("Error trying to find the error by issue: [%v] - %v", issue, err)
 		return NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
 	}
 
 	if referenceResponseDetail.LocationRequired && location == "" {
-		log.Printf("Error trying to define a response message - location is required")
+		logger.GetLogger().Errorf("Error trying to define a response message - location is required")
 		return NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
 	}
 	if referenceResponseDetail.FieldRequired && field == "" {
-		log.Printf("Error trying to define a response message - field is required")
+		logger.GetLogger().Errorf("Error trying to define a response message - field is required")
 		return NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
 	}
 	if referenceResponseDetail.ValueRequired && value == "" {
-		log.Printf("Error trying to define a response message - value is required")
+		logger.GetLogger().Errorf("Error trying to define a response message - value is required")
 		return NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
 	}
 	if referenceResponseDetail.DescriptionArgs != len(descriptionArgs) {
-		log.Printf("Error trying to define a response message - wrong number of argumentos passed. expected: [%d] - received: [%d]", referenceResponseDetail.DescriptionArgs, len(descriptionArgs))
+		logger.GetLogger().Errorf("Error trying to define a response message - wrong number of argumentos passed. expected: [%d] - received: [%d]", referenceResponseDetail.DescriptionArgs, len(descriptionArgs))
 		return NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
 	}
 
@@ -134,7 +134,7 @@ func (responseMessage *ResponseMessage) AddMessageByInternalStatus(internalStatu
 func (responseMessage *ResponseMessage) Write(w http.ResponseWriter) {
 	w.WriteHeader(responseMessage.GetMessage().HttpStatusCode)
 	if err := json.NewEncoder(w).Encode(responseMessage.GetMessage()); err != nil {
-		log.Printf("Error trying to encode response body message: %v", err)
+		logger.GetLogger().Errorf("Error trying to encode response body message: %v", err)
 	}
 }
 
