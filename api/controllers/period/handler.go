@@ -51,17 +51,18 @@ func NewPeriodHandler(createUseCase create.ICreateUseCase, deleteUseCase delete.
 }
 
 func (periodHandler *PeriodHandler) CreatePeriod(ctx echo.Context) error {
+	log := logger.GetLogger()
 
 	tenantId, err := auth.ExtractUserId(ctx.Request())
 	if err != nil {
-		logger.GetLogger().Errorf("Error extracting tenantId from access token: %v", err)
+		log.Errorf("Error extracting tenantId from access token: %v", err)
 		responseMessage := responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 
 	requestBody, err := io.ReadAll(ctx.Request().Body)
 	if err != nil {
-		logger.GetLogger().Warnf("%s%v", requestBodyErrorMessage, err)
+		log.Warnf("%s%v", requestBodyErrorMessage, err)
 		responseMessage := responses.NewResponseMessage().AddMessageByIssue(faults.MalformedRequest, "body", "", "")
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
@@ -69,7 +70,7 @@ func (periodHandler *PeriodHandler) CreatePeriod(ctx echo.Context) error {
 	var input create.InputCreatePeriodDto
 
 	if erro := json.Unmarshal([]byte(requestBody), &input); erro != nil {
-		logger.GetLogger().Warnf("%s%v", inputConversionErrorMessage, err)
+		log.Warnf("%s%v", inputConversionErrorMessage, err)
 		responseMessage := responses.NewResponseMessage().AddMessageByIssue(faults.MalformedRequest, "body", "", "")
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
@@ -83,12 +84,12 @@ func (periodHandler *PeriodHandler) CreatePeriod(ctx echo.Context) error {
 
 	output, internalStatus, err := periodHandler.createUseCase.Execute(input)
 	if internalStatus == status.EntityWithSameKeyAlreadyExists {
-		logger.GetLogger().Warnf("Error trying to create the entity - duplicate key: %v", err)
+		log.Warnf("Error trying to create the entity - duplicate key: %v", err)
 		responseMessage := responses.NewResponseMessage().AddMessageByIssue(faults.EntityWithSameKeyAlreadyExists, "body", "code", input.Code)
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 	if internalStatus != status.Success {
-		logger.GetLogger().Errorf("Error trying to create the entity: %v", err)
+		log.Errorf("Error trying to create the entity: %v", err)
 		responseMessage := responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
@@ -97,10 +98,11 @@ func (periodHandler *PeriodHandler) CreatePeriod(ctx echo.Context) error {
 }
 
 func (periodHandler *PeriodHandler) ListPeriods(ctx echo.Context) error {
+	log := logger.GetLogger()
 
 	tenantId, err := auth.ExtractUserId(ctx.Request())
 	if err != nil {
-		logger.GetLogger().Errorf("Error extracting tenantId from access token: %v", err)
+		log.Errorf("Error extracting tenantId from access token: %v", err)
 		responseMessage := responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
@@ -111,14 +113,14 @@ func (periodHandler *PeriodHandler) ListPeriods(ctx echo.Context) error {
 
 	filterParameters, err := requests.SetupFilters(ctx.Request())
 	if err != nil {
-		logger.GetLogger().Warnf("Error parsing the querystring parameters: %v", err)
+		log.Warnf("Error parsing the querystring parameters: %v", err)
 		responseMessage := responses.NewResponseMessage().AddMessageByIssue(faults.MalformedRequest, "query_parameter", "", "")
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 
 	output, internalStatus, err := periodHandler.listUseCase.Execute(input, filterParameters)
 	if internalStatus == status.InternalServerError {
-		logger.GetLogger().Errorf("Error listing the entity: %v", err)
+		log.Errorf("Error listing the entity: %v", err)
 		responseMessage := responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
@@ -131,6 +133,8 @@ func (periodHandler *PeriodHandler) ListPeriods(ctx echo.Context) error {
 }
 
 func (periodHandler *PeriodHandler) GetPeriodById(ctx echo.Context) error {
+	log := logger.GetLogger()
+
 	id := ctx.Param("id")
 
 	input := find.InputFindPeriodDto{
@@ -139,12 +143,12 @@ func (periodHandler *PeriodHandler) GetPeriodById(ctx echo.Context) error {
 
 	output, internalStatus, err := periodHandler.findUseCase.Execute(input)
 	if internalStatus == status.InternalServerError {
-		logger.GetLogger().Errorf("Error finding the entity: %v", err)
+		log.Errorf("Error finding the entity: %v", err)
 		responseMessage := responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 	if internalStatus == status.InvalidResourceId {
-		logger.GetLogger().Infof("%s", unableFindEntityErrorMessage)
+		log.Infof("%s", unableFindEntityErrorMessage)
 		responseMessage := responses.NewResponseMessage().AddMessageByInternalStatus(status.InvalidResourceId, responses.PathParameter, "id", id)
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
@@ -153,11 +157,13 @@ func (periodHandler *PeriodHandler) GetPeriodById(ctx echo.Context) error {
 }
 
 func (periodHandler *PeriodHandler) UpdatePeriod(ctx echo.Context) error {
+	log := logger.GetLogger()
+
 	id := ctx.Param("id")
 
 	requestBody, err := io.ReadAll(ctx.Request().Body)
 	if err != nil {
-		logger.GetLogger().Warnf("%s%v", requestBodyErrorMessage, err)
+		log.Warnf("%s%v", requestBodyErrorMessage, err)
 		responseMessage := responses.NewResponseMessage().AddMessageByIssue(faults.MalformedRequest, "body", "", "")
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
@@ -165,7 +171,7 @@ func (periodHandler *PeriodHandler) UpdatePeriod(ctx echo.Context) error {
 	var input update.InputUpdatePeriodDto
 
 	if erro := json.Unmarshal([]byte(requestBody), &input); erro != nil {
-		logger.GetLogger().Warnf("%s%v", inputConversionErrorMessage, err)
+		log.Warnf("%s%v", inputConversionErrorMessage, err)
 		responseMessage := responses.NewResponseMessage().AddMessageByIssue(faults.MalformedRequest, "body", "", "")
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
@@ -178,17 +184,17 @@ func (periodHandler *PeriodHandler) UpdatePeriod(ctx echo.Context) error {
 
 	output, internalStatus, err := periodHandler.updateUseCase.Execute(input)
 	if internalStatus == status.EntityWithSameKeyAlreadyExists {
-		logger.GetLogger().Warnf("Error trying to create the entity - duplicate key: %v", err)
+		log.Warnf("Error trying to create the entity - duplicate key: %v", err)
 		responseMessage := responses.NewResponseMessage().AddMessageByIssue(faults.EntityWithSameKeyAlreadyExists, "body", "code", input.Code)
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 	if internalStatus == status.InternalServerError {
-		logger.GetLogger().Errorf("Error updating the entity: %v", err)
+		log.Errorf("Error updating the entity: %v", err)
 		responseMessage := responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 	if internalStatus == status.InvalidResourceId {
-		logger.GetLogger().Infof("%s", unableFindEntityErrorMessage)
+		log.Infof("%s", unableFindEntityErrorMessage)
 		responseMessage := responses.NewResponseMessage().AddMessageByInternalStatus(status.InvalidResourceId, responses.PathParameter, "id", id)
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
@@ -197,6 +203,8 @@ func (periodHandler *PeriodHandler) UpdatePeriod(ctx echo.Context) error {
 }
 
 func (periodHandler *PeriodHandler) DeletePeriod(ctx echo.Context) error {
+	log := logger.GetLogger()
+
 	id := ctx.Param("id")
 
 	var input = delete.InputDeletePeriodDto{
@@ -205,12 +213,12 @@ func (periodHandler *PeriodHandler) DeletePeriod(ctx echo.Context) error {
 
 	_, internalStatus, err := periodHandler.deleteUseCase.Execute(input)
 	if internalStatus == status.InternalServerError {
-		logger.GetLogger().Errorf("Error removing the entity: %v", err)
+		log.Errorf("Error removing the entity: %v", err)
 		responseMessage := responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 	if internalStatus == status.InvalidResourceId {
-		logger.GetLogger().Infof("%s", unableFindEntityErrorMessage)
+		log.Infof("%s", unableFindEntityErrorMessage)
 		responseMessage := responses.NewResponseMessage().AddMessageByInternalStatus(status.InvalidResourceId, responses.PathParameter, "id", id)
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}

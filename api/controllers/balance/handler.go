@@ -53,16 +53,17 @@ func NewBalanceHandler(createUseCase create.ICreateUseCase,
 }
 
 func (balanceHandler *BalanceHandler) CreateBalance(ctx echo.Context) error {
+	log := logger.GetLogger()
 	tenantId, err := auth.ExtractUserId(ctx.Request())
 	if err != nil {
-		logger.GetLogger().Errorf("Error extracting tenantId from access token: %v", err)
+		log.Errorf("Error extracting tenantId from access token: %v", err)
 		responseMessage := responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 
 	requestBody, err := io.ReadAll(ctx.Request().Body)
 	if err != nil {
-		logger.GetLogger().Warnf("%s%v", requestBodyErrorMessage, err)
+		log.Warnf("%s%v", requestBodyErrorMessage, err)
 		responseMessage := responses.NewResponseMessage().AddMessageByIssue(faults.MalformedRequest, "body", "", "")
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
@@ -70,7 +71,7 @@ func (balanceHandler *BalanceHandler) CreateBalance(ctx echo.Context) error {
 	var input create.InputCreateBalanceDto
 
 	if erro := json.Unmarshal([]byte(requestBody), &input); erro != nil {
-		logger.GetLogger().Warnf("%s%v", inputConversionErrorMessage, err)
+		log.Warnf("%s%v", inputConversionErrorMessage, err)
 		responseMessage := responses.NewResponseMessage().AddMessageByIssue(faults.MalformedRequest, "body", "", "")
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
@@ -84,12 +85,12 @@ func (balanceHandler *BalanceHandler) CreateBalance(ctx echo.Context) error {
 
 	output, internalStatus, err := balanceHandler.createUseCase.Execute(input)
 	if internalStatus == status.EntityWithSameKeyAlreadyExists {
-		logger.GetLogger().Warnf("Error trying to create the entity - duplicate key: %v", err)
+		log.Warnf("Error trying to create the entity - duplicate key: %v", err)
 		responseMessage := responses.NewResponseMessage().AddMessageByIssue(faults.EntityWithSameKeyAlreadyExists, "body", "period_id", input.PeriodId).AddMessageByIssue(faults.EntityWithSameKeyAlreadyExists, "body", "category_id", input.CategoryId)
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 	if internalStatus != status.Success {
-		logger.GetLogger().Errorf("Error trying to create the entity: %v", err)
+		log.Errorf("Error trying to create the entity: %v", err)
 		responseMessage := responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
@@ -98,9 +99,10 @@ func (balanceHandler *BalanceHandler) CreateBalance(ctx echo.Context) error {
 }
 
 func (balanceHandler *BalanceHandler) ListBalances(ctx echo.Context) error {
+	log := logger.GetLogger()
 	tenantId, err := auth.ExtractUserId(ctx.Request())
 	if err != nil {
-		logger.GetLogger().Errorf("Error extracting tenantId from access token: %v", err)
+		log.Errorf("Error extracting tenantId from access token: %v", err)
 		responseMessage := responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
@@ -111,7 +113,7 @@ func (balanceHandler *BalanceHandler) ListBalances(ctx echo.Context) error {
 
 	output, internalStatus, err := balanceHandler.listUseCase.Execute(input)
 	if internalStatus == status.InternalServerError {
-		logger.GetLogger().Errorf("Error listing the entity: %v", err)
+		log.Errorf("Error listing the entity: %v", err)
 		responseMessage := responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
@@ -124,6 +126,8 @@ func (balanceHandler *BalanceHandler) ListBalances(ctx echo.Context) error {
 }
 
 func (balanceHandler *BalanceHandler) GetBalanceById(ctx echo.Context) error {
+	log := logger.GetLogger()
+
 	id := ctx.Param("id")
 
 	input := find.InputFindBalanceDto{
@@ -132,12 +136,12 @@ func (balanceHandler *BalanceHandler) GetBalanceById(ctx echo.Context) error {
 
 	output, internalStatus, err := balanceHandler.findUseCase.Execute(input)
 	if internalStatus == status.InternalServerError {
-		logger.GetLogger().Errorf("Error finding the entity: %v", err)
+		log.Errorf("Error finding the entity: %v", err)
 		responseMessage := responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 	if internalStatus == status.InvalidResourceId {
-		logger.GetLogger().Infof("%s", unableFindEntityErrorMessage)
+		log.Infof("%s", unableFindEntityErrorMessage)
 		responseMessage := responses.NewResponseMessage().AddMessageByInternalStatus(status.InvalidResourceId, responses.PathParameter, "id", id)
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
@@ -146,18 +150,20 @@ func (balanceHandler *BalanceHandler) GetBalanceById(ctx echo.Context) error {
 }
 
 func (balanceHandler *BalanceHandler) UpdateBalance(ctx echo.Context) error {
+	log := logger.GetLogger()
+
 	id := ctx.Param("id")
 
 	tenantId, err := auth.ExtractUserId(ctx.Request())
 	if err != nil {
-		logger.GetLogger().Errorf("Error extracting tenantId from access token: %v", err)
+		log.Errorf("Error extracting tenantId from access token: %v", err)
 		responseMessage := responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 
 	requestBody, err := io.ReadAll(ctx.Request().Body)
 	if err != nil {
-		logger.GetLogger().Warnf("%s%v", requestBodyErrorMessage, err)
+		log.Warnf("%s%v", requestBodyErrorMessage, err)
 		responseMessage := responses.NewResponseMessage().AddMessageByIssue(faults.MalformedRequest, "body", "", "")
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
@@ -165,7 +171,7 @@ func (balanceHandler *BalanceHandler) UpdateBalance(ctx echo.Context) error {
 	var input update.InputUpdateBalanceDto
 
 	if erro := json.Unmarshal([]byte(requestBody), &input); erro != nil {
-		logger.GetLogger().Warnf("%s%v", inputConversionErrorMessage, err)
+		log.Warnf("%s%v", inputConversionErrorMessage, err)
 		responseMessage := responses.NewResponseMessage().AddMessageByIssue(faults.MalformedRequest, "body", "", "")
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
@@ -174,12 +180,12 @@ func (balanceHandler *BalanceHandler) UpdateBalance(ctx echo.Context) error {
 
 	output, internalStatus, err := balanceHandler.updateUseCase.Execute(input)
 	if internalStatus == status.InternalServerError {
-		logger.GetLogger().Errorf("Error updating the entity: %v", err)
+		log.Errorf("Error updating the entity: %v", err)
 		responseMessage := responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 	if internalStatus == status.InvalidResourceId {
-		logger.GetLogger().Infof("%s", unableFindEntityErrorMessage)
+		log.Infof("%s", unableFindEntityErrorMessage)
 		responseMessage := responses.NewResponseMessage().AddMessageByInternalStatus(status.InvalidResourceId, responses.PathParameter, "id", id)
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
@@ -188,6 +194,8 @@ func (balanceHandler *BalanceHandler) UpdateBalance(ctx echo.Context) error {
 }
 
 func (balanceHandler *BalanceHandler) DeleteBalance(ctx echo.Context) error {
+	log := logger.GetLogger()
+
 	id := ctx.Param("id")
 
 	var input = delete.InputDeleteBalanceDto{
@@ -196,12 +204,12 @@ func (balanceHandler *BalanceHandler) DeleteBalance(ctx echo.Context) error {
 
 	_, internalStatus, err := balanceHandler.deleteUseCase.Execute(input)
 	if internalStatus == status.InternalServerError {
-		logger.GetLogger().Errorf("Error removing the entity: %v", err)
+		log.Errorf("Error removing the entity: %v", err)
 		responseMessage := responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 	if internalStatus == status.InvalidResourceId {
-		logger.GetLogger().Infof("%s", unableFindEntityErrorMessage)
+		log.Infof("%s", unableFindEntityErrorMessage)
 		responseMessage := responses.NewResponseMessage().AddMessageByInternalStatus(status.InvalidResourceId, responses.PathParameter, "id", id)
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}

@@ -45,9 +45,8 @@ type UserHandler struct {
 
 const requestBodyErrorMessage = "Error trying to read the request body: "
 const inputConversionErrorMessage = "Error trying to convert the input data: "
-const outputConversionErrorMessage = "Error trying to convert the output to response body: "
-const extractingUserIdErrorMessage = "Error extracting the user id from token: "
 const userAccessAnotherUserErrorMessage = "The user is not allowed to access another user info"
+const extractingUserIdErrorMessage = "Error extracting the user id from token: "
 
 func NewUserHandler(userCreateUseCase create.ICreateUseCase,
 	userDeleteUseCase delete.IDeleteUseCase,
@@ -68,10 +67,11 @@ func NewUserHandler(userCreateUseCase create.ICreateUseCase,
 }
 
 func (userHandler *UserHandler) CreateUser(ctx echo.Context) error {
+	log := logger.GetLogger()
 
 	requestBody, err := io.ReadAll(ctx.Request().Body)
 	if err != nil {
-		logger.GetLogger().Warnf("%s%v", requestBodyErrorMessage, err)
+		log.Warnf("%s%v", requestBodyErrorMessage, err)
 		responseMessage := responses.NewResponseMessage().AddMessageByIssue(faults.MalformedRequest, "body", "", "")
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
@@ -79,7 +79,7 @@ func (userHandler *UserHandler) CreateUser(ctx echo.Context) error {
 	var input create.InputCreateUserDto
 
 	if erro := json.Unmarshal([]byte(requestBody), &input); erro != nil {
-		logger.GetLogger().Warnf("%s%v", inputConversionErrorMessage, err)
+		log.Warnf("%s%v", inputConversionErrorMessage, err)
 		responseMessage := responses.NewResponseMessage().AddMessageByIssue(faults.MalformedRequest, "body", "", "")
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
@@ -91,12 +91,12 @@ func (userHandler *UserHandler) CreateUser(ctx echo.Context) error {
 
 	output, internalStatus, err := userHandler.userCreateUseCase.Execute(input)
 	if internalStatus == status.EntityWithSameKeyAlreadyExists {
-		logger.GetLogger().Infof("Error trying to create the entity - duplicate key: %v", err)
+		log.Infof("Error trying to create the entity - duplicate key: %v", err)
 		responseMessage := responses.NewResponseMessage().AddMessageByIssue(faults.EntityWithSameKeyAlreadyExists, "body", "phone", input.Phone).AddMessageByIssue(faults.EntityWithSameKeyAlreadyExists, "body", "email", input.Email)
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 	if internalStatus != status.Success {
-		logger.GetLogger().Errorf("Error trying to create the entity: %v", err)
+		log.Errorf("Error trying to create the entity: %v", err)
 		responseMessage := responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
@@ -105,18 +105,20 @@ func (userHandler *UserHandler) CreateUser(ctx echo.Context) error {
 }
 
 func (userHandler *UserHandler) ListUsers(ctx echo.Context) error {
+	log := logger.GetLogger()
+
 	var input list.InputListUserDto
 
 	filterParameters, err := requests.SetupFilters(ctx.Request())
 	if err != nil {
-		logger.GetLogger().Warnf("Error parsing the querystring parameters: %v", err)
+		log.Warnf("Error parsing the querystring parameters: %v", err)
 		responseMessage := responses.NewResponseMessage().AddMessageByIssue(faults.MalformedRequest, "query_parameter", "", "")
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 
 	output, internalStatus, err := userHandler.userListUseCase.Execute(input, filterParameters)
 	if internalStatus == status.InternalServerError {
-		logger.GetLogger().Errorf("Error listing the entity: %v", err)
+		log.Errorf("Error listing the entity: %v", err)
 		responseMessage := responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
@@ -129,16 +131,18 @@ func (userHandler *UserHandler) ListUsers(ctx echo.Context) error {
 }
 
 func (userHandler *UserHandler) GetUserById(ctx echo.Context) error {
+	log := logger.GetLogger()
+
 	id := ctx.Param("id")
 
 	sameUser, err := checkSameUser(id, ctx.Request())
 	if err != nil {
-		logger.GetLogger().Errorf("%s%v", extractingUserIdErrorMessage, err)
+		log.Errorf("%s%v", extractingUserIdErrorMessage, err)
 		responseMessage := responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 	if !sameUser {
-		logger.GetLogger().Infof("%s", userAccessAnotherUserErrorMessage)
+		log.Infof("%s", userAccessAnotherUserErrorMessage)
 		responseMessage := responses.NewResponseMessage().AddMessageByIssue(faults.PermissionDenied, "", "", "")
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
@@ -149,12 +153,12 @@ func (userHandler *UserHandler) GetUserById(ctx echo.Context) error {
 
 	output, internalStatus, err := userHandler.userFindUseCase.Execute(input)
 	if internalStatus == status.InternalServerError {
-		logger.GetLogger().Errorf("Error finding the entity: %v", err)
+		log.Errorf("Error finding the entity: %v", err)
 		responseMessage := responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 	if internalStatus == status.InvalidResourceId {
-		logger.GetLogger().Infof("Unable finding the entity")
+		log.Infof("Unable finding the entity")
 		responseMessage := responses.NewResponseMessage().AddMessageByInternalStatus(status.InvalidResourceId, responses.PathParameter, "id", id)
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
@@ -163,23 +167,25 @@ func (userHandler *UserHandler) GetUserById(ctx echo.Context) error {
 }
 
 func (userHandler *UserHandler) UpdateUser(ctx echo.Context) error {
+	log := logger.GetLogger()
+
 	id := ctx.Param("id")
 
 	sameUser, err := checkSameUser(id, ctx.Request())
 	if err != nil {
-		logger.GetLogger().Errorf("%s%v", extractingUserIdErrorMessage, err)
+		log.Errorf("%s%v", extractingUserIdErrorMessage, err)
 		responseMessage := responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 	if !sameUser {
-		logger.GetLogger().Infof("%s", userAccessAnotherUserErrorMessage)
+		log.Infof("%s", userAccessAnotherUserErrorMessage)
 		responseMessage := responses.NewResponseMessage().AddMessageByIssue(faults.PermissionDenied, "", "", "")
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 
 	requestBody, err := io.ReadAll(ctx.Request().Body)
 	if err != nil {
-		logger.GetLogger().Warnf("%s%v", requestBodyErrorMessage, err)
+		log.Warnf("%s%v", requestBodyErrorMessage, err)
 		responseMessage := responses.NewResponseMessage().AddMessageByIssue(faults.MalformedRequest, "body", "", "")
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
@@ -187,7 +193,7 @@ func (userHandler *UserHandler) UpdateUser(ctx echo.Context) error {
 	var input update.InputUpdateUserDto
 
 	if erro := json.Unmarshal([]byte(requestBody), &input); erro != nil {
-		logger.GetLogger().Warnf("%s%v", inputConversionErrorMessage, err)
+		log.Warnf("%s%v", inputConversionErrorMessage, err)
 		responseMessage := responses.NewResponseMessage().AddMessageByIssue(faults.MalformedRequest, "body", "", "")
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
@@ -200,12 +206,12 @@ func (userHandler *UserHandler) UpdateUser(ctx echo.Context) error {
 
 	output, internalStatus, err := userHandler.userUpdateUseCase.Execute(input)
 	if internalStatus == status.InternalServerError {
-		logger.GetLogger().Errorf("Error updating the entity: %v", err)
+		log.Errorf("Error updating the entity: %v", err)
 		responseMessage := responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 	if internalStatus == status.InvalidResourceId {
-		logger.GetLogger().Infof("Unable finding the entity: %v", err)
+		log.Infof("Unable finding the entity: %v", err)
 		responseMessage := responses.NewResponseMessage().AddMessageByInternalStatus(status.InvalidResourceId, responses.PathParameter, "id", id)
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
@@ -214,16 +220,18 @@ func (userHandler *UserHandler) UpdateUser(ctx echo.Context) error {
 }
 
 func (userHandler *UserHandler) DeleteUser(ctx echo.Context) error {
+	log := logger.GetLogger()
+
 	id := ctx.Param("id")
 
 	sameUser, err := checkSameUser(id, ctx.Request())
 	if err != nil {
-		logger.GetLogger().Errorf("%s%v", extractingUserIdErrorMessage, err)
+		log.Errorf("%s%v", extractingUserIdErrorMessage, err)
 		responseMessage := responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 	if !sameUser {
-		logger.GetLogger().Infof("%s", userAccessAnotherUserErrorMessage)
+		log.Infof("%s", userAccessAnotherUserErrorMessage)
 		responseMessage := responses.NewResponseMessage().AddMessageByIssue(faults.PermissionDenied, "", "", "")
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
@@ -234,12 +242,12 @@ func (userHandler *UserHandler) DeleteUser(ctx echo.Context) error {
 
 	_, internalStatus, err := userHandler.userDeleteUseCase.Execute(input)
 	if internalStatus == status.InternalServerError {
-		logger.GetLogger().Errorf("Error removing the entity: %v", err)
+		log.Errorf("Error removing the entity: %v", err)
 		responseMessage := responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 	if internalStatus == status.InvalidResourceId {
-		logger.GetLogger().Infof("Unable finding the entity: %v", err)
+		log.Infof("Unable finding the entity: %v", err)
 		responseMessage := responses.NewResponseMessage().AddMessageByInternalStatus(status.InvalidResourceId, responses.PathParameter, "id", id)
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
@@ -259,11 +267,13 @@ func checkSameUser(requestUserId string, r *http.Request) (bool, error) {
 }
 
 func (userHandler *UserHandler) CreateUserCredentials(ctx echo.Context) error {
+	log := logger.GetLogger()
+
 	id := ctx.Param("id")
 
 	requestBody, err := io.ReadAll(ctx.Request().Body)
 	if err != nil {
-		logger.GetLogger().Warnf("%s%v", requestBodyErrorMessage, err)
+		log.Warnf("%s%v", requestBodyErrorMessage, err)
 		responseMessage := responses.NewResponseMessage().AddMessageByIssue(faults.MalformedRequest, "body", "", "")
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
@@ -271,7 +281,7 @@ func (userHandler *UserHandler) CreateUserCredentials(ctx echo.Context) error {
 	var input userCredentialsCreate.InputCreateUserCredentialsDto
 
 	if erro := json.Unmarshal([]byte(requestBody), &input); erro != nil {
-		logger.GetLogger().Warnf("%s%v", inputConversionErrorMessage, err)
+		log.Warnf("%s%v", inputConversionErrorMessage, err)
 		responseMessage := responses.NewResponseMessage().AddMessageByIssue(faults.MalformedRequest, "body", "", "")
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
@@ -284,12 +294,12 @@ func (userHandler *UserHandler) CreateUserCredentials(ctx echo.Context) error {
 
 	output, internalStatus, err := userHandler.userCredentialsCreateUseCase.Execute(input)
 	if internalStatus == status.EntityWithSameKeyAlreadyExists {
-		logger.GetLogger().Infof("Error trying to create the entity - The user already has a password")
+		log.Infof("Error trying to create the entity - The user already has a password")
 		responseMessage := responses.NewResponseMessage().AddMessageByInternalStatus(internalStatus, responses.PathParameter, "id", id)
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 	if internalStatus != status.Success {
-		logger.GetLogger().Errorf("Error trying to create the entity: %v", err)
+		log.Errorf("Error trying to create the entity: %v", err)
 		responseMessage := responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
@@ -298,11 +308,13 @@ func (userHandler *UserHandler) CreateUserCredentials(ctx echo.Context) error {
 }
 
 func (userHandler *UserHandler) UpdateUserCredentials(ctx echo.Context) error {
+	log := logger.GetLogger()
+
 	id := ctx.Param("id")
 
 	requestBody, err := io.ReadAll(ctx.Request().Body)
 	if err != nil {
-		logger.GetLogger().Warnf("%s%v", requestBodyErrorMessage, err)
+		log.Warnf("%s%v", requestBodyErrorMessage, err)
 		responseMessage := responses.NewResponseMessage().AddMessageByIssue(faults.MalformedRequest, "body", "", "")
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
@@ -310,7 +322,7 @@ func (userHandler *UserHandler) UpdateUserCredentials(ctx echo.Context) error {
 	var input userCredentialsUpdate.InputUpdateUserCredentialsDto
 
 	if erro := json.Unmarshal([]byte(requestBody), &input); erro != nil {
-		logger.GetLogger().Warnf("%s%v", inputConversionErrorMessage, err)
+		log.Warnf("%s%v", inputConversionErrorMessage, err)
 		responseMessage := responses.NewResponseMessage().AddMessageByIssue(faults.MalformedRequest, "body", "", "")
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
@@ -323,17 +335,17 @@ func (userHandler *UserHandler) UpdateUserCredentials(ctx echo.Context) error {
 
 	output, internalStatus, err := userHandler.userCredentialsUpdateUseCase.Execute(input)
 	if internalStatus == status.InternalServerError {
-		logger.GetLogger().Errorf("Error updating the entity: %v", err)
+		log.Errorf("Error updating the entity: %v", err)
 		responseMessage := responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 	if internalStatus == status.InvalidResourceId {
-		logger.GetLogger().Infof("Error updating the entity - Unable finding the entity")
+		log.Infof("Error updating the entity - Unable finding the entity")
 		responseMessage := responses.NewResponseMessage().AddMessageByInternalStatus(internalStatus, responses.PathParameter, "id", id)
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 	if internalStatus == status.PasswordsDontMatch {
-		logger.GetLogger().Infof("Error updating the entity - passwords don't match")
+		log.Infof("Error updating the entity - passwords don't match")
 		responseMessage := responses.NewResponseMessage().AddMessageByInternalStatus(internalStatus, "", "", "")
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}

@@ -31,9 +31,11 @@ func NewLoginHandler(loginUseCase loginUsecase.ILoginUseCase) ILoginHandler {
 }
 
 func (userCredentialsHandler *LoginHandler) Login(ctx echo.Context) error {
+	log := logger.GetLogger()
+
 	requestBody, err := io.ReadAll(ctx.Request().Body)
 	if err != nil {
-		logger.GetLogger().Warnf("%s%v", requestBodyErrorMessage, err)
+		log.Warnf("%s%v", requestBodyErrorMessage, err)
 		responseMessage := responses.NewResponseMessage().AddMessageByIssue(faults.MalformedRequest, "body", "", "")
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
@@ -41,7 +43,7 @@ func (userCredentialsHandler *LoginHandler) Login(ctx echo.Context) error {
 	var input loginUsecase.InputUserLoginDto
 
 	if erro := json.Unmarshal([]byte(requestBody), &input); erro != nil {
-		logger.GetLogger().Warnf("%s%v", inputConversionErrorMessage, err)
+		log.Warnf("%s%v", inputConversionErrorMessage, err)
 		responseMessage := responses.NewResponseMessage().AddMessageByIssue(faults.MalformedRequest, "body", "", "")
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
@@ -53,17 +55,17 @@ func (userCredentialsHandler *LoginHandler) Login(ctx echo.Context) error {
 
 	output, internalStatus, err := userCredentialsHandler.loginUseCase.Execute(input)
 	if internalStatus == status.InternalServerError {
-		logger.GetLogger().Errorf("Error finding the entity: %v", err)
+		log.Errorf("Error finding the entity: %v", err)
 		responseMessage := responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 	if internalStatus == status.InvalidResourceId {
-		logger.GetLogger().Infof("Unable finding the entity: %v", err)
+		log.Infof("Unable finding the entity: %v", err)
 		responseMessage := responses.NewResponseMessage().AddMessageByInternalStatus(status.InvalidResourceId, responses.Body, "email", input.Email)
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 	if internalStatus == status.LoginFailed {
-		logger.GetLogger().Infof("Login failed: %v", err)
+		log.Infof("Login failed: %v", err)
 		responseMessage := responses.NewResponseMessage().AddMessageByInternalStatus(status.LoginFailed, responses.Body, "password", input.Password)
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}

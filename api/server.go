@@ -85,7 +85,6 @@ func (server *Server) startServer() {
 	logger.Infof("Server is starting now in %s.", settings.Config.Environment)
 
 	// Middlewares
-	// server.http.Use(echoMiddleware.Logger())
 	server.http.Use(middlewares.Logger())
 
 	// Connects to database

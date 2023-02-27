@@ -28,6 +28,7 @@ type ConfigType struct {
 
 	ServerCloseWait int `env:"SERVER_CLOSEWAIT" default:"10"`
 
+	// Log files
 	LogAccessFile string `env:"LOG_ACCESS_FILE" default:"./access.log"`
 	LogAppFile    string `env:"LOG_APP_FILE" default:"./app.log"`
 	LogLevel      string `env:"LOG_LEVEL" default:"INFO"`
