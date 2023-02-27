@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"log"
 	"marcelofelixsalgado/financial-period-api/api/controllers/balance"
 	"marcelofelixsalgado/financial-period-api/api/controllers/health"
 	"marcelofelixsalgado/financial-period-api/api/controllers/login"
@@ -109,7 +108,7 @@ func (server *Server) startServer() {
 	addr := fmt.Sprintf(":%v", settings.Config.ApiHttpPort)
 	go func() {
 		if err := server.http.Start(addr); err != nil {
-			logger.Info("Shutting down the server now")
+			logger.Errorf("Shutting down the server now: ", err)
 		}
 	}()
 }
@@ -118,7 +117,7 @@ func (server *Server) startServer() {
 func (server *Server) watchStop() {
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, syscall.SIGINT, syscall.SIGTERM)
-	log.Println(<-stop)
+	logger.GetLogger().Info(<-stop)
 	server.stopServer()
 }
 
