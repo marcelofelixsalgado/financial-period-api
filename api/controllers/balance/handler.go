@@ -107,8 +107,11 @@ func (balanceHandler *BalanceHandler) ListBalances(ctx echo.Context) error {
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 
+	periodId := ctx.QueryParam("period_id")
+
 	input := list.InputListBalanceDto{
 		TenantId: tenantId,
+		PeriodId: periodId,
 	}
 
 	output, internalStatus, err := balanceHandler.listUseCase.Execute(input)
