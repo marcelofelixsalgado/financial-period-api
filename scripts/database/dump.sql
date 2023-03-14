@@ -38,6 +38,18 @@ CREATE TABLE user_credentials(
     REFERENCES users(id) ON DELETE CASCADE
 );
 
+CREATE TABLE groups(
+    id varchar(255) primary key,
+    tenant_id varchar(255) not null,
+    code varchar(50) not null,
+    name varchar(255) not null,
+    type varchar(50) not null,
+    created_at datetime not null,
+    updated_at datetime default '0001-01-01 00:00:00',
+
+    CONSTRAINT UC_Group UNIQUE (tenant_id, code)
+);
+
 CREATE TABLE periods(
     id varchar(255) primary key,
     tenant_id varchar(255) not null,

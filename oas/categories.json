@@ -1,0 +1,1214 @@
+{
+    "openapi": "3.0.2",
+    "info": {
+        "title": "Categories",
+        "version": "1.0.0",
+        "description": "Groups and categories of financial movements"
+    },
+    "servers": [
+        {
+            "url": "https://api.financial.com",
+            "description": "Financial - Production environment"
+        },
+        {
+            "url": "https://sandbox.financial.com",
+            "description": "Financial - Sandbox environment"
+        }
+    ],
+    "paths": {
+        "/v1/groups": {
+            "summary": "Collection of category groups",
+            "description": "An API resource that represents a collection of category groups",
+            "get": {
+                "parameters": [
+                    {
+                        "name": "_limit",
+                        "description": "Set the number of records to be returned",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query",
+                        "required": false
+                    },
+                    {
+                        "name": "_offset",
+                        "description": "Position of the reference record, from which the next N records will be returned",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "name": "_sort",
+                        "description": "Provides the possibility to sort the values of the list, in ascending and descending directions",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/Response-200-Ok-Group-List"
+                    }
+                },
+                "operationId": "get-group-list",
+                "summary": "List of category groups",
+                "description": "List of category groups"
+            },
+            "post": {
+                "requestBody": {
+                    "description": "Request Body of a group creation operation",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/GroupRequest"
+                            },
+                            "examples": {
+                                "Group-Creation-Body-Example": {
+                                    "value": {
+                                        "code": "DF",
+                                        "name": "Despesas fixas",
+                                        "type": {
+                                            "code": "EXP"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "parameters": [
+                    {
+                        "examples": {
+                            "Content-Type-Header-Example": {
+                                "value": "application/json"
+                            }
+                        },
+                        "name": "Content-Type-Header",
+                        "description": "Defines the format of the request body",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "$ref": "#/components/responses/Response-201-Created-Group"
+                    }
+                },
+                "operationId": "create-group-list",
+                "summary": "Group creation",
+                "description": "Operation that creates a new category group"
+            }
+        },
+        "/v1/groups/{id}": {
+            "summary": "Category group item",
+            "description": "Path that points to a specific category group in the collection",
+            "get": {
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/Response-200-Ok-Group"
+                    }
+                },
+                "operationId": "get-group",
+                "summary": "Get a category group item",
+                "description": "Operation that gets a specific group"
+            },
+            "put": {
+                "requestBody": {
+                    "description": "Update category group request body",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/GroupRequest"
+                            },
+                            "examples": {
+                                "Update-Group-Example": {
+                                    "value": {
+                                        "code": "DF",
+                                        "name": "Despesas fixas",
+                                        "type": {
+                                            "code": "EXP"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "parameters": [
+                    {
+                        "examples": {
+                            "Content-Type-Header-Example": {
+                                "value": "application/json"
+                            }
+                        },
+                        "name": "Content-Type-Header",
+                        "description": "Defines the format of the request body",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/Response-200-Ok-Group"
+                    }
+                },
+                "operationId": "update-group",
+                "summary": "Category Group update",
+                "description": "Operation that updates a category group"
+            },
+            "delete": {
+                "responses": {
+                    "204": {
+                        "description": "Empty response body"
+                    }
+                },
+                "operationId": "delete-group",
+                "summary": "Category Group exclusion",
+                "description": "Operation that removes a Category Group"
+            },
+            "parameters": [
+                {
+                    "examples": {
+                        "Path-Parameter-Id-Example-Group": {
+                            "value": "465d6122-b9b1-4d07-9eb9-502177d6e3b2"
+                        }
+                    },
+                    "name": "id",
+                    "description": "Group unique identifier",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "in": "path",
+                    "required": true
+                }
+            ]
+        },
+        "/v1/categories": {
+            "summary": "Collection of financial movement categories",
+            "description": "An API resource that represents a collection of financial movement categories",
+            "get": {
+                "parameters": [
+                    {
+                        "name": "_limit",
+                        "description": "Set the number of records to be returned",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query",
+                        "required": false
+                    },
+                    {
+                        "name": "_offset",
+                        "description": "Position of the reference record, from which the next N records will be returned",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "name": "_sort",
+                        "description": "Provides the possibility to sort the values of the list, in ascending and descending directions",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/Response-200-Ok-Category-List"
+                    }
+                },
+                "operationId": "get-category-list",
+                "summary": "List of categories",
+                "description": "List of categories"
+            },
+            "post": {
+                "requestBody": {
+                    "description": "Request Body of a category creation operation",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CategoryRequest"
+                            },
+                            "examples": {
+                                "Category-Creation-Body-Example": {
+                                    "value": {
+                                        "code": "MS",
+                                        "name": "Mensalidade escolar",
+                                        "group": {
+                                            "id": "8e72dca8-0a9f-4e4e-a46b-349c1d5473d1"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "parameters": [
+                    {
+                        "examples": {
+                            "Content-Type-Header-Example": {
+                                "value": "application/json"
+                            }
+                        },
+                        "name": "Content-Type-Header",
+                        "description": "Defines the format of the request body",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "$ref": "#/components/responses/Response-201-Created-Category"
+                    }
+                },
+                "operationId": "create-category-list",
+                "summary": "Category creation",
+                "description": "Operation that creates a new category"
+            }
+        },
+        "/v1/categories/{id}": {
+            "summary": "Category item",
+            "description": "Path that points to a specific category in the collection",
+            "get": {
+                "parameters": [
+                    {
+                        "examples": {
+                            "Path-Parameter-Id-Example-Category": {
+                                "value": "38c0430c-860d-4f78-9e1b-391e285aaf82"
+                            }
+                        },
+                        "name": "id",
+                        "description": "Category unique identifier",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/Response-200-Ok-Category"
+                    }
+                },
+                "operationId": "get-category",
+                "summary": "Get a category item",
+                "description": "Operation that gets a specific category"
+            },
+            "put": {
+                "requestBody": {
+                    "description": "Update category request body",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CategoryRequest"
+                            },
+                            "examples": {
+                                "Update-Category-Example": {
+                                    "value": {
+                                        "code": "MS",
+                                        "name": "Mensalidade escolar",
+                                        "group": {
+                                            "id": "8e72dca8-0a9f-4e4e-a46b-349c1d5473d1"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "parameters": [
+                    {
+                        "examples": {
+                            "Content-Type-Header-Example": {
+                                "value": "application/json"
+                            }
+                        },
+                        "name": "Content-Type-Header",
+                        "description": "Defines the format of the request body",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "examples": {
+                            "Path-Parameter-Id-Example-Category": {
+                                "value": "38c0430c-860d-4f78-9e1b-391e285aaf82"
+                            }
+                        },
+                        "name": "id",
+                        "description": "Category unique identifier",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/Response-200-Ok-Category"
+                    }
+                },
+                "operationId": "update-category",
+                "summary": "Category update",
+                "description": "Operation that updates a category"
+            },
+            "delete": {
+                "parameters": [
+                    {
+                        "examples": {
+                            "Path-Parameter-Id-Example-Category": {
+                                "value": "38c0430c-860d-4f78-9e1b-391e285aaf82"
+                            }
+                        },
+                        "name": "id",
+                        "description": "Category unique identifier",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Empty response body"
+                    }
+                },
+                "operationId": "delete-category",
+                "summary": "Category exclusion",
+                "description": "Operation that removes a Category"
+            },
+            "parameters": [
+                {
+                    "examples": {
+                        "Path-Parameter-Id-Example-Category": {
+                            "value": "38c0430c-860d-4f78-9e1b-391e285aaf82"
+                        }
+                    },
+                    "name": "id",
+                    "description": "Category unique identifier",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "in": "path",
+                    "required": true
+                }
+            ]
+        }
+    },
+    "components": {
+        "schemas": {
+            "ErrorMessage": {
+                "title": "Root Type for ErrorMessage",
+                "description": "Represents an error message for HTTP status codes 4xx and 5xx",
+                "required": [
+                    "error_code",
+                    "message"
+                ],
+                "type": "object",
+                "properties": {
+                    "error_code": {
+                        "description": "Code that identifies the error",
+                        "type": "string"
+                    },
+                    "message": {
+                        "description": "Short text that gives datails about the error",
+                        "type": "string"
+                    },
+                    "details": {
+                        "description": "List of specific and detailed information about the error",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ErrorMessageDetails"
+                        }
+                    }
+                },
+                "example": {
+                    "error_code": "UNPROCESSABLE_ENTITY",
+                    "message": "The request is semantically incorrect or fails business validation",
+                    "details": [
+                        {
+                            "issue": "INVALID_STRING_MAX_LENGTH",
+                            "description": "Field value exceeded the maximum allowed number of 5 characters",
+                            "location": "body",
+                            "field": "status",
+                            "value": "400000"
+                        }
+                    ]
+                }
+            },
+            "ErrorMessageDetails": {
+                "title": "Root Type for ErrorMessageDetails",
+                "description": "Detailed information about an error",
+                "required": [
+                    "description",
+                    "location",
+                    "issue"
+                ],
+                "type": "object",
+                "properties": {
+                    "issue": {
+                        "description": "Unique code that identifies the issue",
+                        "type": "string"
+                    },
+                    "description": {
+                        "description": "Short text that describes the error",
+                        "type": "string"
+                    },
+                    "location": {
+                        "description": "Part of the request where is the field related to the issue. Posible values are:\n- path_parameter\n- query_parameter\n- header\n- body",
+                        "type": "string"
+                    },
+                    "field": {
+                        "description": "Request field  related to the issue",
+                        "type": "string"
+                    },
+                    "value": {
+                        "description": "Current value of the field related to the issue",
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "issue": "INVALID_STRING_MAX_LENGTH",
+                    "description": "Field value exceeded the maximum allowed number of 5 characters",
+                    "location": "body",
+                    "field": "status",
+                    "value": "400000"
+                }
+            },
+            "GroupRequest": {
+                "title": "Root Type for GroupRequest",
+                "description": "Represents a Category Group in request body",
+                "required": [
+                    "code",
+                    "name",
+                    "type"
+                ],
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "description": "Short code used to identify a category group",
+                        "type": "string"
+                    },
+                    "name": {
+                        "description": "Name that describes a group",
+                        "type": "string"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/GroupType",
+                        "description": "Category group type"
+                    }
+                },
+                "example": {
+                    "code": "DF",
+                    "name": "Despesas fixas",
+                    "type": {
+                        "code": "EXP"
+                    }
+                }
+            },
+            "GroupResponse": {
+                "description": "Represents a category Group in the response body",
+                "required": [
+                    "code",
+                    "created_at",
+                    "id",
+                    "name",
+                    "type"
+                ],
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "description": "Category group identifier code",
+                        "type": "string"
+                    },
+                    "code": {
+                        "description": "Short code used to identify a category group",
+                        "type": "string"
+                    },
+                    "name": {
+                        "description": "Name that describes a group",
+                        "type": "string"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/GroupType",
+                        "description": "Category group type."
+                    },
+                    "created_at": {
+                        "format": "date-time",
+                        "description": "Balance creation date/time",
+                        "type": "string"
+                    },
+                    "updated_at": {
+                        "format": "date-time",
+                        "description": "Balance update date/time",
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "id": "8e72dca8-0a9f-4e4e-a46b-349c1d5473d1",
+                    "code": "DF",
+                    "name": "Despesas fixas",
+                    "type": {
+                        "code": "EXP"
+                    },
+                    "created_at": "2022-10-04T19:05:05Z",
+                    "updated_at": "2023-01-03T13:32:10Z"
+                }
+            },
+            "GroupResponseList": {
+                "description": "Represents a list of category Group in the response body",
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/GroupResponse"
+                },
+                "example": [
+                    {
+                        "id": "8e72dca8-0a9f-4e4e-a46b-349c1d5473d1",
+                        "code": "DF",
+                        "name": "Despesas fixas",
+                        "type": {
+                            "code": "EXP"
+                        },
+                        "created_at": "2022-10-04T19:05:05Z",
+                        "updated_at": "2023-01-03T13:32:10Z"
+                    },
+                    {
+                        "id": "bfcded04-6b14-45bd-bf20-acd59abf0f32",
+                        "code": "DV",
+                        "name": "Despesas variáveis",
+                        "type": {
+                            "code": "EXP"
+                        },
+                        "created_at": "2023-06-15T05:23:00Z",
+                        "updated_at": "2023-06-16T18:02:14Z"
+                    }
+                ]
+            },
+            "GroupType": {
+                "title": "Root Type for GroupRequest",
+                "description": "Represents a Category Group in request body",
+                "required": [
+                    "code",
+                    "id"
+                ],
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "description": "Short code used to identify a category group. Possible values:\nEXP = expense\nEAR = earning",
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "code": "EXP"
+                }
+            },
+            "CategoryRequest": {
+                "title": "Root Type for GroupRequest",
+                "description": "Represents a Category in request body",
+                "required": [
+                    "code",
+                    "name",
+                    "group"
+                ],
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "description": "Short code used to identify a category",
+                        "type": "string"
+                    },
+                    "name": {
+                        "description": "Name that describes a category",
+                        "type": "string"
+                    },
+                    "group": {
+                        "description": "Group identifier",
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "code": "MS",
+                    "name": "Mensalidade escolar",
+                    "group": {
+                        "id": "8e72dca8-0a9f-4e4e-a46b-349c1d5473d1"
+                    }
+                }
+            },
+            "CategoryResponse": {
+                "description": "Represents a Category in the response body",
+                "required": [
+                    "code",
+                    "created_at",
+                    "id",
+                    "name"
+                ],
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "description": "Category identifier code",
+                        "type": "string"
+                    },
+                    "code": {
+                        "description": "Short code used to identify a category",
+                        "type": "string"
+                    },
+                    "group": {
+                        "description": "Group identifier",
+                        "type": "string"
+                    },
+                    "name": {
+                        "description": "Name that describes a category",
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "format": "date-time",
+                        "description": "Balance creation date/time",
+                        "type": "string"
+                    },
+                    "updated_at": {
+                        "format": "date-time",
+                        "description": "Balance update date/time",
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "id": "30548066-39a6-479c-b7b6-e3cbdb206d03",
+                    "code": "MS",
+                    "name": "Mensalidade escolar",
+                    "group": {
+                        "id": "8e72dca8-0a9f-4e4e-a46b-349c1d5473d1"
+                    },
+                    "created_at": "2023-02-11T07:23:11Z",
+                    "updated_at": "2023-02-14T04:22:33Z"
+                }
+            },
+            "CategoryResponseList": {
+                "description": "Represents a list of category Group in the response body",
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/CategoryResponse"
+                },
+                "example": [
+                    {
+                        "id": "30548066-39a6-479c-b7b6-e3cbdb206d03",
+                        "code": "MS",
+                        "name": "Mensalidade escolar",
+                        "group": {
+                            "id": "8e72dca8-0a9f-4e4e-a46b-349c1d5473d1"
+                        },
+                        "created_at": "2023-02-11T07:23:11Z",
+                        "updated_at": "2023-02-14T04:22:33Z"
+                    },
+                    {
+                        "id": "8418a6c7-2adb-42be-93ef-cdbacff15bfa",
+                        "code": "CO",
+                        "name": "Condomínio",
+                        "group": {
+                            "id": "8e72dca8-0a9f-4e4e-a46b-349c1d5473d1"
+                        },
+                        "created_at": "2023-02-25T17:06:00Z",
+                        "updated_at": "2023-02-27T22:25:39Z"
+                    }
+                ]
+            }
+        },
+        "responses": {
+            "Response-200-Ok-Group": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/GroupResponse"
+                        },
+                        "examples": {
+                            "Response-200-Ok-Group-Example": {
+                                "value": {
+                                    "id": "8e72dca8-0a9f-4e4e-a46b-349c1d5473d1",
+                                    "code": "DF",
+                                    "name": "Despesas fixas",
+                                    "type": {
+                                        "code": "EXP"
+                                    },
+                                    "created_at": "2022-10-04T19:05:05Z",
+                                    "updated_at": "2023-01-03T13:32:10Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                "description": "Success message (200 - OK) for a group item returned"
+            },
+            "Response-200-Ok-Group-List": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/GroupResponseList"
+                        },
+                        "examples": {
+                            "Response-200-Ok-Group-List-Example": {
+                                "value": [
+                                    {
+                                        "id": "8e72dca8-0a9f-4e4e-a46b-349c1d5473d1",
+                                        "code": "DF",
+                                        "name": "Despesas fixas",
+                                        "type": {
+                                            "code": "EXP"
+                                        },
+                                        "created_at": "2022-10-04T19:05:05Z",
+                                        "updated_at": "2023-01-03T13:32:10Z"
+                                    },
+                                    {
+                                        "id": "bfcded04-6b14-45bd-bf20-acd59abf0f32",
+                                        "code": "DV",
+                                        "name": "Despesas variáveis",
+                                        "type": {
+                                            "code": "EXP"
+                                        },
+                                        "created_at": "2023-06-15T05:23:00Z",
+                                        "updated_at": "2023-06-16T18:02:14Z"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "description": "Success message (200 - OK) for a list of groups"
+            },
+            "Response-400-BadRequest": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/ErrorMessage"
+                            }
+                        },
+                        "examples": {
+                            "Response-400-BadRequest-Example": {
+                                "value": [
+                                    {
+                                        "error_code": "INVALID_REQUEST_SYNTAX",
+                                        "message": "Request is not well-formed, syntactically incorrect, or violates schema",
+                                        "details": [
+                                            {
+                                                "issue": "DECIMALS_NOT_SUPPORTED",
+                                                "description": "Field value does not support decimals",
+                                                "location": "body",
+                                                "field": "customer.age",
+                                                "value": "30.6"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "description": "Error message (400 - Bad Request)"
+            },
+            "Response-401-Unauthorized": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/ErrorMessage"
+                            }
+                        },
+                        "examples": {
+                            "Response-401-Unauthorized-Example": {
+                                "value": [
+                                    {
+                                        "error_code": "INVALID_CLIENT",
+                                        "message": "Client authentication failed",
+                                        "details": [
+                                            {
+                                                "issue": "AUTHENTICATION_FAILURE",
+                                                "description": "Authentication failed due to missing authorization header, or invalid authentication credentials",
+                                                "location": "header",
+                                                "field": "Authorization",
+                                                "value": "abc"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "description": "Error message (401 - Unauthorized)"
+            },
+            "Response-403-Forbidden": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/ErrorMessage"
+                            }
+                        },
+                        "examples": {
+                            "Response-403-Forbidden-Example": {
+                                "value": [
+                                    {
+                                        "error_code": "NOT_AUTHORIZED",
+                                        "message": "Authorization failed due to insufficient permissions",
+                                        "details": [
+                                            {
+                                                "issue": "PERMISSION_DENIED",
+                                                "description": "You do not have permission to access or perform operations on this resource"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "description": "Error message (403 - Forbidden)"
+            },
+            "Response-404-NotFound": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/ErrorMessage"
+                            }
+                        },
+                        "examples": {
+                            "Response-404-NotFound-Example": {
+                                "value": [
+                                    {
+                                        "error_code": "RESOURCE_NOT_FOUND",
+                                        "message": "The specified resource does not found",
+                                        "details": [
+                                            {
+                                                "issue": "NO_RECORDS_FOUND",
+                                                "description": "Records not found. Please check the input parameters and try again",
+                                                "location": "query_parameter",
+                                                "field": "customer.cpf",
+                                                "value": "123"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "description": "Error message (404 - Not Found)"
+            },
+            "Response-405-MethodNotAllowed": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/ErrorMessage"
+                            }
+                        },
+                        "examples": {
+                            "Response-405-MethodNotAllowed-Example": {
+                                "value": [
+                                    {
+                                        "error_code": "METHOD_NOT_ALLOWED",
+                                        "message": "Invalid path and HTTP method combination",
+                                        "details": [
+                                            {
+                                                "issue": "METHOD_NOT_SUPPORTED",
+                                                "description": "The server does not implement the requested path and HTTP method"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "description": "Error message (405 - Method Not Allowed)"
+            },
+            "Response-415-UnsupportedMediaType": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/ErrorMessage"
+                            }
+                        },
+                        "examples": {
+                            "Response-415-UnsupportedMediaType-Example": {
+                                "value": [
+                                    {
+                                        "error_code": "UNSUPPORTED_MEDIA_TYPE",
+                                        "message": "The server does not support the request body media type",
+                                        "details": [
+                                            {
+                                                "issue": "INVALID_CONTENT_TYPE",
+                                                "description": "The specified Content Type header is invalid",
+                                                "location": "header",
+                                                "field": "Content-Type"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "description": "Error message (415 - Unsupported Media Type)"
+            },
+            "Response-422-UnprocessableEntity": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/ErrorMessage"
+                            }
+                        },
+                        "examples": {
+                            "Response-422-UnprocessableEntity-Example": {
+                                "value": [
+                                    {
+                                        "error_code": "UNPROCESSABLE_ENTITY",
+                                        "message": "The request is semantically incorrect or fails business validation",
+                                        "details": [
+                                            {
+                                                "issue": "INVALID_PARAMETER_FORMAT",
+                                                "description": "Field value does not conform to the expected format: 99999-99",
+                                                "location": "body",
+                                                "field": "zipcode",
+                                                "value": "14400-1234"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "description": "Error message (422 - Unprocessable Entity)"
+            },
+            "Response-500-InternalServerError": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/ErrorMessage"
+                            }
+                        },
+                        "examples": {
+                            "Response-500-InternalServerError-Example": {
+                                "value": [
+                                    {
+                                        "error_code": "INTERNAL_SERVER_ERROR",
+                                        "message": "A system or application error occurred"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "description": "Error message (500 - Internal Server Error)"
+            },
+            "Response-502-BadGateway": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/ErrorMessage"
+                            }
+                        },
+                        "examples": {
+                            "Response-502-BadGateway-Example": {
+                                "value": [
+                                    {
+                                        "error_code": "BAD_GATEWAY",
+                                        "message": "The server returned an invalid response"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "description": "Error message (502 - Bad Gateway)"
+            },
+            "Response-503-ServiceUnavailable": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/ErrorMessage"
+                            }
+                        },
+                        "examples": {
+                            "Response-503-ServiceUnavailable-Example": {
+                                "value": [
+                                    {
+                                        "error_code": "SERVICE_UNAVAILABLE",
+                                        "message": "The server cannot handle the request for a service due to temporary maintenance"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "description": "Error message (503 - Service Unavailable)"
+            },
+            "Response-504-GatewayTimeout": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/ErrorMessage"
+                            }
+                        },
+                        "examples": {
+                            "Response-504-GatewayTimeout-Example": {
+                                "value": [
+                                    {
+                                        "error_code": "GATEWAY_TIMEOUT",
+                                        "message": "The server did not send the response in the expected time"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "description": "Error message (504 - Gateway Timeout)"
+            },
+            "Response-200-Ok-Category": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/CategoryResponse"
+                        },
+                        "examples": {
+                            "Response-200-Ok-Category-Example": {
+                                "value": {
+                                    "id": "30548066-39a6-479c-b7b6-e3cbdb206d03",
+                                    "code": "MS",
+                                    "name": "Mensalidade escolar",
+                                    "group": {
+                                        "id": "8e72dca8-0a9f-4e4e-a46b-349c1d5473d1"
+                                    },
+                                    "created_at": "2023-02-11T07:23:11Z",
+                                    "updated_at": "2023-02-14T04:22:33Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                "description": "Success message (200 - OK) for a category item returned"
+            },
+            "Response-200-Ok-Category-List": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/CategoryResponseList"
+                        },
+                        "examples": {
+                            "Response-200-Ok-Category-List-Example": {
+                                "value": [
+                                    {
+                                        "id": "30548066-39a6-479c-b7b6-e3cbdb206d03",
+                                        "code": "MS",
+                                        "name": "Mensalidade escolar",
+                                        "group": {
+                                            "id": "8e72dca8-0a9f-4e4e-a46b-349c1d5473d1"
+                                        },
+                                        "created_at": "2023-02-11T07:23:11Z",
+                                        "updated_at": "2023-02-14T04:22:33Z"
+                                    },
+                                    {
+                                        "id": "8418a6c7-2adb-42be-93ef-cdbacff15bfa",
+                                        "code": "CO",
+                                        "name": "Condomínio",
+                                        "group": {
+                                            "id": "8e72dca8-0a9f-4e4e-a46b-349c1d5473d1"
+                                        },
+                                        "created_at": "2023-02-25T17:06:00Z",
+                                        "updated_at": "2023-02-27T22:25:39Z"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "description": "Success message (200 - OK) for a list of categories"
+            },
+            "Response-201-Created-Group": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/GroupResponse"
+                        },
+                        "examples": {
+                            "Response-201-Created-Group-Example": {
+                                "value": {
+                                    "id": "8e72dca8-0a9f-4e4e-a46b-349c1d5473d1",
+                                    "code": "DF",
+                                    "name": "Despesas fixas",
+                                    "type": {
+                                        "code": "EXP"
+                                    },
+                                    "created_at": "2022-10-04T19:05:05Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                "description": "Success message (201 - Created)"
+            },
+            "Response-201-Created-Category": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/CategoryResponse"
+                        },
+                        "examples": {
+                            "Response-201-Created-Category-Example": {
+                                "value": {
+                                    "id": "30548066-39a6-479c-b7b6-e3cbdb206d03",
+                                    "code": "MS",
+                                    "name": "Mensalidade escolar",
+                                    "group": {
+                                        "id": "8e72dca8-0a9f-4e4e-a46b-349c1d5473d1"
+                                    },
+                                    "created_at": "2023-02-11T07:23:11Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                "description": "Success message (201 - Created)"
+            }
+        }
+    }
+}

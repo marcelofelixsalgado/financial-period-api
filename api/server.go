@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 	"marcelofelixsalgado/financial-period-api/api/controllers/balance"
+	"marcelofelixsalgado/financial-period-api/api/controllers/group"
 	"marcelofelixsalgado/financial-period-api/api/controllers/health"
 	"marcelofelixsalgado/financial-period-api/api/controllers/login"
 	"marcelofelixsalgado/financial-period-api/api/controllers/period"
@@ -25,6 +26,13 @@ import (
 	periodFind "marcelofelixsalgado/financial-period-api/pkg/usecase/period/find"
 	periodList "marcelofelixsalgado/financial-period-api/pkg/usecase/period/list"
 	periodUpdate "marcelofelixsalgado/financial-period-api/pkg/usecase/period/update"
+
+	groupRepository "marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/group"
+	groupCreate "marcelofelixsalgado/financial-period-api/pkg/usecase/group/create"
+	groupDelete "marcelofelixsalgado/financial-period-api/pkg/usecase/group/delete"
+	groupFind "marcelofelixsalgado/financial-period-api/pkg/usecase/group/find"
+	groupList "marcelofelixsalgado/financial-period-api/pkg/usecase/group/list"
+	groupUpdate "marcelofelixsalgado/financial-period-api/pkg/usecase/group/update"
 
 	userCredentialsCreate "marcelofelixsalgado/financial-period-api/pkg/usecase/credentials/create"
 	userCredentialsLogin "marcelofelixsalgado/financial-period-api/pkg/usecase/credentials/login"
@@ -92,12 +100,13 @@ func (server *Server) startServer() {
 
 	userRoutes := setupUserRoutes(databaseClient)
 	loginRoutes := setupLoginRoutes(databaseClient)
+	groupRoutes := setupGroupRoutes(databaseClient)
 	periodRoutes := setupPeriodRoutes(databaseClient)
 	balanceRoutes := setupBalanceRoutes(databaseClient)
 	healthRoutes := setupHealthRoutes()
 
 	// Setup all routes
-	routes := routes.NewRoutes(loginRoutes, userRoutes, periodRoutes, balanceRoutes, healthRoutes)
+	routes := routes.NewRoutes(loginRoutes, userRoutes, groupRoutes, periodRoutes, balanceRoutes, healthRoutes)
 
 	routes.RouteMapping(server.http)
 	server.routes = routes
@@ -171,6 +180,26 @@ func setupLoginRoutes(databaseClient *sql.DB) login.LoginRoutes {
 	loginRoutes := login.NewLoginRoutes(loginHandler)
 
 	return loginRoutes
+}
+
+func setupGroupRoutes(databaseClient *sql.DB) group.GroupRoutes {
+	// setup respository
+	repository := groupRepository.NewGroupRepository(databaseClient)
+
+	// setup Use Cases (services)
+	createUseCase := groupCreate.NewCreateUseCase(repository)
+	deleteUseCase := groupDelete.NewDeleteUseCase(repository)
+	findUseCase := groupFind.NewFindUseCase(repository)
+	listUseCase := groupList.NewListUseCase(repository)
+	updateUseCase := groupUpdate.NewUpdateUseCase(repository)
+
+	// setup router handlers
+	groupHandler := group.NewGroupHandler(createUseCase, deleteUseCase, findUseCase, listUseCase, updateUseCase)
+
+	// setup routes
+	groupRoutes := group.NewGroupRoutes(groupHandler)
+
+	return groupRoutes
 }
 
 func setupPeriodRoutes(databaseClient *sql.DB) period.PeriodRoutes {
