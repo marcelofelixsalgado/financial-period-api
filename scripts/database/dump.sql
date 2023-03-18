@@ -38,16 +38,37 @@ CREATE TABLE user_credentials(
     REFERENCES users(id) ON DELETE CASCADE
 );
 
-CREATE TABLE groups(
+CREATE TABLE transaction_types(
+    code varchar(50) primary key,
+    name varchar(255) not null
+);
+
+CREATE TABLE categories(
     id varchar(255) primary key,
     tenant_id varchar(255) not null,
     code varchar(50) not null,
     name varchar(255) not null,
-    type varchar(50) not null,
+    transaction_type_code varchar(50) not null,
     created_at datetime not null,
     updated_at datetime default '0001-01-01 00:00:00',
 
-    CONSTRAINT UC_Group UNIQUE (tenant_id, code)
+    CONSTRAINT UC_Category UNIQUE (tenant_id, code),
+    CONSTRAINT FK_CategoryTransactionType FOREIGN KEY (transaction_type_code)
+    REFERENCES transaction_types(code) ON DELETE CASCADE    
+);
+
+CREATE TABLE subcategories(
+    id varchar(255) primary key,
+    tenant_id varchar(255) not null,
+    code varchar(50) not null,
+    name varchar(255) not null,
+    category_id varchar(255) not null,
+    created_at datetime not null,
+    updated_at datetime default '0001-01-01 00:00:00',
+
+    CONSTRAINT UC_SubCategory UNIQUE (tenant_id, code),
+    CONSTRAINT FK_SubCategoryCategory FOREIGN KEY (category_id)
+    REFERENCES categories(id) ON DELETE CASCADE    
 );
 
 CREATE TABLE periods(
@@ -76,3 +97,7 @@ CREATE TABLE balance(
 
     CONSTRAINT UC_Balance UNIQUE (tenant_id, period_id, category_id)
 );
+
+INSERT INTO transaction_types (code, name) values ('EARNING', 'Receita');
+INSERT INTO transaction_types (code, name) values ('EXPENSE', 'Despesa');
+INSERT INTO transaction_types (code, name) values ('TRANSFER', 'Transferência');
