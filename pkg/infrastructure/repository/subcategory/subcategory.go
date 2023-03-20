@@ -5,7 +5,7 @@ import (
 	"errors"
 	categoryEntity "marcelofelixsalgado/financial-period-api/pkg/domain/category/entity"
 	"marcelofelixsalgado/financial-period-api/pkg/domain/subcategory/entity"
-	transactionTypeEntity "marcelofelixsalgado/financial-period-api/pkg/domain/transaction-type/entity"
+	transactionTypeEntity "marcelofelixsalgado/financial-period-api/pkg/domain/transactiontype/entity"
 	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/category"
 	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/filter"
 	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/status"

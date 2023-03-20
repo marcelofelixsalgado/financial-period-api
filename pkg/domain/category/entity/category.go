@@ -2,7 +2,7 @@ package entity
 
 import (
 	"errors"
-	"marcelofelixsalgado/financial-period-api/pkg/domain/transaction-type/entity"
+	"marcelofelixsalgado/financial-period-api/pkg/domain/transactiontype/entity"
 	"strings"
 	"time"
 )

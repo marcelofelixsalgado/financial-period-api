@@ -3,7 +3,7 @@
     "info": {
         "title": "Categories",
         "version": "1.0.0",
-        "description": "Groups and categories of financial movements"
+        "description": "Transaction Types and categories of financial movements"
     },
     "servers": [
         {
@@ -16,9 +16,9 @@
         }
     ],
     "paths": {
-        "/v1/groups": {
-            "summary": "Collection of category groups",
-            "description": "An API resource that represents a collection of category groups",
+        "/v1/transaction_types": {
+            "summary": "Collection of transaction types",
+            "description": "An API resource that represents a collection of transaction types",
             "get": {
                 "parameters": [
                     {
@@ -49,149 +49,13 @@
                 ],
                 "responses": {
                     "200": {
-                        "$ref": "#/components/responses/Response-200-Ok-Group-List"
+                        "$ref": "#/components/responses/Response-200-Ok-Transaction-Type-List"
                     }
                 },
-                "operationId": "get-group-list",
-                "summary": "List of category groups",
-                "description": "List of category groups"
-            },
-            "post": {
-                "requestBody": {
-                    "description": "Request Body of a group creation operation",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/GroupRequest"
-                            },
-                            "examples": {
-                                "Group-Creation-Body-Example": {
-                                    "value": {
-                                        "code": "DF",
-                                        "name": "Despesas fixas",
-                                        "type": {
-                                            "code": "EXP"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "parameters": [
-                    {
-                        "examples": {
-                            "Content-Type-Header-Example": {
-                                "value": "application/json"
-                            }
-                        },
-                        "name": "Content-Type-Header",
-                        "description": "Defines the format of the request body",
-                        "schema": {
-                            "type": "string"
-                        },
-                        "in": "header",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "$ref": "#/components/responses/Response-201-Created-Group"
-                    }
-                },
-                "operationId": "create-group-list",
-                "summary": "Group creation",
-                "description": "Operation that creates a new category group"
+                "operationId": "get-transaction-type-list",
+                "summary": "List of transaction types",
+                "description": "List of transaction types"
             }
-        },
-        "/v1/groups/{id}": {
-            "summary": "Category group item",
-            "description": "Path that points to a specific category group in the collection",
-            "get": {
-                "responses": {
-                    "200": {
-                        "$ref": "#/components/responses/Response-200-Ok-Group"
-                    }
-                },
-                "operationId": "get-group",
-                "summary": "Get a category group item",
-                "description": "Operation that gets a specific group"
-            },
-            "put": {
-                "requestBody": {
-                    "description": "Update category group request body",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/GroupRequest"
-                            },
-                            "examples": {
-                                "Update-Group-Example": {
-                                    "value": {
-                                        "code": "DF",
-                                        "name": "Despesas fixas",
-                                        "type": {
-                                            "code": "EXP"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "parameters": [
-                    {
-                        "examples": {
-                            "Content-Type-Header-Example": {
-                                "value": "application/json"
-                            }
-                        },
-                        "name": "Content-Type-Header",
-                        "description": "Defines the format of the request body",
-                        "schema": {
-                            "type": "string"
-                        },
-                        "in": "header",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "$ref": "#/components/responses/Response-200-Ok-Group"
-                    }
-                },
-                "operationId": "update-group",
-                "summary": "Category Group update",
-                "description": "Operation that updates a category group"
-            },
-            "delete": {
-                "responses": {
-                    "204": {
-                        "description": "Empty response body"
-                    }
-                },
-                "operationId": "delete-group",
-                "summary": "Category Group exclusion",
-                "description": "Operation that removes a Category Group"
-            },
-            "parameters": [
-                {
-                    "examples": {
-                        "Path-Parameter-Id-Example-Group": {
-                            "value": "465d6122-b9b1-4d07-9eb9-502177d6e3b2"
-                        }
-                    },
-                    "name": "id",
-                    "description": "Group unique identifier",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "in": "path",
-                    "required": true
-                }
-            ]
         },
         "/v1/categories": {
             "summary": "Collection of financial movement categories",
@@ -244,10 +108,10 @@
                             "examples": {
                                 "Category-Creation-Body-Example": {
                                     "value": {
-                                        "code": "MS",
-                                        "name": "Mensalidade escolar",
-                                        "group": {
-                                            "id": "8e72dca8-0a9f-4e4e-a46b-349c1d5473d1"
+                                        "code": "DF",
+                                        "name": "Despesa fixa",
+                                        "transaction_type": {
+                                            "code": "EXPENSE"
                                         }
                                     }
                                 }
@@ -322,10 +186,10 @@
                             "examples": {
                                 "Update-Category-Example": {
                                     "value": {
-                                        "code": "MS",
-                                        "name": "Mensalidade escolar",
-                                        "group": {
-                                            "id": "8e72dca8-0a9f-4e4e-a46b-349c1d5473d1"
+                                        "code": "DF",
+                                        "name": "Despesa fixa",
+                                        "transaction_type": {
+                                            "code": "EXPENSE"
                                         }
                                     }
                                 }
@@ -415,6 +279,275 @@
                     "required": true
                 }
             ]
+        },
+        "/v1/subcategories/{id}": {
+            "summary": "Sub-Category item",
+            "description": "Path that points to a specific sub-category in the collection",
+            "get": {
+                "parameters": [
+                    {
+                        "examples": {
+                            "Path-Parameter-Id-Example-SubCategory": {
+                                "value": "3d7e5bdb-5b22-43e4-adb9-303c0276f0a3"
+                            }
+                        },
+                        "name": "id",
+                        "description": "Sub-Category unique identifier",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/Response-200-Ok-SubCategory"
+                    }
+                },
+                "operationId": "get-subcategory",
+                "summary": "Get a sub-category item",
+                "description": "Operation that gets a specific sub-category"
+            },
+            "put": {
+                "requestBody": {
+                    "description": "Update category request body",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SubCategoryRequest"
+                            },
+                            "examples": {
+                                "Update-SubCategory-Example": {
+                                    "value": {
+                                        "code": "MS",
+                                        "name": "Mensalidade escolar",
+                                        "category": {
+                                            "id": "30548066-39a6-479c-b7b6-e3cbdb206d03"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "parameters": [
+                    {
+                        "examples": {
+                            "Content-Type-Header-Example": {
+                                "value": "application/json"
+                            }
+                        },
+                        "name": "Content-Type-Header",
+                        "description": "Defines the format of the request body",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "examples": {
+                            "Path-Parameter-Id-Example-SubCategory": {
+                                "value": "b00672ea-245c-4223-b079-08e9e2f6becb"
+                            }
+                        },
+                        "name": "id",
+                        "description": "Sub-Category unique identifier",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/Response-200-Ok-SubCategory"
+                    }
+                },
+                "operationId": "update-subcategory",
+                "summary": "Sub-Category update",
+                "description": "Operation that updates a sub-category"
+            },
+            "delete": {
+                "parameters": [
+                    {
+                        "examples": {
+                            "Path-Parameter-Id-Example-SubCategory": {
+                                "value": "b00672ea-245c-4223-b079-08e9e2f6becb"
+                            }
+                        },
+                        "name": "id",
+                        "description": "Sub-Category unique identifier",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Empty response body"
+                    }
+                },
+                "operationId": "delete-subcategory",
+                "summary": "Sub-Category exclusion",
+                "description": "Operation that removes a Category"
+            },
+            "parameters": [
+                {
+                    "examples": {
+                        "Path-Parameter-Id-Example-SubCategory": {
+                            "value": "3d7e5bdb-5b22-43e4-adb9-303c0276f0a3"
+                        }
+                    },
+                    "name": "id",
+                    "description": "Sub-Category unique identifier",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "in": "path",
+                    "required": true
+                }
+            ]
+        },
+        "/v1/subcategories": {
+            "summary": "Collection of financial movement sub-categories",
+            "description": "An API resource that represents a collection of financial movement sub-categories",
+            "get": {
+                "parameters": [
+                    {
+                        "name": "_limit",
+                        "description": "Set the number of records to be returned",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query",
+                        "required": false
+                    },
+                    {
+                        "name": "_offset",
+                        "description": "Position of the reference record, from which the next N records will be returned",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "name": "_sort",
+                        "description": "Provides the possibility to sort the values of the list, in ascending and descending directions",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/Response-200-Ok-SubCategory-List"
+                    }
+                },
+                "operationId": "get-subcategory-list",
+                "summary": "List of sub-categories",
+                "description": "List of sub-categories"
+            },
+            "post": {
+                "requestBody": {
+                    "description": "Request Body of a category creation operation",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SubCategoryRequest"
+                            },
+                            "examples": {
+                                "SubCategory-Creation-Body-Example": {
+                                    "value": {
+                                        "code": "MS",
+                                        "name": "Mensalidade escolar",
+                                        "category": {
+                                            "id": "30548066-39a6-479c-b7b6-e3cbdb206d03"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "parameters": [
+                    {
+                        "examples": {
+                            "Content-Type-Header-Example": {
+                                "value": "application/json"
+                            }
+                        },
+                        "name": "Content-Type-Header",
+                        "description": "Defines the format of the request body",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "$ref": "#/components/responses/Response-201-Created-SubCategory"
+                    }
+                },
+                "operationId": "create-subcategory-list",
+                "summary": "Sub-Category creation",
+                "description": "Operation that creates a new sub-category"
+            }
+        },
+        "/v1/transaction_types/{code}": {
+            "summary": "Transaction type item",
+            "description": "Path that points to a specific transaction type in the collection",
+            "get": {
+                "parameters": [
+                    {
+                        "examples": {
+                            "Path-Parameter-Code-Example-Transaction-Type": {
+                                "value": "DF"
+                            }
+                        },
+                        "name": "code",
+                        "description": "Transaction Type unique identifier (code)",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/Response-200-Ok-Transaction-Type"
+                    }
+                },
+                "operationId": "get-transaction-type",
+                "summary": "Get a transaction type item",
+                "description": "Operation that gets a specific Transaction type"
+            },
+            "parameters": [
+                {
+                    "examples": {
+                        "Path-Parameter-Code-Example-Transaction-Type": {
+                            "value": "DF"
+                        }
+                    },
+                    "name": "code",
+                    "description": "Transaction Type unique identifier (code)",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "in": "path",
+                    "required": true
+                }
+            ]
         }
     },
     "components": {
@@ -497,140 +630,34 @@
                     "value": "400000"
                 }
             },
-            "GroupRequest": {
-                "title": "Root Type for GroupRequest",
-                "description": "Represents a Category Group in request body",
-                "required": [
-                    "code",
-                    "name",
-                    "type"
-                ],
-                "type": "object",
-                "properties": {
-                    "code": {
-                        "description": "Short code used to identify a category group",
-                        "type": "string"
-                    },
-                    "name": {
-                        "description": "Name that describes a group",
-                        "type": "string"
-                    },
-                    "type": {
-                        "$ref": "#/components/schemas/GroupType",
-                        "description": "Category group type"
-                    }
-                },
-                "example": {
-                    "code": "DF",
-                    "name": "Despesas fixas",
-                    "type": {
-                        "code": "EXP"
-                    }
-                }
-            },
-            "GroupResponse": {
-                "description": "Represents a category Group in the response body",
-                "required": [
-                    "code",
-                    "created_at",
-                    "id",
-                    "name",
-                    "type"
-                ],
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "description": "Category group identifier code",
-                        "type": "string"
-                    },
-                    "code": {
-                        "description": "Short code used to identify a category group",
-                        "type": "string"
-                    },
-                    "name": {
-                        "description": "Name that describes a group",
-                        "type": "string"
-                    },
-                    "type": {
-                        "$ref": "#/components/schemas/GroupType",
-                        "description": "Category group type."
-                    },
-                    "created_at": {
-                        "format": "date-time",
-                        "description": "Balance creation date/time",
-                        "type": "string"
-                    },
-                    "updated_at": {
-                        "format": "date-time",
-                        "description": "Balance update date/time",
-                        "type": "string"
-                    }
-                },
-                "example": {
-                    "id": "8e72dca8-0a9f-4e4e-a46b-349c1d5473d1",
-                    "code": "DF",
-                    "name": "Despesas fixas",
-                    "type": {
-                        "code": "EXP"
-                    },
-                    "created_at": "2022-10-04T19:05:05Z",
-                    "updated_at": "2023-01-03T13:32:10Z"
-                }
-            },
-            "GroupResponseList": {
-                "description": "Represents a list of category Group in the response body",
+            "TransactionTypeResponseList": {
+                "description": "Represents a list of Transaction Type in the response body",
                 "type": "array",
                 "items": {
-                    "$ref": "#/components/schemas/GroupResponse"
+                    "$ref": "#/components/schemas/TransactionTypeRequest"
                 },
                 "example": [
                     {
-                        "id": "8e72dca8-0a9f-4e4e-a46b-349c1d5473d1",
-                        "code": "DF",
-                        "name": "Despesas fixas",
-                        "type": {
-                            "code": "EXP"
-                        },
-                        "created_at": "2022-10-04T19:05:05Z",
-                        "updated_at": "2023-01-03T13:32:10Z"
+                        "code": "EXP",
+                        "name": "Despesa"
                     },
                     {
-                        "id": "bfcded04-6b14-45bd-bf20-acd59abf0f32",
-                        "code": "DV",
-                        "name": "Despesas variáveis",
-                        "type": {
-                            "code": "EXP"
-                        },
-                        "created_at": "2023-06-15T05:23:00Z",
-                        "updated_at": "2023-06-16T18:02:14Z"
+                        "code": "EAR",
+                        "name": "Receita"
+                    },
+                    {
+                        "code": "TRA",
+                        "name": "Transferência"
                     }
                 ]
             },
-            "GroupType": {
-                "title": "Root Type for GroupRequest",
-                "description": "Represents a Category Group in request body",
-                "required": [
-                    "code",
-                    "id"
-                ],
-                "type": "object",
-                "properties": {
-                    "code": {
-                        "description": "Short code used to identify a category group. Possible values:\nEXP = expense\nEAR = earning",
-                        "type": "string"
-                    }
-                },
-                "example": {
-                    "code": "EXP"
-                }
-            },
             "CategoryRequest": {
-                "title": "Root Type for GroupRequest",
+                "title": "Root Type for TransactionTypeRequest",
                 "description": "Represents a Category in request body",
                 "required": [
                     "code",
                     "name",
-                    "group"
+                    "transaction_type"
                 ],
                 "type": "object",
                 "properties": {
@@ -642,16 +669,16 @@
                         "description": "Name that describes a category",
                         "type": "string"
                     },
-                    "group": {
-                        "description": "Group identifier",
-                        "type": "string"
+                    "transaction_type": {
+                        "$ref": "#/components/schemas/TransactionTypeRequest",
+                        "description": "Transaction Type identifier"
                     }
                 },
                 "example": {
-                    "code": "MS",
-                    "name": "Mensalidade escolar",
-                    "group": {
-                        "id": "8e72dca8-0a9f-4e4e-a46b-349c1d5473d1"
+                    "code": "DF",
+                    "name": "Despesa fixa",
+                    "transaction_type": {
+                        "code": "EXPENSE"
                     }
                 }
             },
@@ -661,7 +688,8 @@
                     "code",
                     "created_at",
                     "id",
-                    "name"
+                    "name",
+                    "transaction_type"
                 ],
                 "type": "object",
                 "properties": {
@@ -673,10 +701,6 @@
                         "description": "Short code used to identify a category",
                         "type": "string"
                     },
-                    "group": {
-                        "description": "Group identifier",
-                        "type": "string"
-                    },
                     "name": {
                         "description": "Name that describes a category",
                         "type": "string"
@@ -690,21 +714,26 @@
                         "format": "date-time",
                         "description": "Balance update date/time",
                         "type": "string"
+                    },
+                    "transaction_type": {
+                        "$ref": "#/components/schemas/TransactionTypeRequest",
+                        "description": "Transaction Type identifier"
                     }
                 },
                 "example": {
                     "id": "30548066-39a6-479c-b7b6-e3cbdb206d03",
-                    "code": "MS",
-                    "name": "Mensalidade escolar",
-                    "group": {
-                        "id": "8e72dca8-0a9f-4e4e-a46b-349c1d5473d1"
+                    "code": "DF",
+                    "name": "Despesa fixa",
+                    "transaction_type": {
+                        "code": "EXPENSE",
+                        "name": "Despesa"
                     },
                     "created_at": "2023-02-11T07:23:11Z",
                     "updated_at": "2023-02-14T04:22:33Z"
                 }
             },
             "CategoryResponseList": {
-                "description": "Represents a list of category Group in the response body",
+                "description": "Represents a list of Categories in the response body",
                 "type": "array",
                 "items": {
                     "$ref": "#/components/schemas/CategoryResponse"
@@ -712,36 +741,241 @@
                 "example": [
                     {
                         "id": "30548066-39a6-479c-b7b6-e3cbdb206d03",
-                        "code": "MS",
-                        "name": "Mensalidade escolar",
-                        "group": {
-                            "id": "8e72dca8-0a9f-4e4e-a46b-349c1d5473d1"
+                        "code": "DF",
+                        "name": "Despesa fixa",
+                        "transaction_type": {
+                            "code": "EXPENSE",
+                            "name": "Despesa"
                         },
                         "created_at": "2023-02-11T07:23:11Z",
                         "updated_at": "2023-02-14T04:22:33Z"
                     },
                     {
                         "id": "8418a6c7-2adb-42be-93ef-cdbacff15bfa",
-                        "code": "CO",
-                        "name": "Condomínio",
-                        "group": {
-                            "id": "8e72dca8-0a9f-4e4e-a46b-349c1d5473d1"
+                        "code": "DV",
+                        "name": "Despesa variável",
+                        "transaction_type": {
+                            "code": "EXPENSE",
+                            "name": "Despesa"
                         },
                         "created_at": "2023-02-25T17:06:00Z",
                         "updated_at": "2023-02-27T22:25:39Z"
                     }
                 ]
+            },
+            "SubCategoryRequest": {
+                "title": "Root Type for TransactionTypeRequest",
+                "description": "Represents a SubCategory in request body",
+                "required": [
+                    "code",
+                    "name",
+                    "category"
+                ],
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "description": "Short code used to identify a sub-category",
+                        "type": "string"
+                    },
+                    "name": {
+                        "description": "Name that describes a sub-category",
+                        "type": "string"
+                    },
+                    "category": {
+                        "$ref": "#/components/schemas/CategoryForSubCategoryRequest",
+                        "description": "The category associated to this sub-category"
+                    }
+                },
+                "example": {
+                    "code": "MS",
+                    "name": "Mensalidade escolar",
+                    "category": {
+                        "id": "30548066-39a6-479c-b7b6-e3cbdb206d03"
+                    }
+                }
+            },
+            "SubCategoryResponse": {
+                "title": "Root Type for TransactionTypeRequest",
+                "description": "Represents a SubCategory in request body",
+                "required": [
+                    "code",
+                    "name",
+                    "category",
+                    "id"
+                ],
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "description": "Short code used to identify a sub-category",
+                        "type": "string"
+                    },
+                    "name": {
+                        "description": "Name that describes a sub-category",
+                        "type": "string"
+                    },
+                    "category": {
+                        "$ref": "#/components/schemas/CategoryForSubCategoryRequest",
+                        "description": "The category associated to this sub-category"
+                    },
+                    "id": {
+                        "description": "Sub-Category identifier code",
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "id": "3d7e5bdb-5b22-43e4-adb9-303c0276f0a3",
+                    "code": "MS",
+                    "name": "Mensalidade escolar",
+                    "category": {
+                        "id": "30548066-39a6-479c-b7b6-e3cbdb206d03",
+                        "code": "DF",
+                        "name": "Despesa fixa",
+                        "transaction_type": {
+                            "code": "EXPENSE",
+                            "name": "Despesa"
+                        }
+                    }
+                }
+            },
+            "CategoryForSubCategoryRequest": {
+                "title": "Root Type for TransactionTypeRequest",
+                "description": "Represents a Category in request body",
+                "required": [
+                    "Id"
+                ],
+                "type": "object",
+                "properties": {
+                    "Id": {
+                        "description": "Category identifier code",
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "id": "30548066-39a6-479c-b7b6-e3cbdb206d03"
+                }
+            },
+            "CategoryForSubCategoryResponse": {
+                "description": "Represents a Category in the response body",
+                "required": [
+                    "code",
+                    "id",
+                    "name",
+                    "transaction_type"
+                ],
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "description": "Category identifier code",
+                        "type": "string"
+                    },
+                    "code": {
+                        "description": "Short code used to identify a category",
+                        "type": "string"
+                    },
+                    "name": {
+                        "description": "Name that describes a category",
+                        "type": "string"
+                    },
+                    "transaction_type": {
+                        "$ref": "#/components/schemas/TransactionTypeRequest",
+                        "description": "Transaction Type identifier"
+                    }
+                },
+                "example": {
+                    "id": "30548066-39a6-479c-b7b6-e3cbdb206d03",
+                    "code": "DF",
+                    "name": "Despesa fixa",
+                    "transaction_type": {
+                        "code": "EXPENSE",
+                        "name": "Despesa"
+                    }
+                }
+            },
+            "SubCategoryResponseList": {
+                "description": "Represents a list of Sub-Categories in the response body",
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/SubCategoryResponse"
+                },
+                "example": [
+                    {
+                        "id": "3d7e5bdb-5b22-43e4-adb9-303c0276f0a3",
+                        "code": "MS",
+                        "name": "Mensalidade escolar",
+                        "category": {
+                            "id": "30548066-39a6-479c-b7b6-e3cbdb206d03",
+                            "code": "DF",
+                            "name": "Despesa fixa",
+                            "transaction_type": {
+                                "code": "EXPENSE",
+                                "name": "Despesa"
+                            }
+                        }
+                    },
+                    {
+                        "id": "36ed6fe3-0d2d-481d-a22d-4d7e9303b005",
+                        "code": "TR",
+                        "name": "Transporte",
+                        "category": {
+                            "id": "2504eb23-2336-4e06-930a-5bb219542776",
+                            "code": "DV",
+                            "name": "Despesa variável",
+                            "transaction_type": {
+                                "code": "EXPENSE",
+                                "name": "Despesa"
+                            }
+                        }
+                    }
+                ]
+            },
+            "TransactionTypeResponse": {
+                "description": "Represents a category TransactionType in the response body",
+                "required": [
+                    "code",
+                    "name"
+                ],
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "description": "Short code used to identify a transaction type",
+                        "type": "string"
+                    },
+                    "name": {
+                        "description": "Name that describes a Transaction type",
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "code": "EXP",
+                    "name": "Despesa"
+                }
+            },
+            "TransactionTypeRequest": {
+                "description": "Represents a category TransactionType in the request body",
+                "required": [
+                    "code"
+                ],
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "description": "Short code used to identify a transaction type",
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "code": "EXP"
+                }
             }
         },
         "responses": {
-            "Response-200-Ok-Group": {
+            "Response-200-Ok-Transaction-Type": {
                 "content": {
                     "application/json": {
                         "schema": {
-                            "$ref": "#/components/schemas/GroupResponse"
+                            "$ref": "#/components/schemas/TransactionTypeRequest"
                         },
                         "examples": {
-                            "Response-200-Ok-Group-Example": {
+                            "Response-200-Ok-Transaction-Type-Example": {
                                 "value": {
                                     "id": "8e72dca8-0a9f-4e4e-a46b-349c1d5473d1",
                                     "code": "DF",
@@ -756,16 +990,16 @@
                         }
                     }
                 },
-                "description": "Success message (200 - OK) for a group item returned"
+                "description": "Success message (200 - OK) for a Transaction type item returned"
             },
-            "Response-200-Ok-Group-List": {
+            "Response-200-Ok-Transaction-Type-List": {
                 "content": {
                     "application/json": {
                         "schema": {
-                            "$ref": "#/components/schemas/GroupResponseList"
+                            "$ref": "#/components/schemas/TransactionTypeResponseList"
                         },
                         "examples": {
-                            "Response-200-Ok-Group-List-Example": {
+                            "Response-200-Ok-Transaction-Type-List-Example": {
                                 "value": [
                                     {
                                         "id": "8e72dca8-0a9f-4e4e-a46b-349c1d5473d1",
@@ -792,7 +1026,7 @@
                         }
                     }
                 },
-                "description": "Success message (200 - OK) for a list of groups"
+                "description": "Success message (200 - OK) for a list of Transaction types"
             },
             "Response-400-BadRequest": {
                 "content": {
@@ -1113,10 +1347,11 @@
                             "Response-200-Ok-Category-Example": {
                                 "value": {
                                     "id": "30548066-39a6-479c-b7b6-e3cbdb206d03",
-                                    "code": "MS",
-                                    "name": "Mensalidade escolar",
-                                    "group": {
-                                        "id": "8e72dca8-0a9f-4e4e-a46b-349c1d5473d1"
+                                    "code": "DF",
+                                    "name": "Despesa fixa",
+                                    "transaction_type": {
+                                        "code": "EXPENSE",
+                                        "name": "Despesa"
                                     },
                                     "created_at": "2023-02-11T07:23:11Z",
                                     "updated_at": "2023-02-14T04:22:33Z"
@@ -1138,20 +1373,22 @@
                                 "value": [
                                     {
                                         "id": "30548066-39a6-479c-b7b6-e3cbdb206d03",
-                                        "code": "MS",
-                                        "name": "Mensalidade escolar",
-                                        "group": {
-                                            "id": "8e72dca8-0a9f-4e4e-a46b-349c1d5473d1"
+                                        "code": "DF",
+                                        "name": "Despesa fixa",
+                                        "transaction_type": {
+                                            "code": "EXPENSE",
+                                            "name": "Despesa"
                                         },
                                         "created_at": "2023-02-11T07:23:11Z",
                                         "updated_at": "2023-02-14T04:22:33Z"
                                     },
                                     {
                                         "id": "8418a6c7-2adb-42be-93ef-cdbacff15bfa",
-                                        "code": "CO",
-                                        "name": "Condomínio",
-                                        "group": {
-                                            "id": "8e72dca8-0a9f-4e4e-a46b-349c1d5473d1"
+                                        "code": "DV",
+                                        "name": "Despesa variável",
+                                        "transaction_type": {
+                                            "code": "EXPENSE",
+                                            "name": "Despesa"
                                         },
                                         "created_at": "2023-02-25T17:06:00Z",
                                         "updated_at": "2023-02-27T22:25:39Z"
@@ -1163,29 +1400,6 @@
                 },
                 "description": "Success message (200 - OK) for a list of categories"
             },
-            "Response-201-Created-Group": {
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/GroupResponse"
-                        },
-                        "examples": {
-                            "Response-201-Created-Group-Example": {
-                                "value": {
-                                    "id": "8e72dca8-0a9f-4e4e-a46b-349c1d5473d1",
-                                    "code": "DF",
-                                    "name": "Despesas fixas",
-                                    "type": {
-                                        "code": "EXP"
-                                    },
-                                    "created_at": "2022-10-04T19:05:05Z"
-                                }
-                            }
-                        }
-                    }
-                },
-                "description": "Success message (201 - Created)"
-            },
             "Response-201-Created-Category": {
                 "content": {
                     "application/json": {
@@ -1196,12 +1410,113 @@
                             "Response-201-Created-Category-Example": {
                                 "value": {
                                     "id": "30548066-39a6-479c-b7b6-e3cbdb206d03",
-                                    "code": "MS",
-                                    "name": "Mensalidade escolar",
-                                    "group": {
-                                        "id": "8e72dca8-0a9f-4e4e-a46b-349c1d5473d1"
+                                    "code": "DF",
+                                    "name": "Despesa fixa",
+                                    "transaction_type": {
+                                        "code": "EXPENSE",
+                                        "name": "Despesa"
                                     },
                                     "created_at": "2023-02-11T07:23:11Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                "description": "Success message (201 - Created)"
+            },
+            "Response-200-Ok-SubCategory": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/SubCategoryResponse"
+                        },
+                        "examples": {
+                            "Response-200-Ok-SubCategory-Example": {
+                                "value": {
+                                    "id": "3d7e5bdb-5b22-43e4-adb9-303c0276f0a3",
+                                    "code": "MS",
+                                    "name": "Mensalidade escolar",
+                                    "category": {
+                                        "id": "30548066-39a6-479c-b7b6-e3cbdb206d03",
+                                        "code": "DF",
+                                        "name": "Despesa fixa",
+                                        "transaction_type": {
+                                            "code": "EXPENSE",
+                                            "name": "Despesa"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "description": "Success message (200 - OK) for a sub-category item returned"
+            },
+            "Response-200-Ok-SubCategory-List": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/SubCategoryResponseList"
+                        },
+                        "examples": {
+                            "Response-200-Ok-SubCategory-List-Example": {
+                                "value": [
+                                    {
+                                        "id": "3d7e5bdb-5b22-43e4-adb9-303c0276f0a3",
+                                        "code": "MS",
+                                        "name": "Mensalidade escolar",
+                                        "category": {
+                                            "id": "30548066-39a6-479c-b7b6-e3cbdb206d03",
+                                            "code": "DF",
+                                            "name": "Despesa fixa",
+                                            "transaction_type": {
+                                                "code": "EXPENSE",
+                                                "name": "Despesa"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "id": "36ed6fe3-0d2d-481d-a22d-4d7e9303b005",
+                                        "code": "TR",
+                                        "name": "Transporte",
+                                        "category": {
+                                            "id": "2504eb23-2336-4e06-930a-5bb219542776",
+                                            "code": "DV",
+                                            "name": "Despesa variável",
+                                            "transaction_type": {
+                                                "code": "EXPENSE",
+                                                "name": "Despesa"
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "description": "Success message (200 - OK) for a list of sub-categories"
+            },
+            "Response-201-Created-SubCategory": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/SubCategoryResponse"
+                        },
+                        "examples": {
+                            "Response-201-Created-SubCategory-Example": {
+                                "value": {
+                                    "id": "3d7e5bdb-5b22-43e4-adb9-303c0276f0a3",
+                                    "code": "MS",
+                                    "name": "Mensalidade escolar",
+                                    "category": {
+                                        "id": "30548066-39a6-479c-b7b6-e3cbdb206d03",
+                                        "code": "DF",
+                                        "name": "Despesa fixa",
+                                        "transaction_type": {
+                                            "code": "EXPENSE",
+                                            "name": "Despesa"
+                                        }
+                                    }
                                 }
                             }
                         }

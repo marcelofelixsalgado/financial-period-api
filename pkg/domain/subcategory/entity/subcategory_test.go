@@ -5,7 +5,7 @@ import (
 	"marcelofelixsalgado/financial-period-api/pkg/domain/category/entity"
 	category "marcelofelixsalgado/financial-period-api/pkg/domain/category/entity"
 	. "marcelofelixsalgado/financial-period-api/pkg/domain/subcategory/entity"
-	transactionType "marcelofelixsalgado/financial-period-api/pkg/domain/transaction-type/entity"
+	transactionType "marcelofelixsalgado/financial-period-api/pkg/domain/transactiontype/entity"
 	"strings"
 	"testing"
 )

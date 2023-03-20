@@ -3,7 +3,7 @@ package entity_test
 import (
 	"fmt"
 	. "marcelofelixsalgado/financial-period-api/pkg/domain/category/entity"
-	transactionType "marcelofelixsalgado/financial-period-api/pkg/domain/transaction-type/entity"
+	transactionType "marcelofelixsalgado/financial-period-api/pkg/domain/transactiontype/entity"
 	"strings"
 	"testing"
 )
