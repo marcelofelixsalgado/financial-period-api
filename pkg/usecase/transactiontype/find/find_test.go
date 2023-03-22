@@ -31,5 +31,5 @@ func TestFindTransactionTypeUseCase_Execute(t *testing.T) {
 	assert.Equal(t, transactionType.GetName(), output.Name)
 	assert.Equal(t, internalStatus, useCaseStatus.Success)
 	m.AssertExpectations(t)
-	m.AssertNumberOfCalls(t, "FindById", 1)
+	m.AssertNumberOfCalls(t, "FindByCode", 1)
 }
