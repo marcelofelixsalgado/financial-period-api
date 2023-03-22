@@ -28,7 +28,7 @@ func TestDeleteSubCategoryUseCase_Execute(t *testing.T) {
 
 	useCase := delete.NewDeleteUseCase(m)
 
-	input := delete.InputDeleteUseCaseDto{
+	input := delete.InputDeleteSubCategoryDto{
 		Id: subCategory.GetId(),
 	}
 

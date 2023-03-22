@@ -5,10 +5,13 @@ import (
 	"database/sql"
 	"fmt"
 	"marcelofelixsalgado/financial-period-api/api/controllers/balance"
-	"marcelofelixsalgado/financial-period-api/api/controllers/group"
+
+	"marcelofelixsalgado/financial-period-api/api/controllers/category"
 	"marcelofelixsalgado/financial-period-api/api/controllers/health"
 	"marcelofelixsalgado/financial-period-api/api/controllers/login"
 	"marcelofelixsalgado/financial-period-api/api/controllers/period"
+	"marcelofelixsalgado/financial-period-api/api/controllers/subcategory"
+	"marcelofelixsalgado/financial-period-api/api/controllers/transactiontype"
 	"marcelofelixsalgado/financial-period-api/api/controllers/user"
 	"marcelofelixsalgado/financial-period-api/api/middlewares"
 	"marcelofelixsalgado/financial-period-api/api/routes"
@@ -27,18 +30,29 @@ import (
 	periodList "marcelofelixsalgado/financial-period-api/pkg/usecase/period/list"
 	periodUpdate "marcelofelixsalgado/financial-period-api/pkg/usecase/period/update"
 
-	groupRepository "marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/group"
-	groupCreate "marcelofelixsalgado/financial-period-api/pkg/usecase/group/create"
-	groupDelete "marcelofelixsalgado/financial-period-api/pkg/usecase/group/delete"
-	groupFind "marcelofelixsalgado/financial-period-api/pkg/usecase/group/find"
-	groupList "marcelofelixsalgado/financial-period-api/pkg/usecase/group/list"
-	groupUpdate "marcelofelixsalgado/financial-period-api/pkg/usecase/group/update"
-
 	userCredentialsCreate "marcelofelixsalgado/financial-period-api/pkg/usecase/credentials/create"
 	userCredentialsLogin "marcelofelixsalgado/financial-period-api/pkg/usecase/credentials/login"
 	userCredentialsUpdate "marcelofelixsalgado/financial-period-api/pkg/usecase/credentials/update"
 
 	tenantRepository "marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/tenant"
+
+	transactionTypeRepository "marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/transactiontype"
+	transactionTypeFind "marcelofelixsalgado/financial-period-api/pkg/usecase/transactiontype/find"
+	transactionTypeList "marcelofelixsalgado/financial-period-api/pkg/usecase/transactiontype/list"
+
+	categoryRepository "marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/category"
+	categoryCreate "marcelofelixsalgado/financial-period-api/pkg/usecase/category/create"
+	categoryDelete "marcelofelixsalgado/financial-period-api/pkg/usecase/category/delete"
+	categoryFind "marcelofelixsalgado/financial-period-api/pkg/usecase/category/find"
+	categoryList "marcelofelixsalgado/financial-period-api/pkg/usecase/category/list"
+	categoryUpdate "marcelofelixsalgado/financial-period-api/pkg/usecase/category/update"
+
+	subCategoryRepository "marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/subcategory"
+	subCategoryCreate "marcelofelixsalgado/financial-period-api/pkg/usecase/subcategory/create"
+	subCategoryDelete "marcelofelixsalgado/financial-period-api/pkg/usecase/subcategory/delete"
+	subCategoryFind "marcelofelixsalgado/financial-period-api/pkg/usecase/subcategory/find"
+	subCategoryList "marcelofelixsalgado/financial-period-api/pkg/usecase/subcategory/list"
+	subCategoryUpdate "marcelofelixsalgado/financial-period-api/pkg/usecase/subcategory/update"
 
 	userRepository "marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/user"
 	userCreate "marcelofelixsalgado/financial-period-api/pkg/usecase/user/create"
@@ -100,13 +114,15 @@ func (server *Server) startServer() {
 
 	userRoutes := setupUserRoutes(databaseClient)
 	loginRoutes := setupLoginRoutes(databaseClient)
-	groupRoutes := setupGroupRoutes(databaseClient)
+	transactionTypeRoutes := setupTransactionTypeRoutes(databaseClient)
+	categoryRoutes := setupCategoryRoutes(databaseClient)
+	subCategoryRoutes := setupSubCategoryRoutes(databaseClient)
 	periodRoutes := setupPeriodRoutes(databaseClient)
 	balanceRoutes := setupBalanceRoutes(databaseClient)
 	healthRoutes := setupHealthRoutes()
 
 	// Setup all routes
-	routes := routes.NewRoutes(loginRoutes, userRoutes, groupRoutes, periodRoutes, balanceRoutes, healthRoutes)
+	routes := routes.NewRoutes(loginRoutes, userRoutes, transactionTypeRoutes, categoryRoutes, subCategoryRoutes, periodRoutes, balanceRoutes, healthRoutes)
 
 	routes.RouteMapping(server.http)
 	server.routes = routes
@@ -182,24 +198,63 @@ func setupLoginRoutes(databaseClient *sql.DB) login.LoginRoutes {
 	return loginRoutes
 }
 
-func setupGroupRoutes(databaseClient *sql.DB) group.GroupRoutes {
+func setupTransactionTypeRoutes(databaseClient *sql.DB) transactiontype.TransactionTypeRoutes {
 	// setup respository
-	repository := groupRepository.NewGroupRepository(databaseClient)
+	repository := transactionTypeRepository.NewTransactionTypeRepository(databaseClient)
 
 	// setup Use Cases (services)
-	createUseCase := groupCreate.NewCreateUseCase(repository)
-	deleteUseCase := groupDelete.NewDeleteUseCase(repository)
-	findUseCase := groupFind.NewFindUseCase(repository)
-	listUseCase := groupList.NewListUseCase(repository)
-	updateUseCase := groupUpdate.NewUpdateUseCase(repository)
+	findUseCase := transactionTypeFind.NewFindUseCase(repository)
+	listUseCase := transactionTypeList.NewListUseCase(repository)
 
 	// setup router handlers
-	groupHandler := group.NewGroupHandler(createUseCase, deleteUseCase, findUseCase, listUseCase, updateUseCase)
+	handler := transactiontype.NewTransactionTypeHandler(findUseCase, listUseCase)
 
 	// setup routes
-	groupRoutes := group.NewGroupRoutes(groupHandler)
+	routes := transactiontype.NewTransactionTypeRoutes(handler)
 
-	return groupRoutes
+	return routes
+}
+
+func setupCategoryRoutes(databaseClient *sql.DB) category.CategoryRoutes {
+	// setup respositories
+	categoryRepository := categoryRepository.NewCategoryRepository(databaseClient)
+	transactionTypeRepository := transactionTypeRepository.NewTransactionTypeRepository(databaseClient)
+
+	// setup Use Cases (services)
+	createUseCase := categoryCreate.NewCreateUseCase(categoryRepository, transactionTypeRepository)
+	deleteUseCase := categoryDelete.NewDeleteUseCase(categoryRepository)
+	findUseCase := categoryFind.NewFindUseCase(categoryRepository)
+	listUseCase := categoryList.NewListUseCase(categoryRepository)
+	updateUseCase := categoryUpdate.NewUpdateUseCase(categoryRepository)
+
+	// setup router handlers
+	handler := category.NewCategoryHandler(createUseCase, deleteUseCase, findUseCase, listUseCase, updateUseCase)
+
+	// setup routes
+	routes := category.NewCategoryRoutes(handler)
+
+	return routes
+}
+
+func setupSubCategoryRoutes(databaseClient *sql.DB) subcategory.SubCategoryRoutes {
+	// setup respositories
+	categoryRepository := categoryRepository.NewCategoryRepository(databaseClient)
+	subCategoryRepository := subCategoryRepository.NewSubCategoryRepository(databaseClient)
+
+	// setup Use Cases (services)
+	createUseCase := subCategoryCreate.NewCreateUseCase(subCategoryRepository, categoryRepository)
+	deleteUseCase := subCategoryDelete.NewDeleteUseCase(subCategoryRepository)
+	findUseCase := subCategoryFind.NewFindUseCase(subCategoryRepository)
+	listUseCase := subCategoryList.NewListUseCase(subCategoryRepository)
+	updateUseCase := subCategoryUpdate.NewUpdateUseCase(subCategoryRepository, categoryRepository)
+
+	// setup router handlers
+	handler := subcategory.NewSubCategoryHandler(createUseCase, deleteUseCase, findUseCase, listUseCase, updateUseCase)
+
+	// setup routes
+	routes := subcategory.NewSubCategoryRoutes(handler)
+
+	return routes
 }
 
 func setupPeriodRoutes(databaseClient *sql.DB) period.PeriodRoutes {

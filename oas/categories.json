@@ -511,7 +511,7 @@
                     {
                         "examples": {
                             "Path-Parameter-Code-Example-Transaction-Type": {
-                                "value": "DF"
+                                "value": "EXPENSE"
                             }
                         },
                         "name": "code",
@@ -536,7 +536,7 @@
                 {
                     "examples": {
                         "Path-Parameter-Code-Example-Transaction-Type": {
-                            "value": "DF"
+                            "value": "EXPENSE"
                         }
                     },
                     "name": "code",

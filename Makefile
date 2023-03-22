@@ -9,4 +9,4 @@ run:
 	docker compose up --build
 
 deploy:
-	 scp -i "~/.ssh/id_ed25519_aws_financial.pem" ./bin/financial-period-api-386 ubuntu@ec2-3-236-164-206.compute-1.amazonaws.com:~/.
+	 scp -i "~/.ssh/id_ed25519_aws_financial.pem" ./bin/financial-period-api-386 ubuntu@ec2-44-211-189-217.compute-1.amazonaws.com:~/financial-period-api/.

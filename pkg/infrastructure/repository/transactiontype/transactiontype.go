@@ -72,11 +72,10 @@ func (repository TransactionTypeRepository) List(filterParameters []filter.Filte
 			rows, err = repository.client.Query("select code, name from transaction_types where code = ? and name = ?", codeFilter, nameFilter)
 		}
 	}
-
+	defer rows.Close()
 	if err != nil {
 		return []entity.ITransactionType{}, err
 	}
-	defer rows.Close()
 
 	transactionTypes := []entity.ITransactionType{}
 	for rows.Next() {

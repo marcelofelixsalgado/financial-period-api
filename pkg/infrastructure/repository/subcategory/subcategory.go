@@ -106,7 +106,7 @@ func (repository SubCategoryRepository) FindById(id string) (entity.ISubCategory
 	if err != nil {
 		return entity.SubCategory{}, nil
 	}
-	defer repository.client.Close()
+	defer row.Close()
 
 	if row.Next() {
 		var model SubCategoryModel
@@ -160,6 +160,7 @@ func (repository SubCategoryRepository) List(filterParameters []filter.FilterPar
 			rows, err = repository.client.Query("select subcategories.id, subcategories.tenant_id, subcategories.code, subcategories.name, categories.id, categories.code, categories.name, transaction_types.code, transaction_types.name, subcategories.created_at, subcategories.updated_at from subcategories inner join categories on subcategories.category_id = categories.id inner join transaction_types on categories.transaction_type_code = transaction_types.code where subcategories.tenant_id = ? and subcategories.code = ? and subcategories.name = ?", tenantId, codeFilter, nameFilter)
 		}
 	}
+	defer rows.Close()
 	if err != nil {
 		return []entity.ISubCategory{}, err
 	}

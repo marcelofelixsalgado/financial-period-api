@@ -44,6 +44,7 @@ func TestUpdateCategoryUseCase_Execute(t *testing.T) {
 	assert.Equal(t, category.GetName(), output.Name)
 	assert.Equal(t, category.GetCode(), output.Code)
 	assert.Equal(t, category.GetTransactionType().GetCode(), output.TransactionType.Code)
+	assert.Equal(t, category.GetTransactionType().GetName(), output.TransactionType.Name)
 	assert.Equal(t, internalStatus, useCaseStatus.Success)
 	m.AssertExpectations(t)
 	m.AssertNumberOfCalls(t, "FindById", 1)

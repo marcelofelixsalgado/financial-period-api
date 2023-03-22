@@ -15,14 +15,14 @@ type IUpdateUseCase interface {
 }
 
 type UpdateUseCase struct {
-	categoryRepository    category.ICategoryRepository
 	subCategoryRepository subcategory.ISubCategoryRepository
+	categoryRepository    category.ICategoryRepository
 }
 
-func NewUpdateUseCase(categoryRepository category.ICategoryRepository, subCategoryRepository subcategory.ISubCategoryRepository) IUpdateUseCase {
+func NewUpdateUseCase(subCategoryRepository subcategory.ISubCategoryRepository, categoryRepository category.ICategoryRepository) IUpdateUseCase {
 	return &UpdateUseCase{
-		categoryRepository:    categoryRepository,
 		subCategoryRepository: subCategoryRepository,
+		categoryRepository:    categoryRepository,
 	}
 }
 
@@ -70,6 +70,10 @@ func (updateUseCase *UpdateUseCase) Execute(input InputUpdateSubCategoryDto) (Ou
 			Id:   entity.GetCategory().GetId(),
 			Code: entity.GetCategory().GetCode(),
 			Name: entity.GetCategory().GetName(),
+			TransactionType: TransactionType{
+				Code: entity.GetCategory().GetTransactionType().GetCode(),
+				Name: entity.GetCategory().GetTransactionType().GetName(),
+			},
 		},
 		CreatedAt: entity.GetCreatedAt().Format(time.RFC3339),
 		UpdatedAt: entity.GetCreatedAt().Format(time.RFC3339),

@@ -63,6 +63,10 @@ func (createUseCase *CreateUseCase) Execute(input InputCreateSubCategoryDto) (Ou
 			Id:   subcategory.GetCategory().GetId(),
 			Code: subcategory.GetCategory().GetCode(),
 			Name: subcategory.GetCategory().GetName(),
+			TransactionType: TransactionType{
+				Code: subcategory.GetCategory().GetTransactionType().GetCode(),
+				Name: subcategory.GetCategory().GetTransactionType().GetName(),
+			},
 		},
 		CreatedAt: subcategory.GetCreatedAt().Format(time.RFC3339),
 	}

@@ -30,7 +30,7 @@ func TestUpdateSubCategoryUseCase_Execute(t *testing.T) {
 	subCategoryRepository.On("FindById", subcategory.GetId()).Return(subcategory, nil)
 	subCategoryRepository.On("Update", mock.Anything).Return(nil)
 
-	useCase := update.NewUpdateUseCase(categoryRepository, subCategoryRepository)
+	useCase := update.NewUpdateUseCase(subCategoryRepository, categoryRepository)
 
 	input := update.InputUpdateSubCategoryDto{
 		Id:       subcategory.GetId(),
@@ -51,6 +51,9 @@ func TestUpdateSubCategoryUseCase_Execute(t *testing.T) {
 	assert.Equal(t, subcategory.GetName(), output.Name)
 	assert.Equal(t, subcategory.GetCode(), output.Code)
 	assert.Equal(t, subcategory.GetCategory().GetCode(), output.Category.Code)
+	assert.Equal(t, subcategory.GetCategory().GetName(), output.Category.Name)
+	assert.Equal(t, subcategory.GetCategory().GetTransactionType().GetCode(), output.Category.TransactionType.Code)
+	assert.Equal(t, subcategory.GetCategory().GetTransactionType().GetName(), output.Category.TransactionType.Name)
 	assert.Equal(t, internalStatus, useCaseStatus.Success)
 	subCategoryRepository.AssertExpectations(t)
 	categoryRepository.AssertNumberOfCalls(t, "FindById", 1)

@@ -11,7 +11,7 @@ type DeleteUseCaseMock struct {
 	mock.Mock
 }
 
-func (m *DeleteUseCaseMock) Execute(input delete.InputDeleteUseCaseDto) (delete.OutputDeleteUseCaseDto, status.InternalStatus, error) {
+func (m *DeleteUseCaseMock) Execute(input delete.InputDeleteSubCategoryDto) (delete.OutputDeleteSubCategoryDto, status.InternalStatus, error) {
 	args := m.Called(input)
-	return args.Get(0).(delete.OutputDeleteUseCaseDto), args.Get(1).(status.InternalStatus), args.Error(2)
+	return args.Get(0).(delete.OutputDeleteSubCategoryDto), args.Get(1).(status.InternalStatus), args.Error(2)
 }

@@ -10,7 +10,7 @@ type OutputFindSubCategoryDto struct {
 	Name      string   `json:"name"`
 	Category  Category `json:"category"`
 	CreatedAt string   `json:"created_at"`
-	UpdatedAt string   `json:"updated_at"`
+	UpdatedAt string   `json:"updated_at,omitempty"`
 }
 
 type Category struct {

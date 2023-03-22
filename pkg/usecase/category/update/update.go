@@ -60,7 +60,7 @@ func (updateUseCase UpdateUseCase) Execute(input InputUpdateCategoryDto) (Output
 		Name: entity.GetName(),
 		TransactionType: TransactionTypeOutput{
 			Code: entity.GetTransactionType().GetCode(),
-			Name: entity.GetTransactionType().GetName(),
+			Name: currentEntity.GetTransactionType().GetName(),
 		},
 		CreatedAt: entity.GetCreatedAt().Format(time.RFC3339),
 		UpdatedAt: entity.GetUpdatedAt().Format(time.RFC3339),

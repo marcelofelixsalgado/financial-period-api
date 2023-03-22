@@ -10,7 +10,7 @@ type OutputFindCategoryDto struct {
 	Name            string                `json:"name"`
 	TransactionType TransactionTypeOutput `json:"transaction_type"`
 	CreatedAt       string                `json:"created_at"`
-	UpdatedAt       string                `json:"updated_at"`
+	UpdatedAt       string                `json:"updated_at,omitempty"`
 }
 
 type TransactionTypeOutput struct {

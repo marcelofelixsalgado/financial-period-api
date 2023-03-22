@@ -6,7 +6,7 @@ import (
 )
 
 type IDeleteUseCase interface {
-	Execute(InputDeleteUseCaseDto) (OutputDeleteUseCaseDto, status.InternalStatus, error)
+	Execute(InputDeleteSubCategoryDto) (OutputDeleteSubCategoryDto, status.InternalStatus, error)
 }
 
 type DeleteUseCase struct {
@@ -19,24 +19,24 @@ func NewDeleteUseCase(repository subcategory.ISubCategoryRepository) IDeleteUseC
 	}
 }
 
-func (deleteUseCase *DeleteUseCase) Execute(input InputDeleteUseCaseDto) (OutputDeleteUseCaseDto, status.InternalStatus, error) {
+func (deleteUseCase *DeleteUseCase) Execute(input InputDeleteSubCategoryDto) (OutputDeleteSubCategoryDto, status.InternalStatus, error) {
 
 	// Find the entity before update
 	subCategory, err := deleteUseCase.repository.FindById(input.Id)
 	if err != nil {
-		return OutputDeleteUseCaseDto{}, status.InternalServerError, err
+		return OutputDeleteSubCategoryDto{}, status.InternalServerError, err
 	}
 	if subCategory == nil {
-		return OutputDeleteUseCaseDto{}, status.InvalidResourceId, err
+		return OutputDeleteSubCategoryDto{}, status.InvalidResourceId, err
 	}
 
 	// Apply in dabatase
 	err = deleteUseCase.repository.Delete(input.Id)
 	if err != nil {
-		return OutputDeleteUseCaseDto{}, status.InternalServerError, err
+		return OutputDeleteSubCategoryDto{}, status.InternalServerError, err
 	}
 
-	outputDeleteUseCaseDto := OutputDeleteUseCaseDto{}
+	outputDeleteUseCaseDto := OutputDeleteSubCategoryDto{}
 
 	return outputDeleteUseCaseDto, status.Success, nil
 }

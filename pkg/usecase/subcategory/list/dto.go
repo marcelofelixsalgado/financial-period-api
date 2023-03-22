@@ -9,12 +9,10 @@ type OutputListSubCategoryDto struct {
 }
 
 type SubCategory struct {
-	Id        string   `json:"id"`
-	Code      string   `json:"code"`
-	Name      string   `json:"name"`
-	Category  Category `json:"category"`
-	CreatedAt string   `json:"created_at"`
-	UpdatedAt string   `json:"updated_at"`
+	Id       string   `json:"id"`
+	Code     string   `json:"code"`
+	Name     string   `json:"name"`
+	Category Category `json:"category"`
 }
 
 type Category struct {

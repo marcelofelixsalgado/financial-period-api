@@ -1,8 +1,8 @@
 package delete
 
-type InputDeleteUseCaseDto struct {
+type InputDeleteSubCategoryDto struct {
 	Id string
 }
 
-type OutputDeleteUseCaseDto struct {
+type OutputDeleteSubCategoryDto struct {
 }

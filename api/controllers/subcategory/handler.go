@@ -1,4 +1,4 @@
-package group
+package subcategory
 
 import (
 	"encoding/json"
@@ -8,26 +8,26 @@ import (
 	"marcelofelixsalgado/financial-period-api/api/responses/faults"
 	"marcelofelixsalgado/financial-period-api/commons/logger"
 	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/auth"
-	"marcelofelixsalgado/financial-period-api/pkg/usecase/group/create"
-	"marcelofelixsalgado/financial-period-api/pkg/usecase/group/delete"
-	"marcelofelixsalgado/financial-period-api/pkg/usecase/group/find"
-	"marcelofelixsalgado/financial-period-api/pkg/usecase/group/list"
-	"marcelofelixsalgado/financial-period-api/pkg/usecase/group/update"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/status"
+	"marcelofelixsalgado/financial-period-api/pkg/usecase/subcategory/create"
+	"marcelofelixsalgado/financial-period-api/pkg/usecase/subcategory/delete"
+	"marcelofelixsalgado/financial-period-api/pkg/usecase/subcategory/find"
+	"marcelofelixsalgado/financial-period-api/pkg/usecase/subcategory/list"
+	"marcelofelixsalgado/financial-period-api/pkg/usecase/subcategory/update"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
 )
 
-type IGroupHandler interface {
-	CreateGroup(ctx echo.Context) error
-	ListGroups(ctx echo.Context) error
-	GetGroupById(ctx echo.Context) error
-	UpdateGroup(ctx echo.Context) error
-	DeleteGroup(ctx echo.Context) error
+type ISubCategoryHandler interface {
+	CreateSubCategory(ctx echo.Context) error
+	ListCategories(ctx echo.Context) error
+	GetSubCategoryById(ctx echo.Context) error
+	UpdateSubCategory(ctx echo.Context) error
+	DeleteSubCategory(ctx echo.Context) error
 }
 
-type GroupHandler struct {
+type SubCategoryHandler struct {
 	createUseCase create.ICreateUseCase
 	deleteUseCase delete.IDeleteUseCase
 	findUseCase   find.IFindUseCase
@@ -37,20 +37,19 @@ type GroupHandler struct {
 
 const requestBodyErrorMessage = "Error trying to read the request body: "
 const inputConversionErrorMessage = "Error trying to convert the input data: "
-const outputConversionErrorMessage = "Error trying to convert the output to response body: "
 const unableFindEntityErrorMessage = "Unable to find the entity"
 
-func NewGroupHandler(createUseCase create.ICreateUseCase, deleteUseCase delete.IDeleteUseCase, findUseCase find.IFindUseCase, listUseCase list.IListUseCase, updateUseCase update.IUpdateUseCase) IGroupHandler {
-	return &GroupHandler{
+func NewSubCategoryHandler(createUseCase create.ICreateUseCase, deleteUseCase delete.IDeleteUseCase, findUseCase find.IFindUseCase, listUseCase list.IListUseCase, updateUseCase update.IUpdateUseCase) ISubCategoryHandler {
+	return &SubCategoryHandler{
 		createUseCase: createUseCase,
-		deleteUseCase: deleteUseCase,
+		updateUseCase: updateUseCase,
 		findUseCase:   findUseCase,
 		listUseCase:   listUseCase,
-		updateUseCase: updateUseCase,
+		deleteUseCase: deleteUseCase,
 	}
 }
 
-func (groupHandler GroupHandler) CreateGroup(ctx echo.Context) error {
+func (categoryHandler SubCategoryHandler) CreateSubCategory(ctx echo.Context) error {
 	log := logger.GetLogger()
 
 	tenantId, err := auth.ExtractUserId(ctx.Request())
@@ -67,7 +66,7 @@ func (groupHandler GroupHandler) CreateGroup(ctx echo.Context) error {
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 
-	var input create.InputCreateGroupDto
+	var input create.InputCreateSubCategoryDto
 
 	if erro := json.Unmarshal([]byte(requestBody), &input); erro != nil {
 		log.Warnf("%s%v", inputConversionErrorMessage, err)
@@ -82,7 +81,7 @@ func (groupHandler GroupHandler) CreateGroup(ctx echo.Context) error {
 
 	input.TenantId = tenantId
 
-	output, internalStatus, err := groupHandler.createUseCase.Execute(input)
+	output, internalStatus, err := categoryHandler.createUseCase.Execute(input)
 	if internalStatus == status.EntityWithSameKeyAlreadyExists {
 		log.Warnf("Error trying to create the entity - duplicate key: %v", err)
 		responseMessage := responses.NewResponseMessage().AddMessageByIssue(faults.EntityWithSameKeyAlreadyExists, "body", "code", input.Code)
@@ -97,7 +96,7 @@ func (groupHandler GroupHandler) CreateGroup(ctx echo.Context) error {
 	return ctx.JSON(http.StatusCreated, output)
 }
 
-func (groupHandler GroupHandler) ListGroups(ctx echo.Context) error {
+func (categoryHandler SubCategoryHandler) ListCategories(ctx echo.Context) error {
 	log := logger.GetLogger()
 
 	tenantId, err := auth.ExtractUserId(ctx.Request())
@@ -107,7 +106,7 @@ func (groupHandler GroupHandler) ListGroups(ctx echo.Context) error {
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 
-	input := list.InputListGroupDto{
+	input := list.InputListSubCategoryDto{
 		TenantId: tenantId,
 	}
 
@@ -118,7 +117,7 @@ func (groupHandler GroupHandler) ListGroups(ctx echo.Context) error {
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 
-	output, internalStatus, err := groupHandler.listUseCase.Execute(input, filterParameters)
+	output, internalStatus, err := categoryHandler.listUseCase.Execute(input, filterParameters)
 	if internalStatus == status.InternalServerError {
 		log.Errorf("Error listing the entity: %v", err)
 		responseMessage := responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
@@ -129,19 +128,19 @@ func (groupHandler GroupHandler) ListGroups(ctx echo.Context) error {
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 
-	return ctx.JSON(http.StatusOK, output.Groups)
+	return ctx.JSON(http.StatusOK, output.SubCategories)
 }
 
-func (groupHandler GroupHandler) GetGroupById(ctx echo.Context) error {
+func (categoryHandler SubCategoryHandler) GetSubCategoryById(ctx echo.Context) error {
 	log := logger.GetLogger()
 
 	id := ctx.Param("id")
 
-	input := find.InputFindGroupDto{
+	input := find.InputFindSubCategoryDto{
 		Id: id,
 	}
 
-	output, internalStatus, err := groupHandler.findUseCase.Execute(input)
+	output, internalStatus, err := categoryHandler.findUseCase.Execute(input)
 	if internalStatus == status.InternalServerError {
 		log.Errorf("Error finding the entity: %v", err)
 		responseMessage := responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)
@@ -156,7 +155,7 @@ func (groupHandler GroupHandler) GetGroupById(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, output)
 }
 
-func (groupHandler GroupHandler) UpdateGroup(ctx echo.Context) error {
+func (categoryHandler SubCategoryHandler) UpdateSubCategory(ctx echo.Context) error {
 	log := logger.GetLogger()
 
 	id := ctx.Param("id")
@@ -168,7 +167,7 @@ func (groupHandler GroupHandler) UpdateGroup(ctx echo.Context) error {
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 
-	var input update.InputUpdateGroupDto
+	var input update.InputUpdateSubCategoryDto
 
 	if erro := json.Unmarshal([]byte(requestBody), &input); erro != nil {
 		log.Warnf("%s%v", inputConversionErrorMessage, err)
@@ -182,7 +181,7 @@ func (groupHandler GroupHandler) UpdateGroup(ctx echo.Context) error {
 		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
 	}
 
-	output, internalStatus, err := groupHandler.updateUseCase.Execute(input)
+	output, internalStatus, err := categoryHandler.updateUseCase.Execute(input)
 	if internalStatus == status.EntityWithSameKeyAlreadyExists {
 		log.Warnf("Error trying to create the entity - duplicate key: %v", err)
 		responseMessage := responses.NewResponseMessage().AddMessageByIssue(faults.EntityWithSameKeyAlreadyExists, "body", "code", input.Code)
@@ -202,16 +201,16 @@ func (groupHandler GroupHandler) UpdateGroup(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, output)
 }
 
-func (groupHandler GroupHandler) DeleteGroup(ctx echo.Context) error {
+func (categoryHandler SubCategoryHandler) DeleteSubCategory(ctx echo.Context) error {
 	log := logger.GetLogger()
 
 	id := ctx.Param("id")
 
-	var input = delete.InputDeleteGroupDto{
+	var input = delete.InputDeleteSubCategoryDto{
 		Id: id,
 	}
 
-	_, internalStatus, err := groupHandler.deleteUseCase.Execute(input)
+	_, internalStatus, err := categoryHandler.deleteUseCase.Execute(input)
 	if internalStatus == status.InternalServerError {
 		log.Errorf("Error removing the entity: %v", err)
 		responseMessage := responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)

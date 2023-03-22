@@ -99,7 +99,7 @@ func (repository CategoryRepository) Update(entity entity.ICategory) (status.Rep
 
 func (repository CategoryRepository) FindById(id string) (entity.ICategory, error) {
 
-	row, err := repository.client.Query("select categories.id, categories.tenant_id, categories.code, categories.name, transaction_types.code, transaction_types.name, categories.created_at, categories.updated_at from categories inner join transaction_types on category.transaction_type_code = transaction_types.code where categories.id = ?", id)
+	row, err := repository.client.Query("select categories.id, categories.tenant_id, categories.code, categories.name, transaction_types.code, transaction_types.name, categories.created_at, categories.updated_at from categories inner join transaction_types on categories.transaction_type_code = transaction_types.code where categories.id = ?", id)
 	if err != nil {
 		return entity.Category{}, err
 	}
@@ -139,18 +139,19 @@ func (repository CategoryRepository) List(filterParameters []filter.FilterParame
 	var rows *sql.Rows
 	var err error
 	if len(filterParameters) == 0 {
-		rows, err = repository.client.Query("select categories.id, categories.tenant_id, categories.code, categories.name, transaction_types.code, transaction_types.name, categories.created_at, categories.updated_at from categories inner join transaction_types on category.transaction_type_code = transaction_types.code where categories.tenant_id = ?", tenantId)
+		rows, err = repository.client.Query("select categories.id, categories.tenant_id, categories.code, categories.name, transaction_types.code, transaction_types.name, categories.created_at, categories.updated_at from categories inner join transaction_types on categories.transaction_type_code = transaction_types.code where categories.tenant_id = ?", tenantId)
 	} else {
 		if len(codeFilter) > 0 && len(nameFilter) == 0 {
-			rows, err = repository.client.Query("select categories.id, categories.tenant_id, categories.code, categories.name, transaction_types.code, transaction_types.name, categories.created_at, categories.updated_at from categories inner join transaction_types on category.transaction_type_code = transaction_types.code where categories.tenant_id = ? and code = ?", tenantId, codeFilter)
+			rows, err = repository.client.Query("select categories.id, categories.tenant_id, categories.code, categories.name, transaction_types.code, transaction_types.name, categories.created_at, categories.updated_at from categories inner join transaction_types on categories.transaction_type_code = transaction_types.code where categories.tenant_id = ? and code = ?", tenantId, codeFilter)
 		}
 		if len(codeFilter) == 0 && len(nameFilter) > 0 {
-			rows, err = repository.client.Query("select categories.id, categories.tenant_id, categories.code, categories.name, transaction_types.code, transaction_types.name, categories.created_at, categories.updated_at from categories inner join transaction_types on category.transaction_type_code = transaction_types.code where categories.tenant_id = ? and name = ?", tenantId, nameFilter)
+			rows, err = repository.client.Query("select categories.id, categories.tenant_id, categories.code, categories.name, transaction_types.code, transaction_types.name, categories.created_at, categories.updated_at from categories inner join transaction_types on categories.transaction_type_code = transaction_types.code where categories.tenant_id = ? and name = ?", tenantId, nameFilter)
 		}
 		if len(codeFilter) > 0 && len(nameFilter) > 0 {
-			rows, err = repository.client.Query("select categories.id, categories.tenant_id, categories.code, categories.name, transaction_types.code, transaction_types.name, categories.created_at, categories.updated_at from categories inner join transaction_types on category.transaction_type_code = transaction_types.code where categories.tenant_id = ? and code = ? and name = ?", tenantId, codeFilter, nameFilter)
+			rows, err = repository.client.Query("select categories.id, categories.tenant_id, categories.code, categories.name, transaction_types.code, transaction_types.name, categories.created_at, categories.updated_at from categories inner join transaction_types on categories.transaction_type_code = transaction_types.code where categories.tenant_id = ? and code = ? and name = ?", tenantId, codeFilter, nameFilter)
 		}
 	}
+	defer rows.Close()
 	if err != nil {
 		return []entity.ICategory{}, err
 	}

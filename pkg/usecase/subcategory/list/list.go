@@ -4,7 +4,6 @@ import (
 	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/filter"
 	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/subcategory"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/status"
-	"time"
 )
 
 type IListUseCase interface {
@@ -48,8 +47,6 @@ func (listUseCase *ListUseCase) Execute(input InputListSubCategoryDto, filterPar
 					Name: item.GetCategory().GetTransactionType().GetName(),
 				},
 			},
-			CreatedAt: item.GetCreatedAt().Format(time.RFC3339),
-			UpdatedAt: item.GetUpdatedAt().Format(time.RFC3339),
 		}
 
 		outputListSubCategoryDto.SubCategories = append(outputListSubCategoryDto.SubCategories, subCategory)

@@ -4,26 +4,25 @@ import (
 	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/category"
 	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/filter"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/status"
-	"time"
 )
 
-type IListCategoryUseCase interface {
+type IListUseCase interface {
 	Execute(InputListCategoryDto, []filter.FilterParameter) (OutputListCategoryDto, status.InternalStatus, error)
 }
 
-type ListCategoryUseCase struct {
+type ListUseCase struct {
 	repository category.ICategoryRepository
 }
 
-func NewListUseCase(repository category.ICategoryRepository) IListCategoryUseCase {
-	return &ListCategoryUseCase{
+func NewListUseCase(repository category.ICategoryRepository) IListUseCase {
+	return &ListUseCase{
 		repository: repository,
 	}
 }
 
-func (listCategoryUseCase ListCategoryUseCase) Execute(input InputListCategoryDto, filterParameters []filter.FilterParameter) (OutputListCategoryDto, status.InternalStatus, error) {
+func (listUseCase ListUseCase) Execute(input InputListCategoryDto, filterParameters []filter.FilterParameter) (OutputListCategoryDto, status.InternalStatus, error) {
 
-	categories, err := listCategoryUseCase.repository.List(filterParameters, input.TenantId)
+	categories, err := listUseCase.repository.List(filterParameters, input.TenantId)
 	if err != nil {
 		return OutputListCategoryDto{}, status.InternalServerError, err
 	}
@@ -43,8 +42,6 @@ func (listCategoryUseCase ListCategoryUseCase) Execute(input InputListCategoryDt
 				Code: item.GetTransactionType().GetCode(),
 				Name: item.GetTransactionType().GetName(),
 			},
-			CreatedAt: item.GetCreatedAt().Format(time.RFC3339),
-			UpdatedAt: item.GetCreatedAt().Format(time.RFC3339),
 		}
 		outputListCategoryDto.Categories = append(outputListCategoryDto.Categories, category)
 	}
