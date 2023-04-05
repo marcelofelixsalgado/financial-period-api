@@ -100,20 +100,20 @@ func (repository *PeriodRepository) List(filterParameters []filter.FilterParamet
 			nameFilter = filterParameter.Value
 		}
 	}
-	// fields := "id, code, name, year, start_date, end_date, created_at, updated_at"
+
 	var rows *sql.Rows
 	var err error
 	if len(filterParameters) == 0 {
 		rows, err = repository.client.Query("select id, tenant_id, code, name, year, start_date, end_date, created_at, updated_at from periods where tenant_id = ?", tenantId)
 	} else {
 		if len(codeFilter) > 0 && len(nameFilter) == 0 {
-			rows, err = repository.client.Query("select id, tenant_id, code, name, year, start_date, end_date, created_at, updated_at from periods where tenantId = ? and code = ?", tenantId, codeFilter)
+			rows, err = repository.client.Query("select id, tenant_id, code, name, year, start_date, end_date, created_at, updated_at from periods where tenant_id = ? and code = ?", tenantId, codeFilter)
 		}
 		if len(codeFilter) == 0 && len(nameFilter) > 0 {
-			rows, err = repository.client.Query("select id, tenant_id, code, name, year, start_date, end_date, created_at, updated_at from periods where tenantId = ? and name = ?", tenantId, nameFilter)
+			rows, err = repository.client.Query("select id, tenant_id, code, name, year, start_date, end_date, created_at, updated_at from periods where tenant_id = ? and name = ?", tenantId, nameFilter)
 		}
 		if len(codeFilter) > 0 && len(nameFilter) > 0 {
-			rows, err = repository.client.Query("select id, tenant_id, code, name, year, start_date, end_date, created_at, updated_at from periods where tenantId = ? and code = ? and name = ?", tenantId, codeFilter, nameFilter)
+			rows, err = repository.client.Query("select id, tenant_id, code, name, year, start_date, end_date, created_at, updated_at from periods where tenant_id = ? and code = ? and name = ?", tenantId, codeFilter, nameFilter)
 		}
 	}
 

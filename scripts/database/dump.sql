@@ -1,5 +1,5 @@
-CREATE DATABASE IF NOT EXISTS financial_db;
-USE financial_db;
+CREATE DATABASE IF NOT EXISTS financial_period_db;
+USE financial_period_db;
 
 DROP TABLE IF EXISTS tenants;
 DROP TABLE IF EXISTS users;

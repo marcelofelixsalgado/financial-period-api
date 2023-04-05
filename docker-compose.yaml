@@ -12,7 +12,7 @@ services:
     ports: 
       - "8081:8081"
     networks: 
-      - financial-network    
+      - financial-period-network
     depends_on: 
        - db
 
@@ -20,7 +20,7 @@ services:
     platform: linux/x86_64
     image: mysql:5.7
     command: --innodb-use-native-aio=0
-    container_name: financial-db
+    container_name: financial-period-db
     restart: always
     tty: true
     volumes: 
@@ -29,12 +29,12 @@ services:
     ports: 
       - "3306:3306"
     environment: 
-      - MYSQL_DATABASE=financial_db
+      - MYSQL_DATABASE=financial_period_db
       - MYSQL_ROOT_PASSWORD=root      
     networks: 
-      - financial-network
+      - financial-period-network
 
 networks: 
-  financial-network:
-    name: financial-network
+  financial-period-network:
+    name: financial-period-network
     driver: bridge
