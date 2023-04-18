@@ -1,9 +1,10 @@
 package balance
 
 import (
-	"marcelofelixsalgado/financial-period-api/api/responses"
-	"marcelofelixsalgado/financial-period-api/api/responses/faults"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/balance/create"
+
+	"github.com/marcelofelixsalgado/financial-commons/api/responses"
+	"github.com/marcelofelixsalgado/financial-commons/api/responses/faults"
 )
 
 type InputBalanceDto struct {

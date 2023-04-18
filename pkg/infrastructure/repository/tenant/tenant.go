@@ -3,8 +3,9 @@ package tenant
 import (
 	"database/sql"
 	"marcelofelixsalgado/financial-period-api/pkg/domain/tenant/entity"
-	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/status"
 	"time"
+
+	"github.com/marcelofelixsalgado/financial-commons/pkg/infrastructure/repository/status"
 )
 
 type TenantRepository struct {

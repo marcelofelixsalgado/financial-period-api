@@ -3,9 +3,10 @@ package create
 import (
 	"marcelofelixsalgado/financial-period-api/pkg/domain/balance/entity"
 	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/balance"
-	"marcelofelixsalgado/financial-period-api/pkg/usecase/status"
 
-	repositoryStatus "marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/status"
+	"github.com/marcelofelixsalgado/financial-commons/pkg/usecase/status"
+
+	repositoryStatus "github.com/marcelofelixsalgado/financial-commons/pkg/infrastructure/repository/status"
 )
 
 type ICreateUseCase interface {

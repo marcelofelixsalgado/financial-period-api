@@ -6,9 +6,10 @@ import (
 	"marcelofelixsalgado/financial-period-api/pkg/domain/category/entity"
 	transactionTypeEntity "marcelofelixsalgado/financial-period-api/pkg/domain/transactiontype/entity"
 	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/filter"
-	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/status"
 	transactionTypeModel "marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/transactiontype"
 	"time"
+
+	"github.com/marcelofelixsalgado/financial-commons/pkg/infrastructure/repository/status"
 
 	"github.com/go-sql-driver/mysql"
 )

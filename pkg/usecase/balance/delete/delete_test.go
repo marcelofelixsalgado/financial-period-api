@@ -10,7 +10,8 @@ import (
 	"github.com/stretchr/testify/mock"
 
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/balance/delete"
-	useCaseStatus "marcelofelixsalgado/financial-period-api/pkg/usecase/status"
+
+	useCaseStatus "github.com/marcelofelixsalgado/financial-commons/pkg/usecase/status"
 )
 
 func TestDeleteBalanceUseCase_Execute(t *testing.T) {

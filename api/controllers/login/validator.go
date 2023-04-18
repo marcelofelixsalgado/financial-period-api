@@ -1,9 +1,10 @@
 package login
 
 import (
-	"marcelofelixsalgado/financial-period-api/api/responses"
-	"marcelofelixsalgado/financial-period-api/api/responses/faults"
 	loginUsecase "marcelofelixsalgado/financial-period-api/pkg/usecase/credentials/login"
+
+	"github.com/marcelofelixsalgado/financial-commons/api/responses"
+	"github.com/marcelofelixsalgado/financial-commons/api/responses/faults"
 )
 
 func ValidateLoginRequestBody(inputUserLoginDto loginUsecase.InputUserLoginDto) *responses.ResponseMessage {

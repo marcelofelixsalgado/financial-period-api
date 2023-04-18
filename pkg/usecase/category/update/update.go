@@ -4,10 +4,11 @@ import (
 	"marcelofelixsalgado/financial-period-api/pkg/domain/category/entity"
 	transactionType "marcelofelixsalgado/financial-period-api/pkg/domain/transactiontype/entity"
 	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/category"
-	"marcelofelixsalgado/financial-period-api/pkg/usecase/status"
 	"time"
 
-	repositoryStatus "marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/status"
+	"github.com/marcelofelixsalgado/financial-commons/pkg/usecase/status"
+
+	repositoryStatus "github.com/marcelofelixsalgado/financial-commons/pkg/infrastructure/repository/status"
 )
 
 type IUpdateUseCase interface {

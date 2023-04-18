@@ -2,7 +2,8 @@ package delete
 
 import (
 	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/balance"
-	"marcelofelixsalgado/financial-period-api/pkg/usecase/status"
+
+	"github.com/marcelofelixsalgado/financial-commons/pkg/usecase/status"
 )
 
 type IDeleteUseCase interface {

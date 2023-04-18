@@ -3,7 +3,8 @@ package category
 import (
 	"marcelofelixsalgado/financial-period-api/pkg/domain/category/entity"
 	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/filter"
-	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/status"
+
+	"github.com/marcelofelixsalgado/financial-commons/pkg/infrastructure/repository/status"
 )
 
 type ICategoryRepository interface {

@@ -4,7 +4,8 @@ import (
 	"marcelofelixsalgado/financial-period-api/pkg/domain/credentials/entity"
 	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/auth"
 	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/credentials"
-	"marcelofelixsalgado/financial-period-api/pkg/usecase/status"
+
+	"github.com/marcelofelixsalgado/financial-commons/pkg/usecase/status"
 )
 
 type ILoginUseCase interface {

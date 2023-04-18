@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	useCaseStatus "marcelofelixsalgado/financial-period-api/pkg/usecase/status"
+	useCaseStatus "github.com/marcelofelixsalgado/financial-commons/pkg/usecase/status"
 
 	"github.com/stretchr/testify/assert"
 )

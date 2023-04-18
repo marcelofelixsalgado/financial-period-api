@@ -2,7 +2,8 @@ package find
 
 import (
 	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/transactiontype"
-	"marcelofelixsalgado/financial-period-api/pkg/usecase/status"
+
+	"github.com/marcelofelixsalgado/financial-commons/pkg/usecase/status"
 )
 
 type IFindUseCase interface {

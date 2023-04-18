@@ -3,7 +3,10 @@ package mocks
 import (
 	"marcelofelixsalgado/financial-period-api/pkg/domain/period/entity"
 	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/filter"
-	repositoryInternalStatus "marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/status"
+	"time"
+
+	"github.com/marcelofelixsalgado/financial-commons/pkg/infrastructure/repository/status"
+	repositoryInternalStatus "github.com/marcelofelixsalgado/financial-commons/pkg/infrastructure/repository/status"
 
 	"github.com/stretchr/testify/mock"
 )
@@ -35,4 +38,9 @@ func (m *PeriodRepositoryMock) List(filterParameters []filter.FilterParameter, t
 func (m *PeriodRepositoryMock) Delete(id string) error {
 	args := m.Called(id)
 	return args.Error(0)
+}
+
+func (m *PeriodRepositoryMock) FindOverlap(startDate time.Time, endDate time.Time, tenantId string) (status.RepositoryInternalStatus, error) {
+	args := m.Called(startDate, endDate, tenantId)
+	return repositoryInternalStatus.Success, args.Error(0)
 }

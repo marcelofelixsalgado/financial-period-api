@@ -3,9 +3,10 @@ package find_test
 import (
 	"marcelofelixsalgado/financial-period-api/pkg/domain/transactiontype/entity"
 	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/transactiontype/mocks"
-	useCaseStatus "marcelofelixsalgado/financial-period-api/pkg/usecase/status"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/transactiontype/find"
 	"testing"
+
+	useCaseStatus "github.com/marcelofelixsalgado/financial-commons/pkg/usecase/status"
 
 	"github.com/stretchr/testify/assert"
 )

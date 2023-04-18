@@ -4,17 +4,18 @@ import (
 	"encoding/json"
 	"io"
 	"marcelofelixsalgado/financial-period-api/api/requests"
-	"marcelofelixsalgado/financial-period-api/api/responses"
-	"marcelofelixsalgado/financial-period-api/api/responses/faults"
 	"marcelofelixsalgado/financial-period-api/commons/logger"
 	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/auth"
-	"marcelofelixsalgado/financial-period-api/pkg/usecase/status"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/subcategory/create"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/subcategory/delete"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/subcategory/find"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/subcategory/list"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/subcategory/update"
 	"net/http"
+
+	"github.com/marcelofelixsalgado/financial-commons/api/responses"
+	"github.com/marcelofelixsalgado/financial-commons/api/responses/faults"
+	"github.com/marcelofelixsalgado/financial-commons/pkg/usecase/status"
 
 	"github.com/labstack/echo/v4"
 )

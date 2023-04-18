@@ -1,10 +1,10 @@
-package find
+package findbyid
 
-type InputFindPeriodDto struct {
+type InputFindByIdPeriodDto struct {
 	Id string
 }
 
-type OutputFindPeriodDto struct {
+type OutputFindByIdPeriodDto struct {
 	Id        string `json:"id"`
 	Code      string `json:"code"`
 	Name      string `json:"name"`

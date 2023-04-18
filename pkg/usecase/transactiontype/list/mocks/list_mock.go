@@ -2,8 +2,9 @@ package mocks
 
 import (
 	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/filter"
-	"marcelofelixsalgado/financial-period-api/pkg/usecase/status"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/transactiontype/list"
+
+	"github.com/marcelofelixsalgado/financial-commons/pkg/usecase/status"
 
 	"github.com/stretchr/testify/mock"
 )

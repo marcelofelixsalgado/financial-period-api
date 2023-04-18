@@ -5,9 +5,10 @@ import (
 	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/filter"
 	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/period/mocks"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/period/list"
-	useCaseStatus "marcelofelixsalgado/financial-period-api/pkg/usecase/status"
 	"testing"
 	"time"
+
+	useCaseStatus "github.com/marcelofelixsalgado/financial-commons/pkg/usecase/status"
 
 	"github.com/stretchr/testify/assert"
 )

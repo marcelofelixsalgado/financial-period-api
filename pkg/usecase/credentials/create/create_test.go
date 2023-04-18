@@ -8,9 +8,10 @@ import (
 	userCredentialsRepositoryMock "marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/credentials/mocks"
 	userRepositoryMock "marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/user/mocks"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/credentials/create"
-	useCaseStatus "marcelofelixsalgado/financial-period-api/pkg/usecase/status"
 	"testing"
 	"time"
+
+	useCaseStatus "github.com/marcelofelixsalgado/financial-commons/pkg/usecase/status"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"

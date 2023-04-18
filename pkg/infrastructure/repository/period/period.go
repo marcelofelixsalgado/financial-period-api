@@ -5,10 +5,10 @@ import (
 	"errors"
 	"marcelofelixsalgado/financial-period-api/pkg/domain/period/entity"
 	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/filter"
-	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/status"
 	"time"
 
 	"github.com/go-sql-driver/mysql"
+	"github.com/marcelofelixsalgado/financial-commons/pkg/infrastructure/repository/status"
 )
 
 type PeriodRepository struct {
@@ -92,28 +92,34 @@ func (repository *PeriodRepository) List(filterParameters []filter.FilterParamet
 
 	codeFilter := ""
 	nameFilter := ""
+	dateFilter := ""
 	for _, filterParameter := range filterParameters {
 		switch filterParameter.Name {
 		case "code":
 			codeFilter = filterParameter.Value
 		case "name":
 			nameFilter = filterParameter.Value
+		case "date":
+			dateFilter = filterParameter.Value
 		}
 	}
 
 	var rows *sql.Rows
 	var err error
 	if len(filterParameters) == 0 {
-		rows, err = repository.client.Query("select id, tenant_id, code, name, year, start_date, end_date, created_at, updated_at from periods where tenant_id = ?", tenantId)
+		rows, err = repository.client.Query("select id, tenant_id, code, name, year, start_date, end_date, created_at, updated_at from periods where tenant_id = ? order by start_date", tenantId)
 	} else {
+		if len(dateFilter) > 0 {
+			rows, err = repository.client.Query("select id, tenant_id, code, name, year, start_date, end_date, created_at, updated_at from periods where tenant_id = ? and start_date <= ? and end_date >= ? order by start_date", tenantId, dateFilter, dateFilter)
+		}
 		if len(codeFilter) > 0 && len(nameFilter) == 0 {
-			rows, err = repository.client.Query("select id, tenant_id, code, name, year, start_date, end_date, created_at, updated_at from periods where tenant_id = ? and code = ?", tenantId, codeFilter)
+			rows, err = repository.client.Query("select id, tenant_id, code, name, year, start_date, end_date, created_at, updated_at from periods where tenant_id = ? and code = ? order by start_date", tenantId, codeFilter)
 		}
 		if len(codeFilter) == 0 && len(nameFilter) > 0 {
-			rows, err = repository.client.Query("select id, tenant_id, code, name, year, start_date, end_date, created_at, updated_at from periods where tenant_id = ? and name = ?", tenantId, nameFilter)
+			rows, err = repository.client.Query("select id, tenant_id, code, name, year, start_date, end_date, created_at, updated_at from periods where tenant_id = ? and name = ? order by start_date", tenantId, nameFilter)
 		}
 		if len(codeFilter) > 0 && len(nameFilter) > 0 {
-			rows, err = repository.client.Query("select id, tenant_id, code, name, year, start_date, end_date, created_at, updated_at from periods where tenant_id = ? and code = ? and name = ?", tenantId, codeFilter, nameFilter)
+			rows, err = repository.client.Query("select id, tenant_id, code, name, year, start_date, end_date, created_at, updated_at from periods where tenant_id = ? and code = ? and name = ? order by start_date", tenantId, codeFilter, nameFilter)
 		}
 	}
 
@@ -187,4 +193,18 @@ func (repository *PeriodRepository) Delete(id string) error {
 	}
 
 	return nil
+}
+
+func (repository *PeriodRepository) FindOverlap(startDate time.Time, endDate time.Time, tenantId string) (status.RepositoryInternalStatus, error) {
+
+	row, err := repository.client.Query("select id from periods where tenant_id = ? and (start_date between ? and ? or end_date between ? and ?)", tenantId, startDate, endDate, startDate, endDate)
+	if err != nil {
+		return status.InternalServerError, err
+	}
+	defer row.Close()
+
+	if row.Next() {
+		return status.OverlappingPeriodDates, nil
+	}
+	return status.Success, nil
 }

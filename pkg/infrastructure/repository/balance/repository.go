@@ -2,7 +2,8 @@ package balance
 
 import (
 	"marcelofelixsalgado/financial-period-api/pkg/domain/balance/entity"
-	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/status"
+
+	"github.com/marcelofelixsalgado/financial-commons/pkg/infrastructure/repository/status"
 )
 
 type IBalanceRepository interface {

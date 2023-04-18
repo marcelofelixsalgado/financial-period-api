@@ -5,8 +5,9 @@ import (
 	"errors"
 	"marcelofelixsalgado/financial-period-api/pkg/domain/user/entity"
 	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/filter"
-	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/status"
 	"time"
+
+	"github.com/marcelofelixsalgado/financial-commons/pkg/infrastructure/repository/status"
 
 	"github.com/go-sql-driver/mysql"
 )

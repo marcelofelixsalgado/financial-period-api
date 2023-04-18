@@ -1,13 +1,14 @@
 package user
 
 import (
-	"marcelofelixsalgado/financial-period-api/api/responses"
-	"marcelofelixsalgado/financial-period-api/api/responses/faults"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/user/create"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/user/update"
 
 	userCredentialsCreate "marcelofelixsalgado/financial-period-api/pkg/usecase/credentials/create"
 	userCredentialsUpdate "marcelofelixsalgado/financial-period-api/pkg/usecase/credentials/update"
+
+	"github.com/marcelofelixsalgado/financial-commons/api/responses"
+	"github.com/marcelofelixsalgado/financial-commons/api/responses/faults"
 )
 
 type InputUserDto struct {

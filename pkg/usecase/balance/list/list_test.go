@@ -9,7 +9,8 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/balance/list"
-	useCaseStatus "marcelofelixsalgado/financial-period-api/pkg/usecase/status"
+
+	useCaseStatus "github.com/marcelofelixsalgado/financial-commons/pkg/usecase/status"
 )
 
 func TestListBalanceUseCase_Execute(t *testing.T) {

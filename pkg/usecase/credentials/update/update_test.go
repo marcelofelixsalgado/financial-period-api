@@ -5,8 +5,9 @@ import (
 	userEntity "marcelofelixsalgado/financial-period-api/pkg/domain/user/entity"
 	userCredentialsRepositoryMock "marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/credentials/mocks"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/credentials/update"
-	useCaseStatus "marcelofelixsalgado/financial-period-api/pkg/usecase/status"
 	"time"
+
+	useCaseStatus "github.com/marcelofelixsalgado/financial-commons/pkg/usecase/status"
 
 	"testing"
 

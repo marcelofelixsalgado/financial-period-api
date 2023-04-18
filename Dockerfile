@@ -24,6 +24,6 @@ RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSI
 
 RUN go build -o /financial-period-api
 
-EXPOSE 8081
+EXPOSE 8082
 
 ENTRYPOINT ["financial-period-api"]

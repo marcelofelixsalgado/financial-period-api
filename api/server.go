@@ -26,7 +26,7 @@ import (
 	periodRepository "marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/period"
 	periodCreate "marcelofelixsalgado/financial-period-api/pkg/usecase/period/create"
 	periodDelete "marcelofelixsalgado/financial-period-api/pkg/usecase/period/delete"
-	periodFind "marcelofelixsalgado/financial-period-api/pkg/usecase/period/find"
+	periodFind "marcelofelixsalgado/financial-period-api/pkg/usecase/period/findbyid"
 	periodList "marcelofelixsalgado/financial-period-api/pkg/usecase/period/list"
 	periodUpdate "marcelofelixsalgado/financial-period-api/pkg/usecase/period/update"
 
@@ -132,7 +132,7 @@ func (server *Server) startServer() {
 	addr := fmt.Sprintf(":%v", settings.Config.ApiHttpPort)
 	go func() {
 		if err := server.http.Start(addr); err != nil {
-			logger.Errorf("Shutting down the server now: ", err)
+			logger.Errorf("Shutting down the server now: %s", err)
 		}
 	}()
 }
@@ -264,12 +264,12 @@ func setupPeriodRoutes(databaseClient *sql.DB) period.PeriodRoutes {
 	// setup Use Cases (services)
 	createUseCase := periodCreate.NewCreateUseCase(repository)
 	deleteUseCase := periodDelete.NewDeleteUseCase(repository)
-	findUseCase := periodFind.NewFindUseCase(repository)
+	findByIdUseCase := periodFind.NewFindByIdUseCase(repository)
 	listUseCase := periodList.NewListUseCase(repository)
 	updateUseCase := periodUpdate.NewUpdateUseCase(repository)
 
 	// setup router handlers
-	periodHandler := period.NewPeriodHandler(createUseCase, deleteUseCase, findUseCase, listUseCase, updateUseCase)
+	periodHandler := period.NewPeriodHandler(createUseCase, deleteUseCase, findByIdUseCase, listUseCase, updateUseCase)
 
 	// setup routes
 	periodRoutes := period.NewPeriodRoutes(periodHandler)

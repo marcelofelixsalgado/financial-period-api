@@ -3,8 +3,9 @@ package create_test
 import (
 	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/period/mocks"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/period/create"
-	useCaseStatus "marcelofelixsalgado/financial-period-api/pkg/usecase/status"
 	"testing"
+
+	useCaseStatus "github.com/marcelofelixsalgado/financial-commons/pkg/usecase/status"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -13,6 +14,7 @@ import (
 func TestCreatePeriodUseCase_Execute(t *testing.T) {
 	m := &mocks.PeriodRepositoryMock{}
 	m.On("Create", mock.Anything).Return(nil)
+	m.On("FindOverlap", mock.Anything, mock.Anything, mock.Anything).Return(nil)
 
 	useCase := create.NewCreateUseCase(m)
 

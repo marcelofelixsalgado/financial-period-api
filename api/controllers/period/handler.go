@@ -4,17 +4,18 @@ import (
 	"encoding/json"
 	"io"
 	"marcelofelixsalgado/financial-period-api/api/requests"
-	"marcelofelixsalgado/financial-period-api/api/responses"
-	"marcelofelixsalgado/financial-period-api/api/responses/faults"
 	"marcelofelixsalgado/financial-period-api/commons/logger"
 	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/auth"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/period/create"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/period/delete"
-	"marcelofelixsalgado/financial-period-api/pkg/usecase/period/find"
+	"marcelofelixsalgado/financial-period-api/pkg/usecase/period/findbyid"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/period/list"
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/period/update"
-	"marcelofelixsalgado/financial-period-api/pkg/usecase/status"
 	"net/http"
+
+	"github.com/marcelofelixsalgado/financial-commons/api/responses"
+	"github.com/marcelofelixsalgado/financial-commons/api/responses/faults"
+	"github.com/marcelofelixsalgado/financial-commons/pkg/usecase/status"
 
 	"github.com/labstack/echo/v4"
 )
@@ -28,11 +29,11 @@ type IPeriodHandler interface {
 }
 
 type PeriodHandler struct {
-	createUseCase create.ICreateUseCase
-	deleteUseCase delete.IDeleteUseCase
-	findUseCase   find.IFindUseCase
-	listUseCase   list.IListUseCase
-	updateUseCase update.IUpdateUseCase
+	createUseCase   create.ICreateUseCase
+	deleteUseCase   delete.IDeleteUseCase
+	findByIdUseCase findbyid.IFindByIdUseCase
+	listUseCase     list.IListUseCase
+	updateUseCase   update.IUpdateUseCase
 }
 
 const requestBodyErrorMessage = "Error trying to read the request body: "
@@ -40,13 +41,13 @@ const inputConversionErrorMessage = "Error trying to convert the input data: "
 const outputConversionErrorMessage = "Error trying to convert the output to response body: "
 const unableFindEntityErrorMessage = "Unable to find the entity"
 
-func NewPeriodHandler(createUseCase create.ICreateUseCase, deleteUseCase delete.IDeleteUseCase, findUseCase find.IFindUseCase, listUseCase list.IListUseCase, updateUseCase update.IUpdateUseCase) IPeriodHandler {
+func NewPeriodHandler(createUseCase create.ICreateUseCase, deleteUseCase delete.IDeleteUseCase, findByIdUseCase findbyid.IFindByIdUseCase, listUseCase list.IListUseCase, updateUseCase update.IUpdateUseCase) IPeriodHandler {
 	return &PeriodHandler{
-		createUseCase: createUseCase,
-		deleteUseCase: deleteUseCase,
-		findUseCase:   findUseCase,
-		listUseCase:   listUseCase,
-		updateUseCase: updateUseCase,
+		createUseCase:   createUseCase,
+		deleteUseCase:   deleteUseCase,
+		findByIdUseCase: findByIdUseCase,
+		listUseCase:     listUseCase,
+		updateUseCase:   updateUseCase,
 	}
 }
 
@@ -83,6 +84,11 @@ func (periodHandler *PeriodHandler) CreatePeriod(ctx echo.Context) error {
 	input.TenantId = tenantId
 
 	output, internalStatus, err := periodHandler.createUseCase.Execute(input)
+	if internalStatus == status.OverlappingPeriodDates {
+		log.Warnf("Error trying to create the entity - duplicate key: %v", err)
+		responseMessage := responses.NewResponseMessage().AddMessageByIssue(faults.OverlappingPeriodDates, "body", "", "")
+		return ctx.JSON(responseMessage.HttpStatusCode, responseMessage)
+	}
 	if internalStatus == status.EntityWithSameKeyAlreadyExists {
 		log.Warnf("Error trying to create the entity - duplicate key: %v", err)
 		responseMessage := responses.NewResponseMessage().AddMessageByIssue(faults.EntityWithSameKeyAlreadyExists, "body", "code", input.Code)
@@ -137,11 +143,11 @@ func (periodHandler *PeriodHandler) GetPeriodById(ctx echo.Context) error {
 
 	id := ctx.Param("id")
 
-	input := find.InputFindPeriodDto{
+	input := findbyid.InputFindByIdPeriodDto{
 		Id: id,
 	}
 
-	output, internalStatus, err := periodHandler.findUseCase.Execute(input)
+	output, internalStatus, err := periodHandler.findByIdUseCase.Execute(input)
 	if internalStatus == status.InternalServerError {
 		log.Errorf("Error finding the entity: %v", err)
 		responseMessage := responses.NewResponseMessage().AddMessageByErrorCode(faults.InternalServerError)

@@ -8,7 +8,8 @@ import (
 	"github.com/stretchr/testify/mock"
 
 	"marcelofelixsalgado/financial-period-api/pkg/usecase/balance/create"
-	useCaseStatus "marcelofelixsalgado/financial-period-api/pkg/usecase/status"
+
+	useCaseStatus "github.com/marcelofelixsalgado/financial-commons/pkg/usecase/status"
 )
 
 func TestCreateBalanceUseCase_Execute(t *testing.T) {

@@ -1,26 +1,27 @@
-package find_test
+package findbyid_test
 
 import (
 	"marcelofelixsalgado/financial-period-api/pkg/domain/period/entity"
 	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/period/mocks"
-	"marcelofelixsalgado/financial-period-api/pkg/usecase/period/find"
-	useCaseStatus "marcelofelixsalgado/financial-period-api/pkg/usecase/status"
+	find "marcelofelixsalgado/financial-period-api/pkg/usecase/period/findbyid"
 	"testing"
 	"time"
+
+	useCaseStatus "github.com/marcelofelixsalgado/financial-commons/pkg/usecase/status"
 
 	"github.com/stretchr/testify/assert"
 )
 
-func TestFindPeriodUseCase_Execute(t *testing.T) {
+func TestFindByIdPeriodUseCase_Execute(t *testing.T) {
 	m := &mocks.PeriodRepositoryMock{}
 
 	period, _ := entity.NewPeriod("1", "11", "Period 1", "Period 1", 2023, time.Now(), time.Now(), time.Time{}, time.Time{})
 
 	m.On("FindById", period.GetId()).Return(period, nil)
 
-	useCase := find.NewFindUseCase(m)
+	useCase := find.NewFindByIdUseCase(m)
 
-	input := find.InputFindPeriodDto{
+	input := find.InputFindByIdPeriodDto{
 		Id: period.GetId(),
 	}
 

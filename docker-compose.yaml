@@ -10,7 +10,7 @@ services:
     container_name: financial-period-api
     entrypoint: dockerize -wait tcp://db:3306 -timeout 30000s /financial-period-api
     ports: 
-      - "8081:8081"
+      - "8082:8082"
     networks: 
       - financial-period-network
     depends_on: 
@@ -27,7 +27,7 @@ services:
       - ./scripts/database:/docker-entrypoint-initdb.d
       - ./mysql:/var/lib/mysql
     ports: 
-      - "3306:3306"
+      - "3307:3307"
     environment: 
       - MYSQL_DATABASE=financial_period_db
       - MYSQL_ROOT_PASSWORD=root      

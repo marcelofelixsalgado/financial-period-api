@@ -3,8 +3,9 @@ package update
 import (
 	"marcelofelixsalgado/financial-period-api/pkg/domain/credentials/entity"
 	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/credentials"
-	"marcelofelixsalgado/financial-period-api/pkg/usecase/status"
 	"time"
+
+	"github.com/marcelofelixsalgado/financial-commons/pkg/usecase/status"
 )
 
 type IUpdateUseCase interface {

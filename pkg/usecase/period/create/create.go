@@ -4,9 +4,8 @@ import (
 	"marcelofelixsalgado/financial-period-api/pkg/domain/period/entity"
 	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/period"
 
-	repositoryStatus "marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/status"
-
-	"marcelofelixsalgado/financial-period-api/pkg/usecase/status"
+	repositoryStatus "github.com/marcelofelixsalgado/financial-commons/pkg/infrastructure/repository/status"
+	"github.com/marcelofelixsalgado/financial-commons/pkg/usecase/status"
 
 	"time"
 )
@@ -43,8 +42,17 @@ func (createUseCase *CreateUseCase) Execute(input InputCreatePeriodDto) (OutputC
 		return OutputCreatePeriodDto{}, status.InternalServerError, err
 	}
 
+	// Check if there are some overlaping between the dates
+	repositoryInternalStatus, err := createUseCase.repository.FindOverlap(startDate, endDate, input.TenantId)
+	if repositoryInternalStatus == repositoryStatus.OverlappingPeriodDates {
+		return OutputCreatePeriodDto{}, status.OverlappingPeriodDates, err
+	}
+	if err != nil {
+		return OutputCreatePeriodDto{}, status.InternalServerError, err
+	}
+
 	// Persists in dabatase
-	repositoryInternalStatus, err := createUseCase.repository.Create(entity)
+	repositoryInternalStatus, err = createUseCase.repository.Create(entity)
 	if repositoryInternalStatus == repositoryStatus.EntityWithSameKeyAlreadyExists {
 		return OutputCreatePeriodDto{}, status.EntityWithSameKeyAlreadyExists, err
 	}

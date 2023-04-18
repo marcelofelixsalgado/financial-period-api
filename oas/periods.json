@@ -45,6 +45,15 @@
                             "type": "integer"
                         },
                         "in": "query"
+                    },
+                    {
+                        "name": "date",
+                        "description": "Find a period from a reference date",
+                        "schema": {
+                            "format": "date",
+                            "type": "string"
+                        },
+                        "in": "query"
                     }
                 ],
                 "responses": {
