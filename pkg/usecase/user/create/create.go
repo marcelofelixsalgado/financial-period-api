@@ -1,10 +1,10 @@
 package create
 
 import (
-	tenantEntity "marcelofelixsalgado/financial-period-api/pkg/domain/tenant/entity"
-	userEntity "marcelofelixsalgado/financial-period-api/pkg/domain/user/entity"
-	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/tenant"
-	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/user"
+	tenantEntity "github.com/marcelofelixsalgado/financial-period-api/pkg/domain/tenant/entity"
+	userEntity "github.com/marcelofelixsalgado/financial-period-api/pkg/domain/user/entity"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/tenant"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/user"
 
 	"github.com/marcelofelixsalgado/financial-commons/pkg/usecase/status"
 

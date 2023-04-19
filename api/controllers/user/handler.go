@@ -3,23 +3,24 @@ package user
 import (
 	"encoding/json"
 	"io"
-	"marcelofelixsalgado/financial-period-api/api/requests"
-	"marcelofelixsalgado/financial-period-api/commons/logger"
-	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/auth"
-	"marcelofelixsalgado/financial-period-api/pkg/usecase/user/create"
-	"marcelofelixsalgado/financial-period-api/pkg/usecase/user/delete"
-	"marcelofelixsalgado/financial-period-api/pkg/usecase/user/find"
-	"marcelofelixsalgado/financial-period-api/pkg/usecase/user/list"
-	"marcelofelixsalgado/financial-period-api/pkg/usecase/user/update"
 	"net/http"
 	"strings"
+
+	"github.com/marcelofelixsalgado/financial-period-api/api/requests"
+	"github.com/marcelofelixsalgado/financial-period-api/commons/logger"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/infrastructure/auth"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/user/create"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/user/delete"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/user/find"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/user/list"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/user/update"
 
 	"github.com/marcelofelixsalgado/financial-commons/api/responses"
 	"github.com/marcelofelixsalgado/financial-commons/api/responses/faults"
 	"github.com/marcelofelixsalgado/financial-commons/pkg/usecase/status"
 
-	userCredentialsCreate "marcelofelixsalgado/financial-period-api/pkg/usecase/credentials/create"
-	userCredentialsUpdate "marcelofelixsalgado/financial-period-api/pkg/usecase/credentials/update"
+	userCredentialsCreate "github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/credentials/create"
+	userCredentialsUpdate "github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/credentials/update"
 
 	"github.com/labstack/echo/v4"
 )

@@ -1,9 +1,9 @@
 package login
 
 import (
-	"marcelofelixsalgado/financial-period-api/pkg/domain/credentials/entity"
-	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/auth"
-	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/credentials"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/domain/credentials/entity"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/infrastructure/auth"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/credentials"
 
 	"github.com/marcelofelixsalgado/financial-commons/pkg/usecase/status"
 )

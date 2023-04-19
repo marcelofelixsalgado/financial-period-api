@@ -1,7 +1,7 @@
 package mocks
 
 import (
-	"marcelofelixsalgado/financial-period-api/pkg/domain/credentials/entity"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/domain/credentials/entity"
 
 	"github.com/stretchr/testify/mock"
 )

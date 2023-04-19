@@ -3,10 +3,11 @@ package auth
 import (
 	"errors"
 	"fmt"
-	"marcelofelixsalgado/financial-period-api/settings"
 	"net/http"
 	"strings"
 	"time"
+
+	"github.com/marcelofelixsalgado/financial-period-api/settings"
 
 	"github.com/dgrijalva/jwt-go"
 )

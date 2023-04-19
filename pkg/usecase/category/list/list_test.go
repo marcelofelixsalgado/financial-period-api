@@ -1,13 +1,14 @@
 package list_test
 
 import (
-	"marcelofelixsalgado/financial-period-api/pkg/domain/category/entity"
-	transactionType "marcelofelixsalgado/financial-period-api/pkg/domain/transactiontype/entity"
-	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/category/mocks"
-	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/filter"
-	"marcelofelixsalgado/financial-period-api/pkg/usecase/category/list"
 	"testing"
 	"time"
+
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/domain/category/entity"
+	transactionType "github.com/marcelofelixsalgado/financial-period-api/pkg/domain/transactiontype/entity"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/category/mocks"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/filter"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/category/list"
 
 	useCaseStatus "github.com/marcelofelixsalgado/financial-commons/pkg/usecase/status"
 

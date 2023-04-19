@@ -1,8 +1,8 @@
 package category
 
 import (
-	"marcelofelixsalgado/financial-period-api/pkg/usecase/category/create"
-	"marcelofelixsalgado/financial-period-api/pkg/usecase/category/update"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/category/create"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/category/update"
 
 	"github.com/marcelofelixsalgado/financial-commons/api/responses"
 	"github.com/marcelofelixsalgado/financial-commons/api/responses/faults"

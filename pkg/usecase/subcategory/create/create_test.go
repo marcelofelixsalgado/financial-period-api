@@ -1,13 +1,14 @@
 package create_test
 
 import (
-	"marcelofelixsalgado/financial-period-api/pkg/domain/category/entity"
-	transactionTypeEntity "marcelofelixsalgado/financial-period-api/pkg/domain/transactiontype/entity"
-	categoryRepositoryMock "marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/category/mocks"
-	subCategoryRepositoryMock "marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/subcategory/mocks"
-	"marcelofelixsalgado/financial-period-api/pkg/usecase/subcategory/create"
 	"testing"
 	"time"
+
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/domain/category/entity"
+	transactionTypeEntity "github.com/marcelofelixsalgado/financial-period-api/pkg/domain/transactiontype/entity"
+	categoryRepositoryMock "github.com/marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/category/mocks"
+	subCategoryRepositoryMock "github.com/marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/subcategory/mocks"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/subcategory/create"
 
 	useCaseStatus "github.com/marcelofelixsalgado/financial-commons/pkg/usecase/status"
 

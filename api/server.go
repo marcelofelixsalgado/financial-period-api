@@ -4,71 +4,73 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"marcelofelixsalgado/financial-period-api/api/controllers/balance"
 
-	"marcelofelixsalgado/financial-period-api/api/controllers/category"
-	"marcelofelixsalgado/financial-period-api/api/controllers/health"
-	"marcelofelixsalgado/financial-period-api/api/controllers/login"
-	"marcelofelixsalgado/financial-period-api/api/controllers/period"
-	"marcelofelixsalgado/financial-period-api/api/controllers/subcategory"
-	"marcelofelixsalgado/financial-period-api/api/controllers/transactiontype"
-	"marcelofelixsalgado/financial-period-api/api/controllers/user"
-	"marcelofelixsalgado/financial-period-api/api/middlewares"
-	"marcelofelixsalgado/financial-period-api/api/routes"
-	"marcelofelixsalgado/financial-period-api/commons/logger"
-	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/database"
-	"marcelofelixsalgado/financial-period-api/settings"
+	"github.com/marcelofelixsalgado/financial-period-api/api/controllers/balance"
+
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
 
-	periodRepository "marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/period"
-	periodCreate "marcelofelixsalgado/financial-period-api/pkg/usecase/period/create"
-	periodDelete "marcelofelixsalgado/financial-period-api/pkg/usecase/period/delete"
-	periodFind "marcelofelixsalgado/financial-period-api/pkg/usecase/period/findbyid"
-	periodList "marcelofelixsalgado/financial-period-api/pkg/usecase/period/list"
-	periodUpdate "marcelofelixsalgado/financial-period-api/pkg/usecase/period/update"
+	"github.com/marcelofelixsalgado/financial-period-api/api/controllers/category"
+	"github.com/marcelofelixsalgado/financial-period-api/api/controllers/health"
+	"github.com/marcelofelixsalgado/financial-period-api/api/controllers/login"
+	"github.com/marcelofelixsalgado/financial-period-api/api/controllers/period"
+	"github.com/marcelofelixsalgado/financial-period-api/api/controllers/subcategory"
+	"github.com/marcelofelixsalgado/financial-period-api/api/controllers/transactiontype"
+	"github.com/marcelofelixsalgado/financial-period-api/api/controllers/user"
+	"github.com/marcelofelixsalgado/financial-period-api/api/middlewares"
+	"github.com/marcelofelixsalgado/financial-period-api/api/routes"
+	"github.com/marcelofelixsalgado/financial-period-api/commons/logger"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/infrastructure/database"
+	"github.com/marcelofelixsalgado/financial-period-api/settings"
 
-	userCredentialsCreate "marcelofelixsalgado/financial-period-api/pkg/usecase/credentials/create"
-	userCredentialsLogin "marcelofelixsalgado/financial-period-api/pkg/usecase/credentials/login"
-	userCredentialsUpdate "marcelofelixsalgado/financial-period-api/pkg/usecase/credentials/update"
+	periodRepository "github.com/marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/period"
+	periodCreate "github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/period/create"
+	periodDelete "github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/period/delete"
+	periodFind "github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/period/findbyid"
+	periodList "github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/period/list"
+	periodUpdate "github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/period/update"
 
-	tenantRepository "marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/tenant"
+	userCredentialsCreate "github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/credentials/create"
+	userCredentialsLogin "github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/credentials/login"
+	userCredentialsUpdate "github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/credentials/update"
 
-	transactionTypeRepository "marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/transactiontype"
-	transactionTypeFind "marcelofelixsalgado/financial-period-api/pkg/usecase/transactiontype/find"
-	transactionTypeList "marcelofelixsalgado/financial-period-api/pkg/usecase/transactiontype/list"
+	tenantRepository "github.com/marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/tenant"
 
-	categoryRepository "marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/category"
-	categoryCreate "marcelofelixsalgado/financial-period-api/pkg/usecase/category/create"
-	categoryDelete "marcelofelixsalgado/financial-period-api/pkg/usecase/category/delete"
-	categoryFind "marcelofelixsalgado/financial-period-api/pkg/usecase/category/find"
-	categoryList "marcelofelixsalgado/financial-period-api/pkg/usecase/category/list"
-	categoryUpdate "marcelofelixsalgado/financial-period-api/pkg/usecase/category/update"
+	transactionTypeRepository "github.com/marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/transactiontype"
+	transactionTypeFind "github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/transactiontype/find"
+	transactionTypeList "github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/transactiontype/list"
 
-	subCategoryRepository "marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/subcategory"
-	subCategoryCreate "marcelofelixsalgado/financial-period-api/pkg/usecase/subcategory/create"
-	subCategoryDelete "marcelofelixsalgado/financial-period-api/pkg/usecase/subcategory/delete"
-	subCategoryFind "marcelofelixsalgado/financial-period-api/pkg/usecase/subcategory/find"
-	subCategoryList "marcelofelixsalgado/financial-period-api/pkg/usecase/subcategory/list"
-	subCategoryUpdate "marcelofelixsalgado/financial-period-api/pkg/usecase/subcategory/update"
+	categoryRepository "github.com/marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/category"
+	categoryCreate "github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/category/create"
+	categoryDelete "github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/category/delete"
+	categoryFind "github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/category/find"
+	categoryList "github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/category/list"
+	categoryUpdate "github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/category/update"
 
-	userRepository "marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/user"
-	userCreate "marcelofelixsalgado/financial-period-api/pkg/usecase/user/create"
-	userDelete "marcelofelixsalgado/financial-period-api/pkg/usecase/user/delete"
-	userFind "marcelofelixsalgado/financial-period-api/pkg/usecase/user/find"
-	userList "marcelofelixsalgado/financial-period-api/pkg/usecase/user/list"
-	userUpdate "marcelofelixsalgado/financial-period-api/pkg/usecase/user/update"
+	subCategoryRepository "github.com/marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/subcategory"
+	subCategoryCreate "github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/subcategory/create"
+	subCategoryDelete "github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/subcategory/delete"
+	subCategoryFind "github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/subcategory/find"
+	subCategoryList "github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/subcategory/list"
+	subCategoryUpdate "github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/subcategory/update"
 
-	balanceRepository "marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/balance"
-	balanceCreate "marcelofelixsalgado/financial-period-api/pkg/usecase/balance/create"
-	balanceDelete "marcelofelixsalgado/financial-period-api/pkg/usecase/balance/delete"
-	balanceFind "marcelofelixsalgado/financial-period-api/pkg/usecase/balance/find"
-	balanceList "marcelofelixsalgado/financial-period-api/pkg/usecase/balance/list"
-	balanceUpdate "marcelofelixsalgado/financial-period-api/pkg/usecase/balance/update"
+	userRepository "github.com/marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/user"
+	userCreate "github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/user/create"
+	userDelete "github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/user/delete"
+	userFind "github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/user/find"
+	userList "github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/user/list"
+	userUpdate "github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/user/update"
 
-	userCredentialsRepository "marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/credentials"
+	balanceRepository "github.com/marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/balance"
+	balanceCreate "github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/balance/create"
+	balanceDelete "github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/balance/delete"
+	balanceFind "github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/balance/find"
+	balanceList "github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/balance/list"
+	balanceUpdate "github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/balance/update"
+
+	userCredentialsRepository "github.com/marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/credentials"
 
 	"github.com/labstack/echo/v4"
 )
@@ -109,6 +111,12 @@ func (server *Server) startServer() {
 	// Middlewares
 	server.http.Use(middlewares.Logger())
 
+	fmt.Println(settings.Config.DatabaseConnectionUser)
+	fmt.Println(settings.Config.DatabaseConnectionPassword)
+	fmt.Println(settings.Config.DatabaseConnectionServerAddress)
+	fmt.Println(settings.Config.DatabaseConnectionServerPort)
+	fmt.Println(settings.Config.DatabaseName)
+
 	// Connects to database
 	databaseClient := database.NewConnection()
 
@@ -130,6 +138,7 @@ func (server *Server) startServer() {
 	showRoutes(server.http)
 
 	addr := fmt.Sprintf(":%v", settings.Config.ApiHttpPort)
+
 	go func() {
 		if err := server.http.Start(addr); err != nil {
 			logger.Errorf("Shutting down the server now: %s", err)

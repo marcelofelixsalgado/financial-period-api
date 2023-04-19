@@ -1,8 +1,9 @@
 package entity
 
 import (
-	"marcelofelixsalgado/financial-period-api/pkg/domain/transactiontype/entity"
 	"time"
+
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/domain/transactiontype/entity"
 
 	uuid "github.com/satori/go.uuid"
 )

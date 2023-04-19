@@ -1,11 +1,12 @@
 package find_test
 
 import (
-	"marcelofelixsalgado/financial-period-api/pkg/domain/balance/entity"
-	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/balance/mocks"
-	"marcelofelixsalgado/financial-period-api/pkg/usecase/balance/find"
 	"testing"
 	"time"
+
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/domain/balance/entity"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/balance/mocks"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/balance/find"
 
 	"github.com/stretchr/testify/assert"
 

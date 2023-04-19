@@ -1,8 +1,9 @@
 package period
 
 import (
-	"marcelofelixsalgado/financial-period-api/api/controllers"
 	"net/http"
+
+	"github.com/marcelofelixsalgado/financial-period-api/api/controllers"
 )
 
 var periodBasepath = "/v1/periods"

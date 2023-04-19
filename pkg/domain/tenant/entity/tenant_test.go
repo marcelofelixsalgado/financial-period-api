@@ -1,8 +1,9 @@
 package entity_test
 
 import (
-	"marcelofelixsalgado/financial-period-api/pkg/domain/tenant/entity"
 	"testing"
+
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/domain/tenant/entity"
 )
 
 func TestNewUserSuccess(t *testing.T) {

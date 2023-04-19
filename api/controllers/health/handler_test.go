@@ -5,7 +5,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	. "marcelofelixsalgado/financial-period-api/api/controllers/health"
+	. "github.com/marcelofelixsalgado/financial-period-api/api/controllers/health"
 
 	echo "github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"

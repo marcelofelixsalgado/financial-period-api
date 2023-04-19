@@ -2,8 +2,9 @@ package middlewares
 
 import (
 	"log"
-	"marcelofelixsalgado/financial-period-api/settings"
 	"os"
+
+	"github.com/marcelofelixsalgado/financial-period-api/settings"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"

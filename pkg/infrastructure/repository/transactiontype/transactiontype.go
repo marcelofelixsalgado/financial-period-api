@@ -2,8 +2,9 @@ package transactiontype
 
 import (
 	"database/sql"
-	"marcelofelixsalgado/financial-period-api/pkg/domain/transactiontype/entity"
-	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/filter"
+
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/domain/transactiontype/entity"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/filter"
 )
 
 type TransactionTypeRepository struct {

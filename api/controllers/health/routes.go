@@ -1,8 +1,9 @@
 package health
 
 import (
-	"marcelofelixsalgado/financial-period-api/api/controllers"
 	"net/http"
+
+	"github.com/marcelofelixsalgado/financial-period-api/api/controllers"
 )
 
 var healthBasepath = "/v1/health"

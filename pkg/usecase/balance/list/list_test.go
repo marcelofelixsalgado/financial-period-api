@@ -1,14 +1,15 @@
 package list_test
 
 import (
-	"marcelofelixsalgado/financial-period-api/pkg/domain/balance/entity"
-	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/balance/mocks"
 	"testing"
 	"time"
 
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/domain/balance/entity"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/balance/mocks"
+
 	"github.com/stretchr/testify/assert"
 
-	"marcelofelixsalgado/financial-period-api/pkg/usecase/balance/list"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/balance/list"
 
 	useCaseStatus "github.com/marcelofelixsalgado/financial-commons/pkg/usecase/status"
 )

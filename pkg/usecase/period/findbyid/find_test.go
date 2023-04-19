@@ -1,11 +1,12 @@
 package findbyid_test
 
 import (
-	"marcelofelixsalgado/financial-period-api/pkg/domain/period/entity"
-	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/period/mocks"
-	find "marcelofelixsalgado/financial-period-api/pkg/usecase/period/findbyid"
 	"testing"
 	"time"
+
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/domain/period/entity"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/period/mocks"
+	find "github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/period/findbyid"
 
 	useCaseStatus "github.com/marcelofelixsalgado/financial-commons/pkg/usecase/status"
 

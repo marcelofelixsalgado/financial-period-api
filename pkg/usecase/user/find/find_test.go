@@ -1,11 +1,12 @@
 package find_test
 
 import (
-	"marcelofelixsalgado/financial-period-api/pkg/domain/user/entity"
-	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/user/mocks"
-	"marcelofelixsalgado/financial-period-api/pkg/usecase/user/find"
 	"testing"
 	"time"
+
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/domain/user/entity"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/user/mocks"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/user/find"
 
 	useCaseStatus "github.com/marcelofelixsalgado/financial-commons/pkg/usecase/status"
 

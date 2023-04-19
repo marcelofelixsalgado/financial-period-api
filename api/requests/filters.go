@@ -1,8 +1,9 @@
 package requests
 
 import (
-	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/filter"
 	"net/http"
+
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/filter"
 )
 
 func SetupFilters(r *http.Request) ([]filter.FilterParameter, error) {

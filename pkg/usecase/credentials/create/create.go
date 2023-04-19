@@ -1,10 +1,10 @@
 package create
 
 import (
-	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/user"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/user"
 
-	"marcelofelixsalgado/financial-period-api/pkg/domain/credentials/entity"
-	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/credentials"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/domain/credentials/entity"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/credentials"
 
 	"github.com/marcelofelixsalgado/financial-commons/pkg/usecase/status"
 

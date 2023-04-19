@@ -1,8 +1,9 @@
 package category
 
 import (
-	"marcelofelixsalgado/financial-period-api/api/controllers"
 	"net/http"
+
+	"github.com/marcelofelixsalgado/financial-period-api/api/controllers"
 )
 
 var basepath = "/v1/categories"

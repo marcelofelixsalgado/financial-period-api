@@ -1,11 +1,12 @@
 package update_test
 
 import (
-	userCredentialsEntity "marcelofelixsalgado/financial-period-api/pkg/domain/credentials/entity"
-	userEntity "marcelofelixsalgado/financial-period-api/pkg/domain/user/entity"
-	userCredentialsRepositoryMock "marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/credentials/mocks"
-	"marcelofelixsalgado/financial-period-api/pkg/usecase/credentials/update"
 	"time"
+
+	userCredentialsEntity "github.com/marcelofelixsalgado/financial-period-api/pkg/domain/credentials/entity"
+	userEntity "github.com/marcelofelixsalgado/financial-period-api/pkg/domain/user/entity"
+	userCredentialsRepositoryMock "github.com/marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/credentials/mocks"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/credentials/update"
 
 	useCaseStatus "github.com/marcelofelixsalgado/financial-commons/pkg/usecase/status"
 

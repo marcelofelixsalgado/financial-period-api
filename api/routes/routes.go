@@ -1,16 +1,16 @@
 package routes
 
 import (
-	"marcelofelixsalgado/financial-period-api/api/controllers"
-	"marcelofelixsalgado/financial-period-api/api/controllers/balance"
-	"marcelofelixsalgado/financial-period-api/api/controllers/category"
-	"marcelofelixsalgado/financial-period-api/api/controllers/health"
-	"marcelofelixsalgado/financial-period-api/api/controllers/login"
-	"marcelofelixsalgado/financial-period-api/api/controllers/period"
-	"marcelofelixsalgado/financial-period-api/api/controllers/subcategory"
-	"marcelofelixsalgado/financial-period-api/api/controllers/transactiontype"
-	"marcelofelixsalgado/financial-period-api/api/controllers/user"
-	"marcelofelixsalgado/financial-period-api/api/middlewares"
+	"github.com/marcelofelixsalgado/financial-period-api/api/controllers"
+	"github.com/marcelofelixsalgado/financial-period-api/api/controllers/balance"
+	"github.com/marcelofelixsalgado/financial-period-api/api/controllers/category"
+	"github.com/marcelofelixsalgado/financial-period-api/api/controllers/health"
+	"github.com/marcelofelixsalgado/financial-period-api/api/controllers/login"
+	"github.com/marcelofelixsalgado/financial-period-api/api/controllers/period"
+	"github.com/marcelofelixsalgado/financial-period-api/api/controllers/subcategory"
+	"github.com/marcelofelixsalgado/financial-period-api/api/controllers/transactiontype"
+	"github.com/marcelofelixsalgado/financial-period-api/api/controllers/user"
+	"github.com/marcelofelixsalgado/financial-period-api/api/middlewares"
 
 	"github.com/labstack/echo/v4"
 )

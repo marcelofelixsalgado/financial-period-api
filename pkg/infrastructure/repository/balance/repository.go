@@ -1,7 +1,7 @@
 package balance
 
 import (
-	"marcelofelixsalgado/financial-period-api/pkg/domain/balance/entity"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/domain/balance/entity"
 
 	"github.com/marcelofelixsalgado/financial-commons/pkg/infrastructure/repository/status"
 )

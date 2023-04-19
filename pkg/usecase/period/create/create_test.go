@@ -1,9 +1,10 @@
 package create_test
 
 import (
-	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/period/mocks"
-	"marcelofelixsalgado/financial-period-api/pkg/usecase/period/create"
 	"testing"
+
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/period/mocks"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/period/create"
 
 	useCaseStatus "github.com/marcelofelixsalgado/financial-commons/pkg/usecase/status"
 

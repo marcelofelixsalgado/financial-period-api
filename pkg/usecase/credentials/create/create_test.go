@@ -2,14 +2,16 @@ package create_test
 
 import (
 	"errors"
-	userCredentialsEntity "marcelofelixsalgado/financial-period-api/pkg/domain/credentials/entity"
-	userEntity "marcelofelixsalgado/financial-period-api/pkg/domain/user/entity"
 
-	userCredentialsRepositoryMock "marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/credentials/mocks"
-	userRepositoryMock "marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/user/mocks"
-	"marcelofelixsalgado/financial-period-api/pkg/usecase/credentials/create"
+	userCredentialsEntity "github.com/marcelofelixsalgado/financial-period-api/pkg/domain/credentials/entity"
+	userEntity "github.com/marcelofelixsalgado/financial-period-api/pkg/domain/user/entity"
+
 	"testing"
 	"time"
+
+	userCredentialsRepositoryMock "github.com/marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/credentials/mocks"
+	userRepositoryMock "github.com/marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/user/mocks"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/credentials/create"
 
 	useCaseStatus "github.com/marcelofelixsalgado/financial-commons/pkg/usecase/status"
 

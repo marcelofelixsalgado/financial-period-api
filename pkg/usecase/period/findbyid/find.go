@@ -1,8 +1,9 @@
 package findbyid
 
 import (
-	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/period"
 	"time"
+
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/period"
 
 	"github.com/marcelofelixsalgado/financial-commons/pkg/usecase/status"
 )

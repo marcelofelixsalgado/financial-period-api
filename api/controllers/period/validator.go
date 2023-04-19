@@ -1,9 +1,10 @@
 package period
 
 import (
-	"marcelofelixsalgado/financial-period-api/pkg/usecase/period/create"
-	"marcelofelixsalgado/financial-period-api/pkg/usecase/period/update"
 	"time"
+
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/period/create"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/period/update"
 
 	"github.com/marcelofelixsalgado/financial-commons/api/responses"
 	"github.com/marcelofelixsalgado/financial-commons/api/responses/faults"

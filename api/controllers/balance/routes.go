@@ -1,8 +1,9 @@
 package balance
 
 import (
-	"marcelofelixsalgado/financial-period-api/api/controllers"
 	"net/http"
+
+	"github.com/marcelofelixsalgado/financial-period-api/api/controllers"
 )
 
 var balanceBasePath = "/v1/balances"

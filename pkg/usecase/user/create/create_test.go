@@ -1,9 +1,9 @@
 package create_test
 
 import (
-	tenantRepositoryMock "marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/tenant/mocks"
-	userRepositoryMock "marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/user/mocks"
-	"marcelofelixsalgado/financial-period-api/pkg/usecase/user/create"
+	tenantRepositoryMock "github.com/marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/tenant/mocks"
+	userRepositoryMock "github.com/marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/user/mocks"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/user/create"
 
 	useCaseStatus "github.com/marcelofelixsalgado/financial-commons/pkg/usecase/status"
 

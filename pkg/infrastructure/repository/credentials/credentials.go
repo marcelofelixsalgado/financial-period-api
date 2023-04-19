@@ -2,8 +2,9 @@ package credentials
 
 import (
 	"database/sql"
-	"marcelofelixsalgado/financial-period-api/pkg/domain/credentials/entity"
 	"time"
+
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/domain/credentials/entity"
 )
 
 type UserCredentialsRepository struct {

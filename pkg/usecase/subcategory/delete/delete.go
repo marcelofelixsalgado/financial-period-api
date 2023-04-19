@@ -1,7 +1,7 @@
 package delete
 
 import (
-	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/subcategory"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/subcategory"
 
 	"github.com/marcelofelixsalgado/financial-commons/pkg/usecase/status"
 )

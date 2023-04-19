@@ -1,9 +1,10 @@
 package list
 
 import (
-	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/filter"
-	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/period"
 	"time"
+
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/filter"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/period"
 
 	"github.com/marcelofelixsalgado/financial-commons/pkg/usecase/status"
 )

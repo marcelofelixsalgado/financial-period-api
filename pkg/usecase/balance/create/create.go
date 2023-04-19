@@ -1,8 +1,8 @@
 package create
 
 import (
-	"marcelofelixsalgado/financial-period-api/pkg/domain/balance/entity"
-	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/balance"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/domain/balance/entity"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/balance"
 
 	"github.com/marcelofelixsalgado/financial-commons/pkg/usecase/status"
 

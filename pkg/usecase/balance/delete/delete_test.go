@@ -1,15 +1,16 @@
 package delete_test
 
 import (
-	"marcelofelixsalgado/financial-period-api/pkg/domain/balance/entity"
-	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/balance/mocks"
 	"testing"
 	"time"
+
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/domain/balance/entity"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/balance/mocks"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 
-	"marcelofelixsalgado/financial-period-api/pkg/usecase/balance/delete"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/balance/delete"
 
 	useCaseStatus "github.com/marcelofelixsalgado/financial-commons/pkg/usecase/status"
 )

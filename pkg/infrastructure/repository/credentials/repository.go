@@ -1,6 +1,6 @@
 package credentials
 
-import "marcelofelixsalgado/financial-period-api/pkg/domain/credentials/entity"
+import "github.com/marcelofelixsalgado/financial-period-api/pkg/domain/credentials/entity"
 
 type IUserCredentialsRepository interface {
 	Create(entity.IUserCredentials) error

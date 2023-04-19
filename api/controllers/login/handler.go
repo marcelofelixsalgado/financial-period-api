@@ -3,9 +3,10 @@ package login
 import (
 	"encoding/json"
 	"io"
-	"marcelofelixsalgado/financial-period-api/commons/logger"
-	loginUsecase "marcelofelixsalgado/financial-period-api/pkg/usecase/credentials/login"
 	"net/http"
+
+	"github.com/marcelofelixsalgado/financial-period-api/commons/logger"
+	loginUsecase "github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/credentials/login"
 
 	"github.com/marcelofelixsalgado/financial-commons/api/responses"
 	"github.com/marcelofelixsalgado/financial-commons/api/responses/faults"

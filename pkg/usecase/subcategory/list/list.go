@@ -1,8 +1,8 @@
 package list
 
 import (
-	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/filter"
-	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/subcategory"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/filter"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/subcategory"
 
 	"github.com/marcelofelixsalgado/financial-commons/pkg/usecase/status"
 )

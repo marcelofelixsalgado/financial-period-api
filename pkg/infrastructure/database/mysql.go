@@ -3,8 +3,9 @@ package database
 import (
 	"database/sql"
 	"fmt"
-	"marcelofelixsalgado/financial-period-api/commons/logger"
-	"marcelofelixsalgado/financial-period-api/settings"
+
+	"github.com/marcelofelixsalgado/financial-period-api/commons/logger"
+	"github.com/marcelofelixsalgado/financial-period-api/settings"
 
 	_ "github.com/go-sql-driver/mysql"
 )

@@ -1,7 +1,7 @@
 package mocks
 
 import (
-	"marcelofelixsalgado/financial-period-api/pkg/usecase/balance/update"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/balance/update"
 
 	"github.com/marcelofelixsalgado/financial-commons/pkg/usecase/status"
 

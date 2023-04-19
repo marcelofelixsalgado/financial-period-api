@@ -1,8 +1,9 @@
 package user
 
 import (
-	"marcelofelixsalgado/financial-period-api/api/controllers"
 	"net/http"
+
+	"github.com/marcelofelixsalgado/financial-period-api/api/controllers"
 )
 
 var userBasepath = "/v1/users"

@@ -1,9 +1,10 @@
 package update
 
 import (
-	"marcelofelixsalgado/financial-period-api/pkg/domain/credentials/entity"
-	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/credentials"
 	"time"
+
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/domain/credentials/entity"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/credentials"
 
 	"github.com/marcelofelixsalgado/financial-commons/pkg/usecase/status"
 )

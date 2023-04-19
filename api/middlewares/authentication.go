@@ -1,8 +1,8 @@
 package middlewares
 
 import (
-	"marcelofelixsalgado/financial-period-api/commons/logger"
-	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/auth"
+	"github.com/marcelofelixsalgado/financial-period-api/commons/logger"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/infrastructure/auth"
 
 	"github.com/labstack/echo/v4"
 	"github.com/marcelofelixsalgado/financial-commons/api/responses"

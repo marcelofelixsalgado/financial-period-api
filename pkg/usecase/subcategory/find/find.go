@@ -1,8 +1,9 @@
 package find
 
 import (
-	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/subcategory"
 	"time"
+
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/subcategory"
 
 	"github.com/marcelofelixsalgado/financial-commons/pkg/usecase/status"
 )

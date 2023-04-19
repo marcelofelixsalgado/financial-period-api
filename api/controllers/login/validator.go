@@ -1,7 +1,7 @@
 package login
 
 import (
-	loginUsecase "marcelofelixsalgado/financial-period-api/pkg/usecase/credentials/login"
+	loginUsecase "github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/credentials/login"
 
 	"github.com/marcelofelixsalgado/financial-commons/api/responses"
 	"github.com/marcelofelixsalgado/financial-commons/api/responses/faults"

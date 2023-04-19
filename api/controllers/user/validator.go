@@ -1,11 +1,11 @@
 package user
 
 import (
-	"marcelofelixsalgado/financial-period-api/pkg/usecase/user/create"
-	"marcelofelixsalgado/financial-period-api/pkg/usecase/user/update"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/user/create"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/user/update"
 
-	userCredentialsCreate "marcelofelixsalgado/financial-period-api/pkg/usecase/credentials/create"
-	userCredentialsUpdate "marcelofelixsalgado/financial-period-api/pkg/usecase/credentials/update"
+	userCredentialsCreate "github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/credentials/create"
+	userCredentialsUpdate "github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/credentials/update"
 
 	"github.com/marcelofelixsalgado/financial-commons/api/responses"
 	"github.com/marcelofelixsalgado/financial-commons/api/responses/faults"

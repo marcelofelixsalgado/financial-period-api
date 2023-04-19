@@ -1,11 +1,12 @@
 package create_test
 
 import (
-	"marcelofelixsalgado/financial-period-api/pkg/domain/transactiontype/entity"
-	categoryRepositoryMock "marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/category/mocks"
-	transactionTypeRepositoryMock "marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/transactiontype/mocks"
-	"marcelofelixsalgado/financial-period-api/pkg/usecase/category/create"
 	"testing"
+
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/domain/transactiontype/entity"
+	categoryRepositoryMock "github.com/marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/category/mocks"
+	transactionTypeRepositoryMock "github.com/marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/transactiontype/mocks"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/category/create"
 
 	useCaseStatus "github.com/marcelofelixsalgado/financial-commons/pkg/usecase/status"
 

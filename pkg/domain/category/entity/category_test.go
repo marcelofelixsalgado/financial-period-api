@@ -2,10 +2,11 @@ package entity_test
 
 import (
 	"fmt"
-	. "marcelofelixsalgado/financial-period-api/pkg/domain/category/entity"
-	transactionType "marcelofelixsalgado/financial-period-api/pkg/domain/transactiontype/entity"
 	"strings"
 	"testing"
+
+	. "github.com/marcelofelixsalgado/financial-period-api/pkg/domain/category/entity"
+	transactionType "github.com/marcelofelixsalgado/financial-period-api/pkg/domain/transactiontype/entity"
 )
 
 type testCase struct {

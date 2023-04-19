@@ -3,11 +3,12 @@ package category
 import (
 	"database/sql"
 	"errors"
-	"marcelofelixsalgado/financial-period-api/pkg/domain/category/entity"
-	transactionTypeEntity "marcelofelixsalgado/financial-period-api/pkg/domain/transactiontype/entity"
-	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/filter"
-	transactionTypeModel "marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/transactiontype"
 	"time"
+
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/domain/category/entity"
+	transactionTypeEntity "github.com/marcelofelixsalgado/financial-period-api/pkg/domain/transactiontype/entity"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/filter"
+	transactionTypeModel "github.com/marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/transactiontype"
 
 	"github.com/marcelofelixsalgado/financial-commons/pkg/infrastructure/repository/status"
 

@@ -2,19 +2,19 @@ package entity_test
 
 import (
 	"fmt"
-	"marcelofelixsalgado/financial-period-api/pkg/domain/category/entity"
-	category "marcelofelixsalgado/financial-period-api/pkg/domain/category/entity"
-	. "marcelofelixsalgado/financial-period-api/pkg/domain/subcategory/entity"
-	transactionType "marcelofelixsalgado/financial-period-api/pkg/domain/transactiontype/entity"
 	"strings"
 	"testing"
+
+	category "github.com/marcelofelixsalgado/financial-period-api/pkg/domain/category/entity"
+	. "github.com/marcelofelixsalgado/financial-period-api/pkg/domain/subcategory/entity"
+	transactionType "github.com/marcelofelixsalgado/financial-period-api/pkg/domain/transactiontype/entity"
 )
 
 type testCase struct {
 	tenantId string
 	code     string
 	name     string
-	category entity.ICategory
+	category category.ICategory
 	expected string
 }
 

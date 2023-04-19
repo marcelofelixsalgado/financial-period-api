@@ -2,8 +2,9 @@ package tenant
 
 import (
 	"database/sql"
-	"marcelofelixsalgado/financial-period-api/pkg/domain/tenant/entity"
 	"time"
+
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/domain/tenant/entity"
 
 	"github.com/marcelofelixsalgado/financial-commons/pkg/infrastructure/repository/status"
 )

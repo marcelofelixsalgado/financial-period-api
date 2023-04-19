@@ -1,8 +1,8 @@
 package mocks
 
 import (
-	"marcelofelixsalgado/financial-period-api/pkg/domain/category/entity"
-	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/filter"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/domain/category/entity"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/filter"
 
 	"github.com/marcelofelixsalgado/financial-commons/pkg/infrastructure/repository/status"
 	repositoryInternalStatus "github.com/marcelofelixsalgado/financial-commons/pkg/infrastructure/repository/status"

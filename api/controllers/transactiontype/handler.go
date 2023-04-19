@@ -1,11 +1,12 @@
 package transactiontype
 
 import (
-	"marcelofelixsalgado/financial-period-api/api/requests"
-	"marcelofelixsalgado/financial-period-api/commons/logger"
-	"marcelofelixsalgado/financial-period-api/pkg/usecase/transactiontype/find"
-	"marcelofelixsalgado/financial-period-api/pkg/usecase/transactiontype/list"
 	"net/http"
+
+	"github.com/marcelofelixsalgado/financial-period-api/api/requests"
+	"github.com/marcelofelixsalgado/financial-period-api/commons/logger"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/transactiontype/find"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/transactiontype/list"
 
 	"github.com/marcelofelixsalgado/financial-commons/api/responses"
 	"github.com/marcelofelixsalgado/financial-commons/api/responses/faults"

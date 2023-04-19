@@ -3,9 +3,10 @@ package logger
 import (
 	"fmt"
 	"log"
-	"marcelofelixsalgado/financial-period-api/settings"
-	"marcelofelixsalgado/financial-period-api/version"
 	"os"
+
+	"github.com/marcelofelixsalgado/financial-period-api/settings"
+	"github.com/marcelofelixsalgado/financial-period-api/version"
 
 	"github.com/labstack/echo/v4"
 

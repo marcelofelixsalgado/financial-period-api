@@ -1,8 +1,8 @@
 package mocks
 
 import (
-	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/filter"
-	"marcelofelixsalgado/financial-period-api/pkg/usecase/transactiontype/list"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/filter"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/transactiontype/list"
 
 	"github.com/marcelofelixsalgado/financial-commons/pkg/usecase/status"
 

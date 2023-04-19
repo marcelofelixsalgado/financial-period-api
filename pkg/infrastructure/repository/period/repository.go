@@ -1,9 +1,10 @@
 package period
 
 import (
-	"marcelofelixsalgado/financial-period-api/pkg/domain/period/entity"
-	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/filter"
 	"time"
+
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/domain/period/entity"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/filter"
 
 	"github.com/marcelofelixsalgado/financial-commons/pkg/infrastructure/repository/status"
 )

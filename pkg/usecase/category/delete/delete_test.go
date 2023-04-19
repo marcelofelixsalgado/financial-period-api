@@ -1,12 +1,13 @@
 package delete_test
 
 import (
-	"marcelofelixsalgado/financial-period-api/pkg/domain/category/entity"
-	transactionTypeEntity "marcelofelixsalgado/financial-period-api/pkg/domain/transactiontype/entity"
-	"marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/category/mocks"
-	"marcelofelixsalgado/financial-period-api/pkg/usecase/category/delete"
 	"testing"
 	"time"
+
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/domain/category/entity"
+	transactionTypeEntity "github.com/marcelofelixsalgado/financial-period-api/pkg/domain/transactiontype/entity"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/infrastructure/repository/category/mocks"
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/usecase/category/delete"
 
 	useCaseStatus "github.com/marcelofelixsalgado/financial-commons/pkg/usecase/status"
 

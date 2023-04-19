@@ -2,9 +2,10 @@ package entity
 
 import (
 	"errors"
-	"marcelofelixsalgado/financial-period-api/pkg/domain/category/entity"
 	"strings"
 	"time"
+
+	"github.com/marcelofelixsalgado/financial-period-api/pkg/domain/category/entity"
 )
 
 type ISubCategory interface {

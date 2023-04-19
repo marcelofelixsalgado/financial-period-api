@@ -1,6 +1,6 @@
 package main
 
-import "marcelofelixsalgado/financial-period-api/api"
+import "github.com/marcelofelixsalgado/financial-period-api/api"
 
 func main() {
 	// Start HTTP Server

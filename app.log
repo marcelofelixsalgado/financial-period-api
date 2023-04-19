@@ -1,0 +1,33 @@
+{"app.host":"WMEC-P2CCPXX3FC.local","app.version":"","environment":"development","level":"info","msg":"Server is starting now in development.","time":"2023-04-19T13:43:53-03:00"}
+{"app.host":"WMEC-P2CCPXX3FC.local","app.version":"","environment":"development","level":"fatal","msg":"Error trying to check the database connection: dial tcp :3306: connect: connection refused","time":"2023-04-19T13:43:53-03:00"}
+{"app.host":"WMEC-P2CCPXX3FC.local","app.version":"","environment":"development","level":"info","msg":"Server is starting now in development.","time":"2023-04-19T13:44:53-03:00"}
+{"app.host":"WMEC-P2CCPXX3FC.local","app.version":"","environment":"development","level":"fatal","msg":"Error trying to check the database connection: dial tcp :3306: connect: connection refused","time":"2023-04-19T13:44:53-03:00"}
+{"app.host":"WMEC-P2CCPXX3FC.local","app.version":"","environment":"development","level":"info","msg":"Server is starting now in development.","time":"2023-04-19T13:45:10-03:00"}
+{"app.host":"WMEC-P2CCPXX3FC.local","app.version":"","environment":"development","level":"fatal","msg":"Error trying to check the database connection: dial tcp :3306: connect: connection refused","time":"2023-04-19T13:45:10-03:00"}
+{"app.host":"WMEC-P2CCPXX3FC.local","app.version":"","environment":"development","level":"info","msg":"Server is starting now in development.","time":"2023-04-19T13:45:18-03:00"}
+{"app.host":"WMEC-P2CCPXX3FC.local","app.version":"","environment":"development","level":"fatal","msg":"Error trying to check the database connection: dial tcp :3306: connect: connection refused","time":"2023-04-19T13:45:18-03:00"}
+{"app.host":"WMEC-P2CCPXX3FC.local","app.version":"","environment":"development","level":"info","msg":"Server is starting now in development.","time":"2023-04-19T13:46:28-03:00"}
+{"app.host":"WMEC-P2CCPXX3FC.local","app.version":"","environment":"development","level":"fatal","msg":"Error trying to check the database connection: dial tcp :3306: connect: connection refused","time":"2023-04-19T13:46:28-03:00"}
+{"app.host":"WMEC-P2CCPXX3FC.local","app.version":"","environment":"development","level":"info","msg":"Server is starting now in development.","time":"2023-04-19T13:46:48-03:00"}
+{"app.host":"WMEC-P2CCPXX3FC.local","app.version":"","environment":"development","level":"fatal","msg":"Error trying to check the database connection: dial tcp :3306: connect: connection refused","time":"2023-04-19T13:46:48-03:00"}
+{"app.host":"WMEC-P2CCPXX3FC.local","app.version":"","environment":"development","level":"info","msg":"Server is starting now in development.","time":"2023-04-19T13:47:39-03:00"}
+{"app.host":"WMEC-P2CCPXX3FC.local","app.version":"","environment":"development","level":"fatal","msg":"Error trying to check the database connection: dial tcp :3306: connect: connection refused","time":"2023-04-19T13:47:39-03:00"}
+{"app.host":"WMEC-P2CCPXX3FC.local","app.version":"","environment":"development","level":"info","msg":"Server is starting now in development.","time":"2023-04-19T14:06:24-03:00"}
+{"app.host":"WMEC-P2CCPXX3FC.local","app.version":"","environment":"development","level":"fatal","msg":"Error trying to check the database connection: dial tcp 92.242.140.6:3306: connect: no route to host","time":"2023-04-19T14:06:26-03:00"}
+{"app.host":"WMEC-P2CCPXX3FC.local","app.version":"","environment":"development","level":"info","msg":"Server is starting now in development.","time":"2023-04-19T14:06:42-03:00"}
+{"app.host":"WMEC-P2CCPXX3FC.local","app.version":"","environment":"development","level":"fatal","msg":"Error trying to check the database connection: dial tcp 92.242.140.6:3306: connect: no route to host","time":"2023-04-19T14:07:50-03:00"}
+{"app.host":"WMEC-P2CCPXX3FC.local","app.version":"","environment":"development","level":"info","msg":"Server is starting now in development.","time":"2023-04-19T14:08:59-03:00"}
+{"app.host":"WMEC-P2CCPXX3FC.local","app.version":"","environment":"development","level":"fatal","msg":"Error trying to check the database connection: dial tcp 92.242.140.6:3306: connect: operation timed out","time":"2023-04-19T14:10:14-03:00"}
+{"app.host":"WMEC-P2CCPXX3FC.local","app.version":"","environment":"development","level":"info","msg":"Server is starting now in development.","time":"2023-04-19T14:11:27-03:00"}
+{"app.host":"WMEC-P2CCPXX3FC.local","app.version":"","environment":"development","level":"fatal","msg":"Error trying to check the database connection: dial tcp 92.242.140.6:3306: connect: operation timed out","time":"2023-04-19T14:12:42-03:00"}
+{"app.host":"WMEC-P2CCPXX3FC.local","app.version":"","environment":"development","level":"info","msg":"Server is starting now in development.","time":"2023-04-19T14:13:07-03:00"}
+{"app.host":"WMEC-P2CCPXX3FC.local","app.version":"","environment":"development","level":"fatal","msg":"Error trying to check the database connection: dial tcp 92.242.140.6:3306: connect: no route to host","time":"2023-04-19T14:13:12-03:00"}
+{"app.host":"WMEC-P2CCPXX3FC.local","app.version":"","environment":"development","level":"info","msg":"Server is starting now in development.","time":"2023-04-19T14:13:30-03:00"}
+{"app.host":"WMEC-P2CCPXX3FC.local","app.version":"","environment":"development","level":"info","msg":"interrupt","time":"2023-04-19T14:13:32-03:00"}
+{"app.host":"WMEC-P2CCPXX3FC.local","app.version":"","environment":"development","level":"info","msg":"Server is stoping...","time":"2023-04-19T14:13:32-03:00"}
+{"app.host":"WMEC-P2CCPXX3FC.local","app.version":"","environment":"development","level":"fatal","msg":"Error trying to check the database connection: dial tcp 92.242.140.6:3306: connect: operation timed out","time":"2023-04-19T14:14:45-03:00"}
+{"app.host":"WMEC-P2CCPXX3FC.local","app.version":"","environment":"development","level":"info","msg":"Server is starting now in development.","time":"2023-04-19T14:15:03-03:00"}
+{"app.host":"WMEC-P2CCPXX3FC.local","app.version":"","environment":"development","level":"info","msg":"interrupt","time":"2023-04-19T14:15:15-03:00"}
+{"app.host":"WMEC-P2CCPXX3FC.local","app.version":"","environment":"development","level":"info","msg":"Server is stoping...","time":"2023-04-19T14:15:15-03:00"}
+{"app.host":"WMEC-P2CCPXX3FC.local","app.version":"","environment":"development","level":"fatal","msg":"Error trying to check the database connection: dial tcp 92.242.140.6:3306: connect: operation timed out","time":"2023-04-19T14:16:18-03:00"}
+{"app.host":"WMEC-P2CCPXX3FC.local","app.version":"","environment":"development","level":"info","msg":"Server is starting now in development.","time":"2023-04-19T14:16:34-03:00"}
