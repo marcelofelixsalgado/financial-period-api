@@ -22,3 +22,4 @@ mysql/
 
 # Local environment variables
 .env
+docker-compose.override.yaml

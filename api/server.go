@@ -111,12 +111,6 @@ func (server *Server) startServer() {
 	// Middlewares
 	server.http.Use(middlewares.Logger())
 
-	fmt.Println(settings.Config.DatabaseConnectionUser)
-	fmt.Println(settings.Config.DatabaseConnectionPassword)
-	fmt.Println(settings.Config.DatabaseConnectionServerAddress)
-	fmt.Println(settings.Config.DatabaseConnectionServerPort)
-	fmt.Println(settings.Config.DatabaseName)
-
 	// Connects to database
 	databaseClient := database.NewConnection()
 
